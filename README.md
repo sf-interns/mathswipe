@@ -5,8 +5,8 @@ MathSwipe is a `CoffeeScript` game developed in the context of the [Originate](h
 ## Github Pages Information
 
 ### Hosting
-The website is hosted, currently, at <http://ericthewry.github.io/mathswipe/>.  The `CNAME` file specifies the url from which the page can be accessed. After about 7/14/15 at noon, the website will be available at <http://mathswipe.com/>.
+The website is hosted, currently, at <http://sf-interns.github.io/mathswipe/>.  The `CNAME` file specifies the url from which the page can be accessed. After about 7/14/15 at noon, the website will be available at <http://mathswipe.com/>.
 
 ### Development
  - The `master` branch is our 'development' branch.  Changes should be merged here and it reflects the most recent version of our best code.
- - The `gh-pages` branch is the 'production' branch.  This branch reflects the state of our site (ultimately [mathswipe.com](mathswipe.com) ).  
+ - The `gh-pages` branch is the 'production' branch.  This branch reflects the state of our site 
