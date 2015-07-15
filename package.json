@@ -1,0 +1,27 @@
+{
+  "name": "mathswipe",
+  "version": "0.0.0",
+  "description": "MathSwipe is a CoffeeScript game developed in the context of the Originate 'Intern Hack 2015' Event, presented August 2015. It is a web-game in which the user is given a grid of numbers (0-9) and operators (×, +, -), as well as a set of goal-values. The user's goal is to swipe a path through the cells to create an expression that evaluates to one of the goal-values. A level is completed when the user finds expressions evaluating to each goal-value.",
+  "main": "index.js",
+  "scripts": {
+    "devserve": "webpack-dev-server -d --config webpack.config.js --content-base public/ --progress --colors",
+    "devbuild": "webpack -d --config webpack.config.js --profile --progress --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sf-interns/mathswipe.git"
+  },
+  "author": "Brandon Woo, Eric Campbell, Jonathan Chu, Shubham Gogna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sf-interns/mathswipe/issues"
+  },
+  "homepage": "https://github.com/sf-interns/mathswipe#readme",
+  "dependencies": {
+    "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.9.3",
+    "node-libs-browser": "^0.5.2",
+    "webpack": "^1.10.1",
+    "webpack-dev-server": "^1.10.1"
+  }
+}

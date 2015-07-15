@@ -1,0 +1,9 @@
+# ignore these files
+*.~
+*.swp
+node_modules/
+test/
+mycha.coffee
+*.map
+npm-debug.log
+
