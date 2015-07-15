@@ -2,6 +2,33 @@
 
 MathSwipe is a `CoffeeScript` game developed in the context of the [Originate](http://www.originate.com/) 'Intern Hack 2015' Event, presented August 2015.  It is a web-game in which the user is given a grid of numbers (0-9) and operators (&times;, +, -), as well as a set of goal-values.  The user's goal is to swipe a path through the cells to create an expression that evaluates to one of the goal-values. A level is completed when the user finds expressions evaluating to each goal-value.
 
+## Development Information
+
+Note that the other services, when run locally, expect the frontend to be served on port 8080.
+
+The codebase is primarily written in CoffeeScript, including wrappers for creating React elements. The entire project (including its dependencies) is bundled before runtime by webpack, which serves up a single bundle.js file.
+
+### Stack
+
+- [Coffeescript](http://coffeescript.org/)
+- [Webpack](http://webpack.github.io/docs/) for bundling
+
+### Installation
+
+1. Install local npm modules
+
+ ```npm install```
+
+2. And start the dev server
+
+ ```npm run devserve```
+
+  * If that script fails because node can't find webpack-dev-serve*:
+
+  Make sure `webpack-dev-server` is installed globally
+
+   ```npm install webpack-dev-server -g```
+
 ## Github Pages Information
 
 ### Hosting
