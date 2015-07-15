@@ -12,6 +12,7 @@ The codebase is primarily written in CoffeeScript, including wrappers for creati
 
 - [Coffeescript](http://coffeescript.org/)
 - [Webpack](http://webpack.github.io/docs/) for bundling
+- [Mycha](https://github.com/Originate/mycha) for `CoffeeScript` tests
 
 ### Installation
 
@@ -19,7 +20,10 @@ The codebase is primarily written in CoffeeScript, including wrappers for creati
 
  ```npm install```
 
-2. And start the dev server
+2. Ensure `CoffeeScript` is installed locally, if not, run
+ ```npm install -g coffee-script```
+
+3. And start the dev server
 
  ```npm run devserve```
 
@@ -28,6 +32,9 @@ The codebase is primarily written in CoffeeScript, including wrappers for creati
   Make sure `webpack-dev-server` is installed globally
 
    ```npm install webpack-dev-server -g```
+
+### Testing
+This project uses [Mycha](https://github.com/Originate/mycha) for its tests. All test files should be put in the directory `./tests`.  To run the entire test suite, run `mycha`.  To run a specific test, provide a file name.
 
 ## Github Pages Information
 
