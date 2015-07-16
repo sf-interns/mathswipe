@@ -41,6 +41,20 @@
         return (expect(OP('7'))).to.equal(12);
       });
     });
+    describe('#parseInput()', function() {
+      var parse;
+      parse = InputSolver.parseInput;
+      it('returns an array of the numbers and ops in the input', function() {
+        var result;
+        result = parse('123+77+4');
+        (expect(result)).to.include('123', '+', '77', '4');
+        return (expect(result)).to.have.length(5);
+      });
+      return it('filters out invalid characters', function() {
+        (expect(parse('&^77+9'))).not.to.include('&', '^', '&^');
+        return (expect(parse('77()+9'))).not.to.include('(', ')', '()');
+      });
+    });
     return describe('#compute()', function() {
       var compute;
       compute = function(str) {
@@ -59,8 +73,14 @@
         expect(compute('1+')).to.equal(1);
         return expect(compute('1+7*')).to.equal(8);
       });
-      return it('doesn\'t follow the order of operations', function() {
+      it('doesn\'t follow the order of operations', function() {
         return expect(compute('3-1*4')).to.equal(8);
+      });
+      it('does not evaluate expressions beginning with an operator', function() {
+        return (expect(isNaN(compute('+77')))).to.equal(true);
+      });
+      return it('does not evaluate multiple operators', function() {
+        return (expect(isNaN(compute('7+*8')))).to.equal(true);
       });
     });
   });

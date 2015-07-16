@@ -16,13 +16,13 @@
     };
 
     InputSolver.operation = function(sum, element, op) {
-      if (op === "+") {
+      if (op === '+') {
         return sum + parseInt(element);
       }
-      if (op === "-") {
+      if (op === '-') {
         return sum - parseInt(element);
       }
-      if (op === "*") {
+      if (op === '*') {
         return sum * parseInt(element);
       }
       return sum;
@@ -39,7 +39,7 @@
       for (i = 0, len = terms.length; i < len; i++) {
         term = terms[i];
         if ((this.isOperator(previous)) && (this.isOperator(term))) {
-          return sum;
+          return NaN;
         }
         sum = this.operation(sum, term, previous);
         previous = term;
