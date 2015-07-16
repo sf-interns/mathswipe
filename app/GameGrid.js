@@ -3,13 +3,33 @@
   var GameGrid;
 
   GameGrid = (function() {
-    function GameGrid(size) {
-      var grid, i, j, ref;
-      grid = [];
-      for (i = j = 0, ref = size; 0 <= ref ? j <= ref : j >= ref; i = 0 <= ref ? ++j : --j) {
-        grid.push([]);
+    function GameGrid(dimension) {
+      var i, j, k, l, ref, ref1;
+      this.grid = [];
+      this.dimension = dimension;
+      for (i = k = 0, ref = this.dimension - 1; 0 <= ref ? k <= ref : k >= ref; i = 0 <= ref ? ++k : --k) {
+        this.grid.push([]);
+        for (j = l = 0, ref1 = this.dimension - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; j = 0 <= ref1 ? ++l : --l) {
+          this.grid[i].push('');
+        }
       }
     }
+
+    GameGrid.prototype.set = function(x, y, element) {
+      if (!this.validIndices(x, y)) {
+        return false;
+      }
+      this.grid[y][x] = element;
+      return true;
+    };
+
+    GameGrid.prototype.validIndices = function(x, y) {
+      return x < this.dimension && x >= 0 && y < this.dimension && y >= 0;
+    };
+
+    GameGrid.prototype.at = function(x, y) {
+      return grid[y][x];
+    };
 
     return GameGrid;
 
