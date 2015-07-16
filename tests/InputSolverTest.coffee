@@ -44,7 +44,6 @@ describe 'InputSolver', ->
       (expect parse '&^77+9').not.to.include('&','^', '&^')
       (expect parse '77()+9').not.to.include('(',')', '()')
 
-
   describe '#compute()', ->
     compute = (str) -> InputSolver.compute str 
     it 'linearly evaluates numbers', ->
