@@ -7,23 +7,20 @@ class InputSolver
     return element is "+" or element is "-" or element is "*"
 
   @operation = (sum, element, op) ->
-    if op is "+"
-      sum = sum + parseInt(element)
-    else if op is "-"
-      sum = sum - parseInt(element)
-    else if op is "*"
-      sum = sum * parseInt(element)
+    if op is '+' then return sum + parseInt element
+    if op is '-' then return sum - parseInt element
+    if op is '*' then return sum * parseInt element
     return sum
 
   @compute = (input) ->
-    input = @parseInput input
-    previous = input[0]
-    sum = parseInt input[0]
+    terms = @parseInput input
+    previous = terms[0]
+    sum = parseInt terms[0]
     return NaN if isNaN sum
-    for element in input
-      return sum if (@isOperator previous) and (@isOperator element)
-      sum = @operation sum, element, previous
-      previous = element
+    for term in terms
+      return NaN if (@isOperator previous) and (@isOperator term)
+      sum = @operation sum, term, previous
+      previous = term
     sum
 
 module.exports = InputSolver

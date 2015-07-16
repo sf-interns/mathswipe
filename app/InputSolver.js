@@ -15,31 +15,33 @@ InputSolver = (function() {
   };
 
   InputSolver.operation = function(sum, element, op) {
-    if (op === "+") {
-      sum = sum + parseInt(element);
-    } else if (op === "-") {
-      sum = sum - parseInt(element);
-    } else if (op === "*") {
-      sum = sum * parseInt(element);
+    if (op === '+') {
+      return sum + parseInt(element);
+    }
+    if (op === '-') {
+      return sum - parseInt(element);
+    }
+    if (op === '*') {
+      return sum * parseInt(element);
     }
     return sum;
   };
 
   InputSolver.compute = function(input) {
-    var element, i, len, previous, sum;
-    input = this.parseInput(input);
-    previous = input[0];
-    sum = parseInt(input[0]);
+    var i, len, previous, sum, term, terms;
+    terms = this.parseInput(input);
+    previous = terms[0];
+    sum = parseInt(terms[0]);
     if (isNaN(sum)) {
       return NaN;
     }
-    for (i = 0, len = input.length; i < len; i++) {
-      element = input[i];
-      if ((this.isOperator(previous)) && (this.isOperator(element))) {
-        return sum;
+    for (i = 0, len = terms.length; i < len; i++) {
+      term = terms[i];
+      if ((this.isOperator(previous)) && (this.isOperator(term))) {
+        return NaN;
       }
-      sum = this.operation(sum, element, previous);
-      previous = element;
+      sum = this.operation(sum, term, previous);
+      previous = term;
     }
     return sum;
   };
