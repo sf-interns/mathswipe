@@ -34,7 +34,7 @@ The codebase is primarily written in CoffeeScript, including wrappers for creati
    ```npm install webpack-dev-server -g```
 
 ### Testing
-This project uses [Mycha](https://github.com/Originate/mycha) for its tests. All test files should be put in the directory `./tests`.  To run the entire test suite, run `mycha`.  To run a specific test, provide a file name.
+This project uses [Mycha](https://github.com/Originate/mycha) for its tests. All test files should be put in the directory `./tests`.  To run the entire test suite, run `mycha`.  To run a specific test, provide a file name.  For this project, in file `mycha.coffee`, the `testFilePattern` field should be `'**/*Test.{coffee,js}'`. Otherwise, your tests will not run.
 
 ## Github Pages Information
 
