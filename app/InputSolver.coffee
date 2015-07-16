@@ -7,9 +7,9 @@ class InputSolver
     return element is "+" or element is "-" or element is "*"
 
   @operation = (sum, element, op) ->
-    if op is '+' then return sum + parseInt(element)
-    if op is '-' then return sum - parseInt(element)
-    if op is '*' then return sum * parseInt(element)
+    if op is '+' then return sum + parseInt element
+    if op is '-' then return sum - parseInt element
+    if op is '*' then return sum * parseInt element
     return sum
 
   @compute = (input) ->
