@@ -55,9 +55,72 @@
 /*!**********************!*\
   !*** ./index.coffee ***!
   \**********************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var InputSolver;
+	
+	InputSolver = __webpack_require__(/*! ./app/InputSolver */ 2);
+	
+	console.log(InputSolver.compute("1+2*-3"));
+
+
+/***/ },
+/* 2 */
+/*!********************************!*\
+  !*** ./app/InputSolver.coffee ***!
+  \********************************/
 /***/ function(module, exports) {
 
+	var InputSolver;
 	
+	InputSolver = (function() {
+	  function InputSolver() {}
+	
+	  InputSolver.parseInput = function(input) {
+	    var numberRegex, numbers;
+	    numberRegex = /([0-9]+|[\+\-\*])/g;
+	    return numbers = input.match(numberRegex);
+	  };
+	
+	  InputSolver.isOperator = function(element) {
+	    return element === "+" || element === "-" || element === "*";
+	  };
+	
+	  InputSolver.operation = function(sum, element, op) {
+	    if (op === "+") {
+	      sum = sum + parseInt(element);
+	    } else if (op === "-") {
+	      sum = sum - parseInt(element);
+	    } else if (op === "*") {
+	      sum = sum * parseInt(element);
+	    }
+	    return sum;
+	  };
+	
+	  InputSolver.compute = function(input) {
+	    var element, i, len, previous, sum;
+	    input = this.parseInput(input);
+	    previous = input[0];
+	    sum = parseInt(input[0]);
+	    if (isNaN(sum)) {
+	      return NaN;
+	    }
+	    for (i = 0, len = input.length; i < len; i++) {
+	      element = input[i];
+	      if ((this.isOperator(previous)) && (this.isOperator(element))) {
+	        return sum;
+	      }
+	      sum = this.operation(sum, element, previous);
+	      previous = element;
+	    }
+	    return sum;
+	  };
+	
+	  return InputSolver;
+	
+	})();
+	
+	module.exports = InputSolver;
 
 
 /***/ }
