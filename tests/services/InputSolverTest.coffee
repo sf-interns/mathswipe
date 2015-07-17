@@ -1,4 +1,4 @@
-InputSolver = require '../app/services/InputSolver'
+InputSolver = require "#{app_path}/app/services/InputSolver"
 expect = chai.expect
 
 describe 'InputSolver', ->
