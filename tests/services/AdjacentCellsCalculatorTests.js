@@ -5,35 +5,44 @@ AdjacentCellsCalculator = require(app_path + "/services/AdjacentCellsCalculator"
 
 describe('AdjacentCellsCalculator', function() {
   describe('#constructor', function() {
-    before(function() {
-      return sinon.stub(AdjacentCellsCalculator.prototype, 'validLocation', function() {});
-    });
-    after(function() {
-      return AdjacentCellsCalculator.prototype.restore();
-    });
+    before((function(_this) {
+      return function() {
+        return sinon.stub(AdjacentCellsCalculator.prototype, 'validLocation', function() {});
+      };
+    })(this));
+    after((function(_this) {
+      return function() {
+        return AdjacentCellsCalculator.prototype.validLocation.restore();
+      };
+    })(this));
     return it('attempts to find a valid location for each adjacent vertex', function() {
       var cells, grid, service;
       grid = [[1, 2], [3, 4]];
       cells = [1, 2, 3, 4];
-      service = new AdjacentCellsCalculator(grid, cells, 1, 1);
+      service = new AdjacentCellsCalculator(grid, cells, 1, 2);
       (expect(service.grid)).to.equal(grid);
       (expect(service.cells)).to.equal(cells);
       (expect(service.x)).to.equal(1);
       return (expect(service.y)).to.equal(2);
     });
   });
-  describe('#get', function() {
-    before(function() {
-      return sinon.stub(AdjacentCellsCalculator.prototype, 'validLocation', function() {
-        return 1;
-      });
-    });
-    after(function() {
-      return AdjacentCellsCalculator.prototype.restore();
-    });
+  describe('#calculate', function() {
+    before((function(_this) {
+      return function() {
+        return sinon.stub(AdjacentCellsCalculator.prototype, 'validLocation', function() {
+          return 1;
+        });
+      };
+    })(this));
+    after((function(_this) {
+      return function() {
+        return AdjacentCellsCalculator.prototype.validLocation.restore();
+      };
+    })(this));
     return it('gets the array of cells', function() {
       var cells, i, j, len, ref, results;
       cells = new AdjacentCellsCalculator(null, [], 1, 1);
+      cells.calculate();
       (expect(cells.cells.length)).to.equal(8);
       ref = cells.cells;
       results = [];
@@ -45,20 +54,25 @@ describe('AdjacentCellsCalculator', function() {
     });
   });
   return describe('#validLocation', function() {
-    var grid, gridMock, validLocation;
+    var grid, gridMock;
     grid = {
       at: (function() {}),
       set: (function() {}),
       validIndices: (function() {})
     };
     gridMock = null;
-    validLocation = AdjacentCellsCalculator.prototype.validLocation;
-    before(function() {
-      return sinon.stub(AdjacentCellsCalculator.prototype, 'checkAbove', function() {});
-    });
-    after(function() {
-      return AdjacentCellsCalculator.prototype.checkAbove.restore();
-    });
+    before((function(_this) {
+      return function() {
+        return sinon.stub(AdjacentCellsCalculator.prototype, 'checkAbove', function() {
+          return 'checkAbove called';
+        });
+      };
+    })(this));
+    after((function(_this) {
+      return function() {
+        return AdjacentCellsCalculator.prototype.checkAbove.restore();
+      };
+    })(this));
     beforeEach((function(_this) {
       return function() {
         return gridMock = sinon.mock(grid);
@@ -71,18 +85,29 @@ describe('AdjacentCellsCalculator', function() {
     })(this));
     it('returns null if the vertices are invalid', (function(_this) {
       return function() {
+        var result;
         gridMock.expects('at').once().returns(false);
-        (expect(validLocation(grid, 1, 1))).to.equal(null);
+        result = AdjacentCellsCalculator.prototype.validLocation(grid, 1, 1);
+        (expect(result)).to.equal(null);
         return gridMock.verify();
       };
     })(this));
-    return it('returns a tuple if the location is empty', (function(_this) {
+    it('returns a tuple if the location is empty', (function(_this) {
       return function() {
         var result;
         (gridMock.expects('at')).once().returns(null);
-        result = validLocation(grid, 1, 2);
+        result = AdjacentCellsCalculator.prototype.validLocation(grid, 1, 2);
         (expect(result.x)).to.equal(1);
         (expect(result.y)).to.equal(2);
+        return gridMock.verify();
+      };
+    })(this));
+    return it('checks above if the vertex is taken', (function(_this) {
+      return function() {
+        var result;
+        (gridMock.expects('at')).once().returns('7');
+        result = AdjacentCellsCalculator.prototype.validLocation(grid, 1, 2);
+        (expect(result)).to.equal('checkAbove called');
         return gridMock.verify();
       };
     })(this));

@@ -4,6 +4,7 @@
 node_modules/
 test/
 mycha.coffee
+mycha.js
 *.map
 npm-debug.log
 
