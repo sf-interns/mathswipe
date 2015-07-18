@@ -6,15 +6,13 @@ class TupleSet
       @push t
 
   push: (tuple) =>
-    @set.push tuple unless tuple is null or tuple.isElementOf @set
+    return @set.push tuple unless tuple is null or tuple.isElementOf @set
 
-  pop: () =>
-    @set.pop()
+  pop: () => @set.pop()
 
-  length: () =>
-    @set.length
+  length: () => @set.length
 
-  at: (idx)=>
+  at: (idx) =>
     return @set[idx] if idx < @length() 
     false
 
