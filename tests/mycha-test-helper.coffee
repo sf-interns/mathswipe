@@ -6,4 +6,6 @@ global.chai = chai
 global.expect = chai.expect
 global.sinon = sinon
 
+global.app_path = '../../app'
+
 process.env.NODE_ENV = 'test'
