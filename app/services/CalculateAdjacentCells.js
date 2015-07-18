@@ -37,11 +37,11 @@ CalculateAdjacentCells = (function() {
     loc = grid.at(x, y);
     if (loc === null) {
       return new Tuple(x, y);
-    } else if (loc === false) {
-      return null;
-    } else {
-      return this.checkAbove(x, y);
     }
+    if (loc === false) {
+      return null;
+    }
+    return this.checkAbove(x, y);
   };
 
   CalculateAdjacentCells.prototype.checkAbove = function(x, y) {
