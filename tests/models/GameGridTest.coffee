@@ -1,4 +1,4 @@
-GameGrid = require '../app/GameGrid'
+GameGrid = require "#{app_path}/models/GameGrid"
 
 describe 'GameGrid', ->
   describe '#constructor', ->
