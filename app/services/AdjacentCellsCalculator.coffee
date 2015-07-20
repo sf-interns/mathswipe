@@ -13,12 +13,13 @@ class AdjacentCellsCalculator
         @cells.push @validLocation @grid, i, j
     @cells
 
+  # returns a valid location if it exists, otherwise null
   validLocation: (grid,x,y) =>
-    loc = grid.at x,y
-    return new Tuple x, y if loc is null 
-    return null if loc is false 
-    @checkAbove x, y
+    while grid.validIndices x, y
+      return new Tuple x, y if @empty grid, x, y
+      y--
+    null
 
-  checkAbove: (x,y) => @validLocation x, y - 1
+  empty: (grid,x,y) => grid.at x, y is null
 
 module.exports = AdjacentCellsCalculator

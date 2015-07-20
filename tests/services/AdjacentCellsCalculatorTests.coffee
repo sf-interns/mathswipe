@@ -31,35 +31,48 @@ describe 'AdjacentCellsCalculator', ->
     grid         = {at: (()->) , set: (()->), validIndices: (()->) }
     gridMock     = null
 
-    before => 
-      sinon.stub AdjacentCellsCalculator.prototype, 'checkAbove', -> 'checkAbove called'
-    after  => 
-      AdjacentCellsCalculator.prototype.checkAbove.restore()
+    # before => 
+    #   sinon.stub AdjacentCellsCalculator.prototype, 'checkAbove', -> 'checkAbove called'
+    # after  => 
+    #   AdjacentCellsCalculator.prototype.checkAbove.restore()
 
     beforeEach =>  gridMock = sinon.mock(grid)
     afterEach => gridMock.restore()
 
     it 'returns null if the vertices are invalid', =>
-      gridMock.expects('at').once().returns false
+      gridMock.expects('validIndices').once().returns false
       
       result = AdjacentCellsCalculator.prototype.validLocation grid, 1, 1
 
       (expect result).to.equal null
       gridMock.verify()
 
-    it 'returns a tuple if the location is empty', =>
-      (gridMock.expects 'at').once().returns null
+    describe 'the vertices are valid', =>
+      emptyStub = null
 
-      result = AdjacentCellsCalculator.prototype.validLocation grid, 1, 2
+      beforeEach => 
+        (gridMock.expects 'validIndices').atLeast(1).returns true
+        emptyStub = sinon.stub AdjacentCellsCalculator.prototype, 'empty'
 
-      (expect result.x).to.equal 1
-      (expect result.y).to.equal 2
-      gridMock.verify()
+      afterEach  => 
+        gridMock.verify()
+        emptyStub.restore()
 
-    it 'checks above if the vertex is taken', =>
-      (gridMock.expects 'at').once().returns '7'
-      result = AdjacentCellsCalculator.prototype.validLocation grid, 1, 2
-      
-      (expect result).to.equal 'checkAbove called'
-      gridMock.verify()
-      
+      it 'returns a tuple if the location is empty', =>
+        emptyStub.returns true
+
+        result = AdjacentCellsCalculator.prototype.validLocation grid, 1, 2
+
+        (expect result.x).to.equal 1
+        (expect result.y).to.equal 2
+
+        AdjacentCellsCalculator.prototype.empty.restore()
+
+      it 'returns above if the vertex is taken', =>
+        emptyStub.onCall(0).returns false
+        emptyStub.onCall(1).returns true
+
+        result = AdjacentCellsCalculator.prototype.validLocation grid, 1, 2
+        
+        (expect result.x).to.equal 1
+        (expect result.y).to.equal 1

@@ -61,18 +61,6 @@ describe('AdjacentCellsCalculator', function() {
       validIndices: (function() {})
     };
     gridMock = null;
-    before((function(_this) {
-      return function() {
-        return sinon.stub(AdjacentCellsCalculator.prototype, 'checkAbove', function() {
-          return 'checkAbove called';
-        });
-      };
-    })(this));
-    after((function(_this) {
-      return function() {
-        return AdjacentCellsCalculator.prototype.checkAbove.restore();
-      };
-    })(this));
     beforeEach((function(_this) {
       return function() {
         return gridMock = sinon.mock(grid);
@@ -86,29 +74,40 @@ describe('AdjacentCellsCalculator', function() {
     it('returns null if the vertices are invalid', (function(_this) {
       return function() {
         var result;
-        gridMock.expects('at').once().returns(false);
+        gridMock.expects('validIndices').once().returns(false);
         result = AdjacentCellsCalculator.prototype.validLocation(grid, 1, 1);
         (expect(result)).to.equal(null);
         return gridMock.verify();
       };
     })(this));
-    it('returns a tuple if the location is empty', (function(_this) {
+    return describe('the vertices are valid', (function(_this) {
       return function() {
-        var result;
-        (gridMock.expects('at')).once().returns(null);
-        result = AdjacentCellsCalculator.prototype.validLocation(grid, 1, 2);
-        (expect(result.x)).to.equal(1);
-        (expect(result.y)).to.equal(2);
-        return gridMock.verify();
-      };
-    })(this));
-    return it('checks above if the vertex is taken', (function(_this) {
-      return function() {
-        var result;
-        (gridMock.expects('at')).once().returns('7');
-        result = AdjacentCellsCalculator.prototype.validLocation(grid, 1, 2);
-        (expect(result)).to.equal('checkAbove called');
-        return gridMock.verify();
+        var emptyStub;
+        emptyStub = null;
+        beforeEach(function() {
+          (gridMock.expects('validIndices')).atLeast(1).returns(true);
+          return emptyStub = sinon.stub(AdjacentCellsCalculator.prototype, 'empty');
+        });
+        afterEach(function() {
+          gridMock.verify();
+          return emptyStub.restore();
+        });
+        it('returns a tuple if the location is empty', function() {
+          var result;
+          emptyStub.returns(true);
+          result = AdjacentCellsCalculator.prototype.validLocation(grid, 1, 2);
+          (expect(result.x)).to.equal(1);
+          (expect(result.y)).to.equal(2);
+          return AdjacentCellsCalculator.prototype.empty.restore();
+        });
+        return it('returns above if the vertex is taken', function() {
+          var result;
+          emptyStub.onCall(0).returns(false);
+          emptyStub.onCall(1).returns(true);
+          result = AdjacentCellsCalculator.prototype.validLocation(grid, 1, 2);
+          (expect(result.x)).to.equal(1);
+          return (expect(result.y)).to.equal(1);
+        });
       };
     })(this));
   });

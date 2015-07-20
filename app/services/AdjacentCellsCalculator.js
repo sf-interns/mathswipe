@@ -10,7 +10,7 @@ AdjacentCellsCalculator = (function() {
     this.cells = cells;
     this.x = x1;
     this.y = y1;
-    this.checkAbove = bind(this.checkAbove, this);
+    this.empty = bind(this.empty, this);
     this.validLocation = bind(this.validLocation, this);
     this.calculate = bind(this.calculate, this);
   }
@@ -33,19 +33,17 @@ AdjacentCellsCalculator = (function() {
   };
 
   AdjacentCellsCalculator.prototype.validLocation = function(grid, x, y) {
-    var loc;
-    loc = grid.at(x, y);
-    if (loc === null) {
-      return new Tuple(x, y);
+    while (grid.validIndices(x, y)) {
+      if (this.empty(grid, x, y)) {
+        return new Tuple(x, y);
+      }
+      y--;
     }
-    if (loc === false) {
-      return null;
-    }
-    return this.checkAbove(x, y);
+    return null;
   };
 
-  AdjacentCellsCalculator.prototype.checkAbove = function(x, y) {
-    return this.validLocation(x, y - 1);
+  AdjacentCellsCalculator.prototype.empty = function(grid, x, y) {
+    return grid.at(x, y === null);
   };
 
   return AdjacentCellsCalculator;
