@@ -6,7 +6,7 @@ class TupleSet
       @push t
 
   push: (tuple) =>
-    return @set.push tuple unless tuple is null or tuple.isElementOf @set
+    return @set.push tuple unless tuple is null or @contains tuple
 
   pop: () => @set.pop()
 
@@ -14,6 +14,11 @@ class TupleSet
 
   at: (idx) =>
     return @set[idx] if idx < @length() 
+    false
+
+  contains: (tuple) =>
+    for t in @set
+      if tuple.equals t then return true
     false
 
 module.exports = TupleSet

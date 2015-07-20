@@ -8,6 +8,7 @@ TupleSet = (function() {
     if (tuples == null) {
       tuples = [];
     }
+    this.contains = bind(this.contains, this);
     this.at = bind(this.at, this);
     this.length = bind(this.length, this);
     this.pop = bind(this.pop, this);
@@ -20,7 +21,7 @@ TupleSet = (function() {
   }
 
   TupleSet.prototype.push = function(tuple) {
-    if (!(tuple === null || tuple.isElementOf(this.set))) {
+    if (!(tuple === null || this.contains(tuple))) {
       return this.set.push(tuple);
     }
   };
@@ -36,6 +37,18 @@ TupleSet = (function() {
   TupleSet.prototype.at = function(idx) {
     if (idx < this.length()) {
       return this.set[idx];
+    }
+    return false;
+  };
+
+  TupleSet.prototype.contains = function(tuple) {
+    var i, len, ref, t;
+    ref = this.set;
+    for (i = 0, len = ref.length; i < len; i++) {
+      t = ref[i];
+      if (tuple.equals(t)) {
+        return true;
+      }
     }
     return false;
   };

@@ -6,7 +6,6 @@ Tuple = (function() {
   function Tuple(x, y) {
     this.x = x;
     this.y = y;
-    this.isElementOf = bind(this.isElementOf, this);
     this.equals = bind(this.equals, this);
   }
 
@@ -15,17 +14,6 @@ Tuple = (function() {
       return false;
     }
     return this.x === otherTuple.x && this.y === otherTuple.y;
-  };
-
-  Tuple.prototype.isElementOf = function(tuples) {
-    var i, len, t;
-    for (i = 0, len = tuples.length; i < len; i++) {
-      t = tuples[i];
-      if (this.equals(t)) {
-        return true;
-      }
-    }
-    return false;
   };
 
   return Tuple;

@@ -23,22 +23,3 @@ describe 'Tuple', ->
     it 'returns false when both coordinates are different', ->
       (expect (tupAt 1, 1).equals(tupAt 0, 0)).to.equal false
 
-  describe '#isElementOf', ->
-    tupleList = []
-    tupAt = (x,y) -> new Tuple x, y
-    it 'returns true when the tuple is equal to another in the list', ->
-      tupleList = [(tupAt 1, 1), (tupAt 0, 0)]
-      (expect (tupAt 1, 1).isElementOf tupleList).to.equal true
-      (expect (tupAt 0, 0).isElementOf tupleList).to.equal true
-
-    it 'returns false if it is not in the list', ->
-      tupleList = [tupAt 1, 1,  tupAt 0, 0]
-      (expect (tupAt 9, 9).isElementOf tupleList).to.equal false
-
-    it 'returns false if the list is empty', ->
-      tupleList = []
-      (expect (tupAt 1, 1).isElementOf tupleList).to.equal false
-
-    it 'returns false if the list is null', ->
-      tupleList = [null, null, null]
-      (expect (tupAt 1, 1).isElementOf tupleList).to.equal false
