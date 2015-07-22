@@ -7,16 +7,16 @@ GameGrid = require('../models/GameGrid');
 
 MathSwipeController = (function() {
   function MathSwipeController() {
-    var board, boardX, boardY, cell, change, gridModel, gridView, i, j, k, l, len, len1, m, n, offset, rect, ref, ref1, row, size, startX, startY, two, width;
-    console.log(InputSolver.compute("1+2*-3"));
-    gridModel = new GameGrid(3);
+    var board, boardX, boardY, change, i, j, k, l, offset, rect, ref, ref1, size, startX, startY, two, width;
+    console.log(InputSolver.compute("1+2*3"));
+    this.gridModel = new GameGrid(3);
     two = new Two({
       fullscreen: true,
       autostart: true
     }).appendTo(document.body);
     size = two.height * .80;
     offset = size * .025;
-    width = (size - offset) / gridModel.dimension - offset;
+    width = (size - offset) / this.gridModel.dimension - offset;
     boardX = two.width / 2;
     boardY = two.height / 2;
     boardY = boardY < size / 2 ? size / 2 : boardY;
@@ -25,22 +25,22 @@ MathSwipeController = (function() {
     startX = boardX - (size + width) / 2;
     startY = boardY - (size + width) / 2;
     change = offset + width;
-    gridView = [];
-    for (i = k = 1, ref = gridModel.dimension; 1 <= ref ? k <= ref : k >= ref; i = 1 <= ref ? ++k : --k) {
-      gridView.push([]);
-      for (j = l = 1, ref1 = gridModel.dimension; 1 <= ref1 ? l <= ref1 : l >= ref1; j = 1 <= ref1 ? ++l : --l) {
+    this.gridView = [];
+    for (i = k = 1, ref = this.gridModel.dimension; 1 <= ref ? k <= ref : k >= ref; i = 1 <= ref ? ++k : --k) {
+      this.gridView.push([]);
+      for (j = l = 1, ref1 = this.gridModel.dimension; 1 <= ref1 ? l <= ref1 : l >= ref1; j = 1 <= ref1 ? ++l : --l) {
         rect = two.makeRectangle(startX + j * change, startY + i * change, width, width);
-        gridView.push(rect);
-      }
-    }
-    for (m = 0, len = gridView.length; m < len; m++) {
-      row = gridView[m];
-      for (n = 0, len1 = gridView.length; n < len1; n++) {
-        cell = gridView[n];
-        cell.fill = '#FFEBCD';
+        rect.fill = '#FFEBCD';
+        this.gridView[i - 1].push(rect);
       }
     }
   }
+
+  MathSwipeController.prototype.deleteCell = function(x, y) {
+    console.log("deleting");
+    this.gridView[x].splice(1);
+    return console.log(this.gridView);
+  };
 
   return MathSwipeController;
 

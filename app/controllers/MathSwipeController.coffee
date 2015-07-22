@@ -4,8 +4,8 @@ GameGrid    = require '../models/GameGrid'
 class MathSwipeController 
 
   constructor: ->
-    console.log InputSolver.compute("1+2*-3")
-    gridModel = new GameGrid(3)
+    console.log InputSolver.compute("1+2*3")
+    @gridModel = new GameGrid(3)
     
     two = new Two(
       fullscreen: true
@@ -14,7 +14,7 @@ class MathSwipeController
 
     size = two.height * .80
     offset = size * .025
-    width = ( size - offset ) / gridModel.dimension - offset
+    width = ( size - offset ) / ( @gridModel.dimension ) - offset
 
     boardX = ( two.width ) / 2
     boardY = ( two.height ) / 2 
@@ -28,17 +28,20 @@ class MathSwipeController
 
     change = offset + width
 
-    gridView = []
-    for i in [1..gridModel.dimension]
-      gridView.push []
-      for j in [1..gridModel.dimension]
+    @gridView = []
+    for i in [1..@gridModel.dimension]
+      @gridView.push []
+      for j in [1..@gridModel.dimension]
         rect = (two.makeRectangle startX + j * change, startY + i * change, width, width)
-        # rect.fill = '#FFEBCD'
-        gridView.push rect
+        rect.fill = '#FFEBCD'
+        @gridView[i-1].push rect
 
-    for row in gridView
-      for cell in gridView
-        cell.fill = '#FFEBCD'
+  deleteCell: (x, y) ->
+    console.log "deleting"
+    @gridView[x].splice 1
+    console.log @gridView
+
+
 
 
 module.exports = MathSwipeController
