@@ -1,6 +1,4 @@
-InputSolver = require ("./app/services/InputSolver")
-GameGrid    = require ("./app/GameGrid")
+Two        = require 'two.js'
+MathSwipeController = require './app/controllers/MathSwipeController'
 
-
-console.log InputSolver.compute("1+2*-3")
-console.log new GameGrid(3)
+game = new MathSwipeController
