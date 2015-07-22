@@ -1,5 +1,6 @@
 InputSolver = require '../services/InputSolver'
 GameGrid    = require '../models/GameGrid'
+
 class MathSwipeController 
 
   constructor: ->
@@ -10,8 +11,6 @@ class MathSwipeController
       fullscreen: true
       autostart: true
     ).appendTo(document.body);
-    
-    oldHeight = two.height
 
     size = two.height * .80
     offset = size * .025
@@ -34,8 +33,12 @@ class MathSwipeController
       gridView.push []
       for j in [1..gridModel.dimension]
         rect = (two.makeRectangle startX + j * change, startY + i * change, width, width)
-        rect.fill = '#FFEBCD'
+        # rect.fill = '#FFEBCD'
         gridView.push rect
+
+    for row in gridView
+      for cell in gridView
+        cell.fill = '#FFEBCD'
 
 
 module.exports = MathSwipeController

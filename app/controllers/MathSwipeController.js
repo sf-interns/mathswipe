@@ -7,14 +7,13 @@ GameGrid = require('../models/GameGrid');
 
 MathSwipeController = (function() {
   function MathSwipeController() {
-    var board, boardX, boardY, change, gridModel, gridView, i, j, k, l, offset, oldHeight, rect, ref, ref1, size, startX, startY, two, width;
+    var board, boardX, boardY, cell, change, gridModel, gridView, i, j, k, l, len, len1, m, n, offset, rect, ref, ref1, row, size, startX, startY, two, width;
     console.log(InputSolver.compute("1+2*-3"));
     gridModel = new GameGrid(3);
     two = new Two({
       fullscreen: true,
       autostart: true
     }).appendTo(document.body);
-    oldHeight = two.height;
     size = two.height * .80;
     offset = size * .025;
     width = (size - offset) / gridModel.dimension - offset;
@@ -31,8 +30,14 @@ MathSwipeController = (function() {
       gridView.push([]);
       for (j = l = 1, ref1 = gridModel.dimension; 1 <= ref1 ? l <= ref1 : l >= ref1; j = 1 <= ref1 ? ++l : --l) {
         rect = two.makeRectangle(startX + j * change, startY + i * change, width, width);
-        rect.fill = '#FFEBCD';
         gridView.push(rect);
+      }
+    }
+    for (m = 0, len = gridView.length; m < len; m++) {
+      row = gridView[m];
+      for (n = 0, len1 = gridView.length; n < len1; n++) {
+        cell = gridView[n];
+        cell.fill = '#FFEBCD';
       }
     }
   }
