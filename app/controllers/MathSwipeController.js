@@ -10,7 +10,7 @@ Board = require('../views/Board');
 MathSwipeController = (function() {
   function MathSwipeController() {
     console.log(InputSolver.compute("1+2*3"));
-    this.gridModel = new GameGrid(7);
+    this.gridModel = new GameGrid(4);
     this.two = new Two({
       fullscreen: true,
       autostart: true

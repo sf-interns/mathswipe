@@ -24,18 +24,28 @@ Board = (function() {
     var cell, col, i, ref, results, row;
     this.cells = [];
     results = [];
-    for (row = i = 1, ref = this.grid.dimension; 1 <= ref ? i <= ref : i >= ref; row = 1 <= ref ? ++i : --i) {
+    for (row = i = 0, ref = this.grid.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
       this.cells.push([]);
       results.push((function() {
         var j, ref1, results1;
         results1 = [];
-        for (col = j = 1, ref1 = this.grid.dimension; 1 <= ref1 ? j <= ref1 : j >= ref1; col = 1 <= ref1 ? ++j : --j) {
+        for (col = j = 0, ref1 = this.grid.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
           cell = new Cell(col, row, width, this.two, this);
           cell.setColor('#FFEBCD');
-          results1.push(this.cells[row - 1].push(cell));
+          results1.push(this.cells[row].push(cell));
         }
         return results1;
       }).call(this));
+    }
+    return results;
+  };
+
+  Board.prototype.deleteCells = function(solution) {
+    var i, len, results, tuple;
+    results = [];
+    for (i = 0, len = solution.length; i < len; i++) {
+      tuple = solution[i];
+      results.push(this.deleteCellAt(tuple.x, tuple.y));
     }
     return results;
   };

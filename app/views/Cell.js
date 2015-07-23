@@ -31,18 +31,18 @@ Cell = (function() {
     if (col == null) {
       col = this.col;
     }
-    return this.board.x - (this.board.size + this.size) / 2 + col * this.board.change;
+    return this.board.x - (this.board.size + this.size) / 2 + (col + 1) * this.board.change;
   };
 
   Cell.prototype.getY = function(row) {
     if (row == null) {
       row = this.row;
     }
-    return this.board.y - (this.board.size + this.size) / 2 + row * this.board.change;
+    return this.board.y - (this.board.size + this.size) / 2 + (row + 1) * this.board.change;
   };
 
   Cell.prototype.shiftTo = function(row, col) {
-    this.rect.translation.set(this.getX(col) + this.board.change, this.getY(row) + this.board.change);
+    this.rect.translation.set(this.getX(col), this.getY(row));
     return this.two.update();
   };
 

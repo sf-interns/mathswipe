@@ -16,13 +16,13 @@ class Cell
     @rect.opacity = 0
 
   getX: (col=@col) =>
-    @board.x - (@board.size + @size) / 2 + col * @board.change
+    @board.x - (@board.size + @size) / 2 + (col + 1) * @board.change
 
   getY: (row=@row)->
-    @board.y - (@board.size + @size) / 2 + row * @board.change
+    @board.y - (@board.size + @size) / 2 + (row + 1) * @board.change
 
   shiftTo: (row, col) ->
-    @rect.translation.set @getX(col) + @board.change, @getY(row) + @board.change
+    @rect.translation.set @getX(col), @getY(row)
     @two.update()
 
   delete: ->

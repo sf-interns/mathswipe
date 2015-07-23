@@ -21,13 +21,16 @@ class Board
 
   createCells: (width) ->
     @cells = []
-    for row in [1..@grid.dimension]
+    for row in [0...@grid.dimension]
       @cells.push []
-      for col in [1..@grid.dimension]
+      for col in [0...@grid.dimension]
         cell = new Cell col, row, width, @two, @
         cell.setColor('#FFEBCD')
-        @cells[row-1].push cell
+        @cells[row].push cell
 
+  deleteCells: (solution) ->
+    for tuple in solution
+      @deleteCellAt tuple.x, tuple.y
   
   deleteCellAt: (x, y) ->
     @cells[y][x].delete()

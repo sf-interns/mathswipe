@@ -6,7 +6,7 @@ class MathSwipeController
 
   constructor: ->
     console.log InputSolver.compute("1+2*3")
-    @gridModel = new GameGrid(7)
+    @gridModel = new GameGrid(4)
 
     @two = new Two(
       fullscreen: true

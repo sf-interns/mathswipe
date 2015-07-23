@@ -1,5 +1,6 @@
 Two                 = require 'two.js'
 MathSwipeController = require './app/controllers/MathSwipeController'
+Tuple               = require './app/models/Tuple'
 $                   = require 'jquery'
 
 
@@ -9,5 +10,6 @@ sleep = (ms) ->
 
 game = new MathSwipeController
 
-game.board.deleteCellAt 3, 4
+solution = [(new Tuple 1, 1), (new Tuple 2, 2), (new Tuple 3, 3)]
 
+game.board.deleteCells solution
