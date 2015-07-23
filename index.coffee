@@ -1,6 +1,8 @@
 InputSolver = require ("./app/services/InputSolver")
-GameGrid    = require ("./app/GameGrid")
+GameGrid    = require ("./app/models/GameGrid")
+ExpressionGenerator = require ("./app/services/ExpressionGenerator")
 
-
-console.log InputSolver.compute("1+2*-3")
-console.log new GameGrid(3)
+randomInput = new ExpressionGenerator().generate 11
+console.log randomInput
+console.log InputSolver.compute randomInput
+console.log new GameGrid 3
