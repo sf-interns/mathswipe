@@ -23,30 +23,53 @@ class MathSwipeController
     board = @two.makeRectangle boardX, boardY, size, size
     board.fill = '#F0F8FF'
 
-    startX = boardX - (size + width) / 2
-    startY = boardY - (size + width) / 2
+    @startX = boardX - (size + width) / 2
+    @startY = boardY - (size + width) / 2
 
-    change = offset + width
+    @change = offset + width
 
     @gridView = []
     for i in [1..@gridModel.dimension]
       @gridView.push []
       for j in [1..@gridModel.dimension]
-        rect = (@two.makeRectangle startX + j * change, startY + i * change, width, width)
+        rect = (@two.makeRectangle @getX(j), @getY(i), width, width)
         rect.fill = '#FFEBCD'
         @gridView[i-1].push rect
+
+    @two.update()
 
   deleteCell: (y, x) ->
     @gridView[y][x].fill = '#FFFFFF'
 
   pushAllCellsToBottom: ->
-    for i in [@gridModel.dimension-1..0]
-      for j in [@gridModel.dimension-1..1]
-        if @gridView[j][i].fill is '#FFFFFF'
-          for k in [j-1..0]
-            unless @gridView[k][i].fill is '#FFFFFF'
-              @gridView[j][i] = @gridView[k][i]
-              @gridView[k][i].fill = '#FFFFFF'
     @two.update()
+    for row in [@gridModel.dimension-1..1]
+      for col in [@gridModel.dimension-1..0]
+        if @gridView[row][col].fill is '#FFFFFF'
+          for up in [row-1..0]
+            unless @gridView[up][col].fill is '#FFFFFF'
+              @shiftCellTo @gridView[row][col], col, up
+              @shiftCellTo @gridView[up][col], col, row
+              @swapView row, col, up, col
+              break
+    @two.update()
+
+  shiftCellTo: (cell, x, y) ->
+    cell.translation.set @getX(x) + @change, @getY(y) + @change
+    @two.update()
+    cell
+
+  swapView: (r0, c0, r1, c1) ->
+    temp = @gridView[r0][c0]
+    @gridView[r0][c0] = @gridView[r1][c1]
+    @gridView[r1][c1] = temp
+    @two.update()
+
+
+  getX: (colIdx) ->
+    @startX + colIdx * @change
+
+  getY: (rowIdx) ->
+    @startY + rowIdx * @change
 
 module.exports = MathSwipeController

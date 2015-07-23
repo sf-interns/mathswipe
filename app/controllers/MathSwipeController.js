@@ -7,7 +7,7 @@ GameGrid = require('../models/GameGrid');
 
 MathSwipeController = (function() {
   function MathSwipeController() {
-    var board, boardX, boardY, change, i, j, l, m, offset, rect, ref, ref1, size, startX, startY, width;
+    var board, boardX, boardY, i, j, k, l, offset, rect, ref, ref1, size, width;
     console.log(InputSolver.compute("1+2*3"));
     this.gridModel = new GameGrid(3);
     this.two = new Two({
@@ -22,18 +22,19 @@ MathSwipeController = (function() {
     boardY = boardY < size / 2 ? size / 2 : boardY;
     board = this.two.makeRectangle(boardX, boardY, size, size);
     board.fill = '#F0F8FF';
-    startX = boardX - (size + width) / 2;
-    startY = boardY - (size + width) / 2;
-    change = offset + width;
+    this.startX = boardX - (size + width) / 2;
+    this.startY = boardY - (size + width) / 2;
+    this.change = offset + width;
     this.gridView = [];
-    for (i = l = 1, ref = this.gridModel.dimension; 1 <= ref ? l <= ref : l >= ref; i = 1 <= ref ? ++l : --l) {
+    for (i = k = 1, ref = this.gridModel.dimension; 1 <= ref ? k <= ref : k >= ref; i = 1 <= ref ? ++k : --k) {
       this.gridView.push([]);
-      for (j = m = 1, ref1 = this.gridModel.dimension; 1 <= ref1 ? m <= ref1 : m >= ref1; j = 1 <= ref1 ? ++m : --m) {
-        rect = this.two.makeRectangle(startX + j * change, startY + i * change, width, width);
+      for (j = l = 1, ref1 = this.gridModel.dimension; 1 <= ref1 ? l <= ref1 : l >= ref1; j = 1 <= ref1 ? ++l : --l) {
+        rect = this.two.makeRectangle(this.getX(j), this.getY(i), width, width);
         rect.fill = '#FFEBCD';
         this.gridView[i - 1].push(rect);
       }
     }
+    this.two.update();
   }
 
   MathSwipeController.prototype.deleteCell = function(y, x) {
@@ -41,20 +42,45 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.pushAllCellsToBottom = function() {
-    var i, j, k, l, m, n, ref, ref1, ref2;
-    for (i = l = ref = this.gridModel.dimension - 1; ref <= 0 ? l <= 0 : l >= 0; i = ref <= 0 ? ++l : --l) {
-      for (j = m = ref1 = this.gridModel.dimension - 1; ref1 <= 1 ? m <= 1 : m >= 1; j = ref1 <= 1 ? ++m : --m) {
-        if (this.gridView[j][i].fill === '#FFFFFF') {
-          for (k = n = ref2 = j - 1; ref2 <= 0 ? n <= 0 : n >= 0; k = ref2 <= 0 ? ++n : --n) {
-            if (this.gridView[k][i].fill !== '#FFFFFF') {
-              this.gridView[j][i] = this.gridView[k][i];
-              this.gridView[k][i].fill = '#FFFFFF';
+    var col, k, l, m, ref, ref1, ref2, row, up;
+    this.two.update();
+    for (row = k = ref = this.gridModel.dimension - 1; ref <= 1 ? k <= 1 : k >= 1; row = ref <= 1 ? ++k : --k) {
+      for (col = l = ref1 = this.gridModel.dimension - 1; ref1 <= 0 ? l <= 0 : l >= 0; col = ref1 <= 0 ? ++l : --l) {
+        if (this.gridView[row][col].fill === '#FFFFFF') {
+          for (up = m = ref2 = row - 1; ref2 <= 0 ? m <= 0 : m >= 0; up = ref2 <= 0 ? ++m : --m) {
+            if (this.gridView[up][col].fill !== '#FFFFFF') {
+              this.shiftCellTo(this.gridView[row][col], col, up);
+              this.shiftCellTo(this.gridView[up][col], col, row);
+              this.swapView(row, col, up, col);
+              break;
             }
           }
         }
       }
     }
     return this.two.update();
+  };
+
+  MathSwipeController.prototype.shiftCellTo = function(cell, x, y) {
+    cell.translation.set(this.getX(x) + this.change, this.getY(y) + this.change);
+    this.two.update();
+    return cell;
+  };
+
+  MathSwipeController.prototype.swapView = function(r0, c0, r1, c1) {
+    var temp;
+    temp = this.gridView[r0][c0];
+    this.gridView[r0][c0] = this.gridView[r1][c1];
+    this.gridView[r1][c1] = temp;
+    return this.two.update();
+  };
+
+  MathSwipeController.prototype.getX = function(colIdx) {
+    return this.startX + colIdx * this.change;
+  };
+
+  MathSwipeController.prototype.getY = function(rowIdx) {
+    return this.startY + rowIdx * this.change;
   };
 
   return MathSwipeController;
