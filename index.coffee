@@ -1,3 +1,7 @@
-InputSolver = require ("./app/InputSolver")
+InputSolver = require ("./app/services/InputSolver")
+GameGrid    = require ("./app/models/GameGrid")
+DFS         = require ("./app/services/DFS")
 
-console.log InputSolver.compute("1+2*-3")
+cat = new DFS
+seed = {x: 1, y: 1}
+cat.DFS seed
