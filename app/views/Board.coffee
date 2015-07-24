@@ -13,11 +13,25 @@ class Board
     @y = if @y < @size / 2 then @size / 2 else @y
 
     board = @two.makeRectangle @x, @y, @size, @size
-    board.fill = '#F0F8FF'
+    board.noStroke().fill =  '#c2d1e6' #'#B0C4DE' #'#F0F8FF' #'#CDE1FF'
 
     @change = offset + width
 
-    @createCells (((@size - offset ) / @grid.dimension ) - offset)
+    cellWidth = ((@size - offset ) / @grid.dimension ) - offset
+
+    @createEmptyCells cellWidth - 5
+
+    @createCells cellWidth
+
+  createEmptyCells: (width) ->
+    @cells = []
+    for row in [0...@grid.dimension]
+      @cells.push []
+      for col in [0...@grid.dimension]
+        cell = new Cell col, row, width, @two, @
+        cell.setColor '#b7c9e1'
+        cell.setBorder '#b7c9e1'
+        @cells[row].push cell
 
   createCells: (width) ->
     @cells = []
@@ -25,7 +39,6 @@ class Board
       @cells.push []
       for col in [0...@grid.dimension]
         cell = new Cell col, row, width, @two, @
-        cell.setColor('#FFEBCD')
         @cells[row].push cell
 
   deleteCells: (solution) ->

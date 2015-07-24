@@ -13,3 +13,5 @@ game = new MathSwipeController
 solution = [(new Tuple 1, 1), (new Tuple 2, 2), (new Tuple 3, 3)]
 
 game.board.deleteCells solution
+
+

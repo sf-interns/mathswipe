@@ -5,7 +5,7 @@ Cell = require('./Cell');
 
 Board = (function() {
   function Board(grid, two) {
-    var board, offset, width;
+    var board, cellWidth, offset, width;
     this.grid = grid;
     this.two = two;
     this.size = this.two.height * .80;
@@ -15,10 +15,33 @@ Board = (function() {
     this.y = this.two.height / 2;
     this.y = this.y < this.size / 2 ? this.size / 2 : this.y;
     board = this.two.makeRectangle(this.x, this.y, this.size, this.size);
-    board.fill = '#F0F8FF';
+    board.noStroke().fill = '#c2d1e6';
     this.change = offset + width;
-    this.createCells(((this.size - offset) / this.grid.dimension) - offset);
+    cellWidth = ((this.size - offset) / this.grid.dimension) - offset;
+    this.createEmptyCells(cellWidth - 5);
+    this.createCells(cellWidth);
   }
+
+  Board.prototype.createEmptyCells = function(width) {
+    var cell, col, i, ref, results, row;
+    this.cells = [];
+    results = [];
+    for (row = i = 0, ref = this.grid.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+      this.cells.push([]);
+      results.push((function() {
+        var j, ref1, results1;
+        results1 = [];
+        for (col = j = 0, ref1 = this.grid.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+          cell = new Cell(col, row, width, this.two, this);
+          cell.setColor('#b7c9e1');
+          cell.setBorder('#b7c9e1');
+          results1.push(this.cells[row].push(cell));
+        }
+        return results1;
+      }).call(this));
+    }
+    return results;
+  };
 
   Board.prototype.createCells = function(width) {
     var cell, col, i, ref, results, row;
@@ -31,7 +54,6 @@ Board = (function() {
         results1 = [];
         for (col = j = 0, ref1 = this.grid.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
           cell = new Cell(col, row, width, this.two, this);
-          cell.setColor('#FFEBCD');
           results1.push(this.cells[row].push(cell));
         }
         return results1;

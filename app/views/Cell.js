@@ -9,10 +9,14 @@ Cell = (function() {
     this.size = size;
     this.two = two;
     this.board = board;
+    this.shiftTo = bind(this.shiftTo, this);
     this.getX = bind(this.getX, this);
+    this.setBorder = bind(this.setBorder, this);
     this.setColor = bind(this.setColor, this);
     this.isDeleted = false;
     this.rect = this.two.makeRectangle(this.getX(), this.getY(), this.size, this.size);
+    this.setColor('#FFEBCD');
+    this.setBorder('#FFE1b4');
     this.two.update();
   }
 
@@ -22,8 +26,13 @@ Cell = (function() {
     return this.two.update();
   };
 
+  Cell.prototype.setBorder = function(c) {
+    this.rect.stroke = c;
+    this.rect.linewidth = 6;
+    return this.two.update();
+  };
+
   Cell.prototype.hide = function() {
-    this.setColor('#FFFFFF');
     return this.rect.opacity = 0;
   };
 
@@ -42,8 +51,25 @@ Cell = (function() {
   };
 
   Cell.prototype.shiftTo = function(row, col) {
-    this.rect.translation.set(this.getX(col), this.getY(row));
-    return this.two.update();
+    var end, start;
+    end = new Two.Vector(this.getX(col), this.getY(row));
+    start = new Two.Vector(this.getX(), this.getY());
+    return this.two.bind('update', (function(_this) {
+      return function(frameCount) {
+        var delta, dist;
+        console.log('start', start);
+        console.log('end', end);
+        dist = start.distanceTo(end);
+        console.log(dist);
+        if (dist < 1) {
+          _this.rect.translation.set(_this.getX(col), _this.getY(row));
+          _this.two.unbind('update');
+        }
+        delta = new Two.Vector(0, dist * .125);
+        _this.rect.translation.addSelf(delta);
+        return start = start.addSelf(delta);
+      };
+    })(this)).play();
   };
 
   Cell.prototype["delete"] = function() {

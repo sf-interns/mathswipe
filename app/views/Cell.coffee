@@ -2,7 +2,9 @@ class Cell
 
   constructor: (@col, @row, @size, @two, @board) ->
     @isDeleted = false
-    @rect = (@two.makeRectangle @getX(), @getY(), @size, @size)
+    @rect = @two.makeRectangle @getX(), @getY(), @size, @size
+    @setColor '#FFEBCD'
+    @setBorder '#FFE1b4'
     # @board.add @rect
     @two.update()
 
@@ -11,8 +13,13 @@ class Cell
     @rect.fill = c
     @two.update()
 
+  setBorder: (c) =>
+    @rect.stroke = c
+    @rect.linewidth = 6
+    @two.update()
+
   hide: ->
-    @setColor '#FFFFFF'
+    #@setColor '#FFFFFF'
     @rect.opacity = 0
 
   getX: (col=@col) =>
@@ -21,9 +28,27 @@ class Cell
   getY: (row=@row)->
     @board.y - (@board.size + @size) / 2 + (row + 1) * @board.change
 
-  shiftTo: (row, col) ->
-    @rect.translation.set @getX(col), @getY(row)
-    @two.update()
+  shiftTo: (row, col) =>
+    end = new Two.Vector(@getX(col), @getY(row))
+    start = new Two.Vector(@getX(), @getY())
+
+    @two.bind('update', (frameCount) =>
+      console.log 'start', start
+      console.log 'end', end
+
+      dist = start.distanceTo end
+      console.log dist
+
+      if (dist < 1) 
+        @rect.translation.set (@getX col), (@getY row)
+        @two.unbind 'update'
+
+      delta = new Two.Vector 0, (dist * .125)
+
+      @rect.translation.addSelf delta
+
+      start = start.addSelf delta
+    ).play()
 
   delete: ->
     @hide()
