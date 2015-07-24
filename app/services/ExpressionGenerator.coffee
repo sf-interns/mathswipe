@@ -14,7 +14,7 @@ class ExpressionGenerator
       else "?"
 
   generate: (length) ->
-    if length <= 0 
+    if length < 1 
       throw "Length cannot be less than 1"
     else if length is 1
       @genRandomDigit 1, 9
