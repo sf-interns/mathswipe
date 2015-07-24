@@ -7,4 +7,4 @@ mycha.coffee
 mycha.js
 *.map
 npm-debug.log
-
+.DS_Store
