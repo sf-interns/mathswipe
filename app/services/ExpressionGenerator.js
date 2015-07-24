@@ -28,7 +28,7 @@ ExpressionGenerator = (function() {
   ExpressionGenerator.prototype.generate = function(length) {
     var opIndex;
     if (length <= 0) {
-      return "";
+      throw "Length cannot be less than 1";
     } else if (length === 1) {
       return this.genRandomDigit(1, 9);
     } else if (length === 2) {
