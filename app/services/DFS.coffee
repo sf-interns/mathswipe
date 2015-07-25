@@ -1,5 +1,6 @@
-GameGrid = require ("../models/GameGrid")
-AdjacentCellsCalculator = require("./AdjacentCellsCalculator")
+GameGrid                = require ("../models/GameGrid")
+AdjacentCellsCalculator = require ("./AdjacentCellsCalculator")
+LastInColumn            = require ("./LastInColumn")
 
 class DFS
   getSeed = (grid) ->
@@ -39,5 +40,11 @@ class DFS
   DFS = (seed) ->
     toVisit = shuffle ((new AdjacentCellsCalculator( new GameGrid(3), null, 1, 1)).calculate())
     console.log toVisit
+    grid = [[null, null, 1],
+            [3, 3, 3],
+            [4, 4, null]]
+    checker = new LastInColumn
+    console.log checker.isLastAndBlocking(grid)
+    curr = toVisit.pop()
 
 module.exports = DFS
