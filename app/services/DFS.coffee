@@ -3,7 +3,9 @@ AdjacentCellsCalculator = require ("./AdjacentCellsCalculator")
 LastInColumn            = require ("./LastInColumn")
 
 class DFS
-  getSeed = (grid) ->
+  constructor: (@grid) ->
+
+  getSeed: (@grid) =>
     for i in @grid
       x = Math.floor(Math.random()*@grid.length) + 1
       y = Math.floor(Math.random()*@grid.length) + 1
@@ -11,7 +13,7 @@ class DFS
         return [y, x]
     return false
 
-  shuffle = (array) ->
+  shuffle: (array) =>
     # Fisher-Yates shuffle
     m = array.length
     t = undefined
@@ -26,25 +28,12 @@ class DFS
       array[i] = t
     array
 
-  # @DFS = (input, @grid, x, y, isFirst) ->
-  #   if input.length is 0
-  #     return @grid
-  #   if isFirst
-  #     seed = @getSeed
-  #     return false if Seed is false
-  #     @grid[seed.y][seed.x] = input.charAt 0
-  #     @DFS input.substr(1), @grid, seed.x, seed.y false
-
-  #     # @shuffle AdjacentCellsCalculator.(x, y)
-
-  DFS = (seed) ->
-    toVisit = shuffle ((new AdjacentCellsCalculator( new GameGrid(3), null, 1, 1)).calculate())
-    console.log toVisit
-    grid = [[null, null, 1],
-            [3, 3, 3],
-            [4, 4, null]]
-    checker = new LastInColumn
-    console.log checker.isLastAndBlocking(grid)
+  search: (seed, @grid) =>
+    toVisit = @shuffle ((new AdjacentCellsCalculator( @grid, null, 0, 0)).calculate())
+    curr = toVisit.pop()
+    console.log curr
+    checker = (new LastInColumn).isLastAndBlocking @grid.grid
+    console.log checker
     curr = toVisit.pop()
 
 module.exports = DFS

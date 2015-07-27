@@ -3,12 +3,12 @@ GameGrid    = require ("./app/models/GameGrid")
 DFS         = require ("./app/services/DFS")
 LastInColumn         = require ("./app/services/LastInColumn")
 
-grid = [[null, null, 1],
-        [3, 4, 3],
-        [4, 4, null]]
-checker = new LastInColumn
-console.log checker.isLastAndBlocking(grid)
-
-cat = new DFS
+# grid = [[null, null, 1],
+#         [3, 4, 3],
+#         [4, 4, null]]
+# checker = new LastInColumn
+# console.log checker.isLastAndBlocking(grid)
+grid = new GameGrid(3)
+cat = new DFS grid
 seed = {x: 1, y: 1}
-cat.DFS seed
+cat.search seed, grid
