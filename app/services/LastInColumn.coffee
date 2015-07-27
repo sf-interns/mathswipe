@@ -11,7 +11,7 @@ class LastInColumn
       colCount.push count
     for index in [1..colCount.length-2]
       if colCount[index] is 1 and colCount[index-1] > 0 and colCount[index+1] > 0
-        return false
-    true
+        return true
+    false
 
 module.exports = LastInColumn

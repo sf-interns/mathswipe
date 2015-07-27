@@ -8,7 +8,8 @@ LastInColumn         = require ("./app/services/LastInColumn")
 #         [4, 4, null]]
 # checker = new LastInColumn
 # console.log checker.isLastAndBlocking(grid)
-grid = new GameGrid(3)
-cat = new DFS grid
+@grid = new GameGrid(3)
+testGrid = new DFS @grid
 seed = {x: 1, y: 1}
-cat.search seed, grid
+testGrid.search seed, "1+3"
+console.log @grid.grid

@@ -20,10 +20,10 @@ LastInColumn = (function() {
     }
     for (index = k = 1, ref2 = colCount.length - 2; 1 <= ref2 ? k <= ref2 : k >= ref2; index = 1 <= ref2 ? ++k : --k) {
       if (colCount[index] === 1 && colCount[index - 1] > 0 && colCount[index + 1] > 0) {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
   };
 
   return LastInColumn;

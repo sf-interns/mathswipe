@@ -45,15 +45,27 @@ DFS = (function() {
     return array;
   };
 
-  DFS.prototype.search = function(seed, grid) {
-    var checker, curr, toVisit;
-    this.grid = grid;
-    toVisit = this.shuffle((new AdjacentCellsCalculator(this.grid, null, 0, 0)).calculate());
+  DFS.prototype.search = function(seed, input) {
+    var checker, curr, solution, toVisit;
+    if (input.length === 0) {
+      return true;
+    }
+    toVisit = this.shuffle((new AdjacentCellsCalculator(this.grid, null, seed.x, seed.y)).calculate());
     curr = toVisit.pop();
-    console.log(curr);
     checker = (new LastInColumn).isLastAndBlocking(this.grid.grid);
-    console.log(checker);
-    return curr = toVisit.pop();
+    if (checker || toVisit.length === 0) {
+      return false;
+    }
+    while (curr !== void 0) {
+      this.grid.grid[curr.x][curr.y] = input[0];
+      solution = this.search(curr, input.slice(1, input.length));
+      if (solution) {
+        return true;
+      } else {
+        curr = toVisit.pop();
+      }
+    }
+    return false;
   };
 
   return DFS;

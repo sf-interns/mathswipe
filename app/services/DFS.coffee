@@ -28,12 +28,19 @@ class DFS
       array[i] = t
     array
 
-  search: (seed, @grid) =>
-    toVisit = @shuffle ((new AdjacentCellsCalculator( @grid, null, 0, 0)).calculate())
+  search: (seed, input) =>
+    return true if input.length is 0
+    toVisit = @shuffle ((new AdjacentCellsCalculator( @grid, null, seed.x, seed.y)).calculate())
     curr = toVisit.pop()
-    console.log curr
     checker = (new LastInColumn).isLastAndBlocking @grid.grid
-    console.log checker
-    curr = toVisit.pop()
+    return false if checker or toVisit.length is 0
+    while curr != undefined
+      @grid.grid[curr.x][curr.y] = input[0]
+      solution = @search curr, input.slice(1, input.length)
+      if solution
+        return true
+      else
+        curr = toVisit.pop()
+    false
 
 module.exports = DFS
