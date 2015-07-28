@@ -49,44 +49,39 @@ DFS = (function() {
     return array;
   };
 
-  DFS.prototype.search = function(seed, input, cells) {
+  DFS.prototype.search = function(seed, input, takenCells) {
     var checker, curr, each, j, k, len, len1, ref, solution, toVisit;
-    this.cells = cells;
-    console.log("@cells = ", this.cells);
+    ref = takenCells.list;
+    for (j = 0, len = ref.length; j < len; j++) {
+      each = ref[j];
+      console.log("takenCells.list = ", each);
+    }
     if (input.length === 0) {
       return true;
     }
-    toVisit = (new AdjacentCellsCalculator(this.grid, null, seed.x, seed.y)).calculate();
+    toVisit = (new AdjacentCellsCalculator(this.grid, null, seed.x, seed.y)).calculate(takenCells.list);
     toVisit = this.shuffle(toVisit);
-    console.log("seed = ", seed);
-    for (j = 0, len = toVisit.length; j < len; j++) {
-      each = toVisit[j];
+    for (k = 0, len1 = toVisit.length; k < len1; k++) {
+      each = toVisit[k];
       console.log("toVisit = ", each);
     }
-    curr = toVisit.shift();
-    console.log("curr = ", curr);
     if (toVisit.length === 0) {
       return false;
     }
+    curr = toVisit.shift();
     checker = (new LastInColumn).isLastAndBlocking(this.grid.grid, curr.x, curr.y);
     if (checker) {
       return false;
     }
     while (curr !== void 0) {
       this.grid.set(curr.x, curr.y, input[0]);
-      this.cells.push(new Tuple(curr.x, curr.y));
-      console.log("@cells = ", this.cells);
-      ref = this.grid.grid;
-      for (k = 0, len1 = ref.length; k < len1; k++) {
-        each = ref[k];
-        console.log(each);
-      }
-      solution = this.search(curr, input.slice(1, input.length), this.cells);
+      takenCells.push(new Tuple(curr.x, curr.y));
+      solution = this.search(curr, input.slice(1, input.length), takenCells);
       if (solution) {
         return true;
       } else {
         this.grid.set(curr.x, curr.y, null);
-        this.cells.pop();
+        takenCells.pop();
         curr = toVisit.pop();
       }
     }

@@ -17,8 +17,9 @@ AdjacentCellsCalculator = (function() {
     this.calculate = bind(this.calculate, this);
   }
 
-  AdjacentCellsCalculator.prototype.calculate = function() {
+  AdjacentCellsCalculator.prototype.calculate = function(takenCells) {
     var each, i, j, k, l, len, len1, len2, m, ref, ref1, ref2;
+    console.log("takenCells = ", takenCells);
     console.log("@grid in adj is ");
     ref = this.grid.grid;
     for (k = 0, len = ref.length; k < len; k++) {
@@ -34,14 +35,23 @@ AdjacentCellsCalculator = (function() {
         if (i === this.x && j === this.y) {
           continue;
         }
-        this.cells.push(this.validLocation(this.grid, i, j));
+        this.cells.push(this.validLocation(this.grid, i, j, takenCells));
       }
     }
     return this.cells.list;
   };
 
-  AdjacentCellsCalculator.prototype.validLocation = function(grid, x, y) {
+  AdjacentCellsCalculator.prototype.validLocation = function(grid, x, y, takenCells) {
+    var cell, k, len;
     while (grid.validIndices(x, y)) {
+      console.log("x = " + x + ", y = " + y);
+      for (k = 0, len = takenCells.length; k < len; k++) {
+        cell = takenCells[k];
+        if (x === cell.x && y < cell.y) {
+          console.log(cell);
+          return null;
+        }
+      }
       if (this.empty(grid, x, y)) {
         return new Tuple(x, y);
       }

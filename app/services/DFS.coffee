@@ -30,31 +30,33 @@ class DFS
       array[i] = t
     array
 
-  search: (seed, input, @cells) =>
-    console.log "@cells = ", @cells
+  search: (seed, input, takenCells) =>
+    for each in takenCells.list
+      console.log "takenCells.list = ", each
     return true if input.length is 0
-    toVisit = (new AdjacentCellsCalculator( @grid, null, seed.x, seed.y)).calculate()
+    toVisit = (new AdjacentCellsCalculator( @grid, null, seed.x, seed.y)).calculate(takenCells.list)
     toVisit = @shuffle toVisit
-    console.log "seed = ", seed
+    # console.log "seed = ", seed
     for each in toVisit
       console.log "toVisit = ", each
-    curr = toVisit.shift()
-    console.log "curr = ", curr
     return false if toVisit.length is 0
+    curr = toVisit.shift()
+    # console.log "curr = ", curr
+
     checker = (new LastInColumn).isLastAndBlocking @grid.grid, curr.x, curr.y
     return false if checker
     while curr != undefined
       @grid.set curr.x, curr.y, input[0]
-      @cells.push new Tuple curr.x, curr.y
-      console.log "@cells = ", @cells
-      for each in @grid.grid
-        console.log each
-      solution = @search curr, input.slice(1, input.length), @cells
+      takenCells.push new Tuple curr.x, curr.y
+      # console.log "takenCells = ", takenCells
+      # for each in @grid.grid
+      #   console.log each
+      solution = @search curr, input.slice(1, input.length), takenCells
       if solution
         return true
       else
         @grid.set curr.x, curr.y, null
-        @cells.pop()
+        takenCells.pop()
         curr = toVisit.pop()
     false
 
