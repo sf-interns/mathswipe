@@ -10,33 +10,9 @@ for length in [1..30]
   expression = ExpressionGenerator.generate length
   console.log length, expression, InputSolver.compute expression
 
-@grid = new GameGrid(4)
-testGrid = new DFS @grid
-stringPlacement = new TupleSet
-seed = {x: 1, y: 1}
-testGrid.search seed, "11+22", stringPlacement
-for each in @grid.grid
-  console.log each
-for each in stringPlacement
-  console.log each
-
-seed = stringPlacement.list[stringPlacement.length() - 1]
-console.log seed
-stringPlacement = new TupleSet
-testGrid.search seed, "33-44", stringPlacement
-for each in @grid.grid
-  console.log each
-
-allCells = new TupleSet
-for i in [0..@grid.dimension]
-  for j in [0..@grid.dimension]
-    allCells.push new Tuple i, j
-
-for index in [0...allCells.length()]
-  seed = allCells.at index
-  stringPlacement = new TupleSet
-  if testGrid.search seed, "55*667", stringPlacement
-    break
+inputList = ["1+2-3", "44*5"]
+@grid = new GameGrid(3)
+DFS.generateBoard @grid, inputList
 console.log "\n"
 for each in @grid.grid
   console.log each
