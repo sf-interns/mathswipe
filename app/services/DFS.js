@@ -33,8 +33,8 @@ DFS = (function() {
     if (input.length === 0) {
       return true;
     }
-    toVisit = (new AdjacentCellsCalculator(this.grid, null, seed.x, seed.y)).calculate(takenCells.list);
-    toVisit = this.shuffle(toVisit);
+    toVisit = new AdjacentCellsCalculator(this.grid, null, seed.x, seed.y);
+    toVisit = this.shuffle(toVisit.calculate(takenCells.list));
     if (toVisit.length === 0) {
       return false;
     }
@@ -49,7 +49,7 @@ DFS = (function() {
       if (solution) {
         return true;
       } else {
-        this.grid.set(curr.x, curr.y, null);
+        this.grid.set(curr.x, curr.y, " ");
         takenCells.pop();
         curr = toVisit.pop();
       }
@@ -93,7 +93,7 @@ DFS = (function() {
       }
       for (row = o = 0, ref2 = this.grid.dimension; 0 <= ref2 ? o < ref2 : o > ref2; row = 0 <= ref2 ? ++o : --o) {
         for (col = p = 0, ref3 = this.grid.dimension; 0 <= ref3 ? p < ref3 : p > ref3; col = 0 <= ref3 ? ++p : --p) {
-          this.grid.set(row, col, null);
+          this.grid.set(row, col, " ");
         }
       }
     }

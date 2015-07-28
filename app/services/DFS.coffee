@@ -23,8 +23,9 @@ class DFS
 
   @search: (seed, input, takenCells) ->
     return true if input.length is 0
-    toVisit = (new AdjacentCellsCalculator( @grid, null, seed.x, seed.y)).calculate(takenCells.list)
-    toVisit = @shuffle toVisit
+
+    toVisit = (new AdjacentCellsCalculator(@grid, null, seed.x, seed.y))
+    toVisit = @shuffle toVisit.calculate(takenCells.list)
     return false if toVisit.length is 0
     curr = toVisit.shift()
     return false if (new LastInColumn).isLastAndBlocking @grid.grid, curr.x, curr.y
@@ -36,7 +37,7 @@ class DFS
       if solution
         return true
       else
-        @grid.set curr.x, curr.y, null
+        @grid.set curr.x, curr.y, " "
         takenCells.pop()
         curr = toVisit.pop()
     false
@@ -65,7 +66,7 @@ class DFS
       break if @initializeBoard allCells, inputList
       for row in [0...@grid.dimension]
         for col in [0...@grid.dimension]
-          @grid.set row, col, null
+          @grid.set row, col, " "
     true
 
 module.exports = DFS

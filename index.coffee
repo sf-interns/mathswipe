@@ -6,12 +6,17 @@ LastInColumn        = require "./app/services/LastInColumn"
 Tuple               = require "./app/models/Tuple"
 TupleSet            = require "./app/models/TupleSet"
 
-for length in [1..30]
-  expression = ExpressionGenerator.generate length
-  console.log length, expression, InputSolver.compute expression
+# for length in [1..30]
+#   expression = ExpressionGenerator.generate length
+#   console.log length, expression, InputSolver.compute expression
 
-inputList = ["1+2-3", "44*5"]
-@grid = new GameGrid(3)
+# inputList = ["1+2-3", "45*6"]
+# inputList = ["1+23"]
+inputList = ["1", "22", "333",
+             "4444", "55555", "666666"
+             "7777777", "88888888", "999999999",
+             "++++"]
+@grid = new GameGrid(7)
 DFS.generateBoard @grid, inputList
 console.log "\n"
 for each in @grid.grid

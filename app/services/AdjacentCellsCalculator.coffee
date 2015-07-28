@@ -25,6 +25,6 @@ class AdjacentCellsCalculator
     null
 
   empty: (grid,x,y) =>
-    (grid.at x, y) is null
+    (grid.at x, y) is " "
 
 module.exports = AdjacentCellsCalculator

@@ -38,7 +38,7 @@ TupleSet = (function() {
     if (idx < this.length()) {
       return this.list[idx];
     }
-    return false;
+    return null;
   };
 
   TupleSet.prototype.contains = function(tuple) {

@@ -52,7 +52,7 @@ AdjacentCellsCalculator = (function() {
   };
 
   AdjacentCellsCalculator.prototype.empty = function(grid, x, y) {
-    return (grid.at(x, y)) === null;
+    return (grid.at(x, y)) === " ";
   };
 
   return AdjacentCellsCalculator;
