@@ -4,15 +4,15 @@ var ExpressionGenerator;
 ExpressionGenerator = (function() {
   function ExpressionGenerator() {}
 
-  ExpressionGenerator.prototype.randInclusive = function(min, max) {
+  ExpressionGenerator.randInclusive = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  ExpressionGenerator.prototype.genRandomDigit = function(min, max) {
+  ExpressionGenerator.genRandomDigit = function(min, max) {
     return this.randInclusive(min, max).toString();
   };
 
-  ExpressionGenerator.prototype.genRandomOperator = function() {
+  ExpressionGenerator.genRandomOperator = function() {
     switch (this.randInclusive(0, 2)) {
       case 0:
         return "+";
@@ -25,9 +25,9 @@ ExpressionGenerator = (function() {
     }
   };
 
-  ExpressionGenerator.prototype.generate = function(length) {
+  ExpressionGenerator.generate = function(length) {
     var opIndex;
-    if (length <= 0) {
+    if (length < 1) {
       throw "Length cannot be less than 1";
     } else if (length === 1) {
       return this.genRandomDigit(1, 9);

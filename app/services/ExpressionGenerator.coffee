@@ -1,19 +1,19 @@
 class ExpressionGenerator
 
-  randInclusive: (min, max) ->
+  @randInclusive: (min, max) ->
     Math.floor(Math.random() * (max - min + 1)) + min
 
-  genRandomDigit: (min, max) ->
+  @genRandomDigit: (min, max) ->
     @randInclusive(min, max).toString()
 
-  genRandomOperator: ->
+  @genRandomOperator: ->
     switch @randInclusive 0, 2
       when 0 then "+"
       when 1 then "-"
       when 2 then "*"
       else "?"
 
-  generate: (length) ->
+  @generate: (length) ->
     if length < 1 
       throw "Length cannot be less than 1"
     else if length is 1
