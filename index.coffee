@@ -4,4 +4,4 @@ ExpressionGenerator = require("./app/services/ExpressionGenerator");
 
 for length in [1..30]
   expression = ExpressionGenerator.generate length
-  console.log i, expression, InputSolver.compute expression
+  console.log length, expression, InputSolver.compute expression
