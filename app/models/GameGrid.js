@@ -13,7 +13,7 @@ GameGrid = (function() {
     for (i = k = 0, ref = this.dimension; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
       this.grid.push([]);
       for (j = l = 0, ref1 = this.dimension; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
-        this.grid[i].push(null);
+        this.grid[i].push(" ");
       }
     }
   }
@@ -32,7 +32,7 @@ GameGrid = (function() {
 
   GameGrid.prototype.at = function(x, y) {
     if (!this.validIndices(x, y)) {
-      return false;
+      return null;
     }
     return this.grid[y][x];
   };
