@@ -1,6 +1,8 @@
 AdjacentCellsCalculator = require ("./AdjacentCellsCalculator")
 GameGrid                = require ("../models/GameGrid")
 LastInColumn            = require ("./LastInColumn")
+Tuple                   = require "../models/Tuple"
+TupleSet                = require "../models/TupleSet"
 
 class DFS
   constructor: (@grid) ->
@@ -28,7 +30,8 @@ class DFS
       array[i] = t
     array
 
-  search: (seed, input) =>
+  search: (seed, input, @cells) =>
+    console.log "@cells = ", @cells
     return true if input.length is 0
     toVisit = (new AdjacentCellsCalculator( @grid, null, seed.x, seed.y)).calculate()
     toVisit = @shuffle toVisit
@@ -37,16 +40,21 @@ class DFS
       console.log "toVisit = ", each
     curr = toVisit.shift()
     console.log "curr = ", curr
-    checker = (new LastInColumn).isLastAndBlocking @grid.grid
-    return false if checker or toVisit.length is 0
+    return false if toVisit.length is 0
+    checker = (new LastInColumn).isLastAndBlocking @grid.grid, curr.x, curr.y
+    return false if checker
     while curr != undefined
       @grid.set curr.x, curr.y, input[0]
+      @cells.push new Tuple curr.x, curr.y
+      console.log "@cells = ", @cells
       for each in @grid.grid
         console.log each
-      solution = @search curr, input.slice(1, input.length)
+      solution = @search curr, input.slice(1, input.length), @cells
       if solution
         return true
       else
+        @grid.set curr.x, curr.y, null
+        @cells.pop()
         curr = toVisit.pop()
     false
 

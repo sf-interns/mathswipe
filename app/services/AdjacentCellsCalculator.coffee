@@ -15,7 +15,7 @@ class AdjacentCellsCalculator
       for j in [@y - 1, @y, @y + 1]
         continue if i is @x and j is @y
         @cells.push @validLocation @grid, i, j
-    @cells.set
+    @cells.list
 
   # returns a valid location if it exists, otherwise null
   validLocation: (grid,x,y) =>

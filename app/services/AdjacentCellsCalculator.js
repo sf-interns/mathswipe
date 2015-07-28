@@ -37,7 +37,7 @@ AdjacentCellsCalculator = (function() {
         this.cells.push(this.validLocation(this.grid, i, j));
       }
     }
-    return this.cells.set;
+    return this.cells.list;
   };
 
   AdjacentCellsCalculator.prototype.validLocation = function(grid, x, y) {
