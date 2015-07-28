@@ -16,6 +16,7 @@ Board = (function() {
     this.y = this.y < this.size / 2 ? this.size / 2 : this.y;
     board = this.two.makeRectangle(this.x, this.y, this.size, this.size);
     board.noStroke().fill = '#c2d1e6';
+    board.visible = true;
     this.change = offset + width;
     cellWidth = ((this.size - offset) / this.grid.dimension) - offset;
     this.createEmptyCells(cellWidth - 5);
@@ -79,7 +80,6 @@ Board = (function() {
 
   Board.prototype.pushAllCellsToBottom = function() {
     var col, i, j, k, ref, ref1, ref2, row, up;
-    console.log(this.grid);
     for (row = i = ref = this.grid.dimension - 1; ref <= 1 ? i <= 1 : i >= 1; row = ref <= 1 ? ++i : --i) {
       for (col = j = ref1 = this.grid.dimension - 1; ref1 <= 0 ? j <= 0 : j >= 0; col = ref1 <= 0 ? ++j : --j) {
         if (this.cells[row][col].isDeleted) {

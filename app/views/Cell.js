@@ -57,10 +57,7 @@ Cell = (function() {
     return this.two.bind('update', (function(_this) {
       return function(frameCount) {
         var delta, dist;
-        console.log('start', start);
-        console.log('end', end);
         dist = start.distanceTo(end);
-        console.log(dist);
         if (dist < 1) {
           _this.rect.translation.set(_this.getX(col), _this.getY(row));
           _this.two.unbind('update');

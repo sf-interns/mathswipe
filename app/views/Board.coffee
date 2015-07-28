@@ -14,6 +14,7 @@ class Board
 
     board = @two.makeRectangle @x, @y, @size, @size
     board.noStroke().fill =  '#c2d1e6' #'#B0C4DE' #'#F0F8FF' #'#CDE1FF'
+    board.visible = true
 
     @change = offset + width
 
@@ -50,7 +51,6 @@ class Board
     @pushAllCellsToBottom()
 
   pushAllCellsToBottom: ->
-    console.log @grid
     for row in [@grid.dimension-1..1]
       for col in [@grid.dimension-1..0]
         if @cells[row][col].isDeleted

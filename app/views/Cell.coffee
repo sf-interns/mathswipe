@@ -33,12 +33,8 @@ class Cell
     start = new Two.Vector(@getX(), @getY())
 
     @two.bind('update', (frameCount) =>
-      console.log 'start', start
-      console.log 'end', end
-
       dist = start.distanceTo end
-      console.log dist
-
+      
       if (dist < 1) 
         @rect.translation.set (@getX col), (@getY row)
         @two.unbind 'update'
