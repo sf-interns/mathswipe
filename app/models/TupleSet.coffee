@@ -14,7 +14,7 @@ class TupleSet
 
   at: (idx) =>
     return @set[idx] if idx < @length() 
-    false
+    null
 
   contains: (tuple) =>
     for t in @set
