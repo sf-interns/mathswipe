@@ -25,11 +25,3 @@ console.log(this.grid.grid[0]);
 console.log(this.grid.grid[1]);
 
 console.log(this.grid.grid[2]);
-
-testGrid.search(seed, "3-4");
-
-console.log(this.grid.grid[0]);
-
-console.log(this.grid.grid[1]);
-
-console.log(this.grid.grid[2]);

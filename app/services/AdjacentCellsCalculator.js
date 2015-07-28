@@ -18,17 +18,23 @@ AdjacentCellsCalculator = (function() {
   }
 
   AdjacentCellsCalculator.prototype.calculate = function() {
-    var i, j, k, l, len, len1, ref, ref1;
-    ref = [this.y - 1, this.y, this.y + 1];
+    var each, i, j, k, l, len, len1, len2, m, ref, ref1, ref2;
+    console.log("@grid in adj is ");
+    ref = this.grid.grid;
     for (k = 0, len = ref.length; k < len; k++) {
-      i = ref[k];
-      ref1 = [this.x - 1, this.x, this.x + 1];
-      for (l = 0, len1 = ref1.length; l < len1; l++) {
-        j = ref1[l];
-        if (i === this.y && j === this.x) {
+      each = ref[k];
+      console.log(each);
+    }
+    ref1 = [this.x - 1, this.x, this.x + 1];
+    for (l = 0, len1 = ref1.length; l < len1; l++) {
+      i = ref1[l];
+      ref2 = [this.y - 1, this.y, this.y + 1];
+      for (m = 0, len2 = ref2.length; m < len2; m++) {
+        j = ref2[m];
+        if (i === this.x && j === this.y) {
           continue;
         }
-        this.cells.push(this.validLocation(this.grid, j, i));
+        this.cells.push(this.validLocation(this.grid, i, j));
       }
     }
     return this.cells.set;

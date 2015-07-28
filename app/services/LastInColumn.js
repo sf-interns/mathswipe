@@ -6,22 +6,25 @@ GameGrid = require("../models/GameGrid");
 LastInColumn = (function() {
   function LastInColumn() {}
 
-  LastInColumn.prototype.isLastAndBlocking = function(grid) {
-    var col, colCount, count, i, index, j, k, ref, ref1, ref2, row;
+  LastInColumn.prototype.isLastAndBlocking = function(grid, x, y) {
+    var col, colCount, count, i, j, len, ref, ref1, row;
+    if (x - 1 < 0 || x + 1 >= grid.dimension) {
+      return false;
+    }
     colCount = [];
-    for (col = i = 0, ref = grid.length - 1; 0 <= ref ? i <= ref : i >= ref; col = 0 <= ref ? ++i : --i) {
+    ref = [x - 1, x, x + 1];
+    for (i = 0, len = ref.length; i < len; i++) {
+      col = ref[i];
       count = 0;
-      for (row = j = 0, ref1 = grid.length - 1; 0 <= ref1 ? j <= ref1 : j >= ref1; row = 0 <= ref1 ? ++j : --j) {
+      for (row = j = 0, ref1 = grid.dimension; 0 <= ref1 ? j <= ref1 : j >= ref1; row = 0 <= ref1 ? ++j : --j) {
         if (grid[row][col] === null) {
           count += 1;
         }
       }
       colCount.push(count);
     }
-    for (index = k = 1, ref2 = colCount.length - 2; 1 <= ref2 ? k <= ref2 : k >= ref2; index = 1 <= ref2 ? ++k : --k) {
-      if (colCount[index] === 1 && colCount[index - 1] > 0 && colCount[index + 1] > 0) {
-        return true;
-      }
+    if (colCount[1] === 1 && colCount[0] > 0 && colCount[2] > 0) {
+      return true;
     }
     return false;
   };

@@ -30,12 +30,19 @@ class DFS
 
   search: (seed, input) =>
     return true if input.length is 0
-    toVisit = @shuffle ((new AdjacentCellsCalculator( @grid, null, seed.x, seed.y)).calculate())
-    curr = toVisit.pop()
+    toVisit = (new AdjacentCellsCalculator( @grid, null, seed.x, seed.y)).calculate()
+    toVisit = @shuffle toVisit
+    console.log "seed = ", seed
+    for each in toVisit
+      console.log "toVisit = ", each
+    curr = toVisit.shift()
+    console.log "curr = ", curr
     checker = (new LastInColumn).isLastAndBlocking @grid.grid
     return false if checker or toVisit.length is 0
     while curr != undefined
-      @grid.grid[curr.x][curr.y] = input[0]
+      @grid.set curr.x, curr.y, input[0]
+      for each in @grid.grid
+        console.log each
       solution = @search curr, input.slice(1, input.length)
       if solution
         return true

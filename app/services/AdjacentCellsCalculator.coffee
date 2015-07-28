@@ -8,10 +8,13 @@ class AdjacentCellsCalculator
 
   # Gets the adjacent cells
   calculate: () =>
-    for i in [@y - 1, @y, @y + 1]
-      for j in [@x - 1, @x, @x + 1]
-        continue if i is @y and j is @x
-        @cells.push @validLocation @grid, j, i
+    console.log "@grid in adj is "
+    for each in @grid.grid
+      console.log each
+    for i in [@x - 1, @x, @x + 1]
+      for j in [@y - 1, @y, @y + 1]
+        continue if i is @x and j is @y
+        @cells.push @validLocation @grid, i, j
     @cells.set
 
   # returns a valid location if it exists, otherwise null

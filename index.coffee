@@ -15,7 +15,7 @@ testGrid.search seed, "1+2"
 console.log @grid.grid[0]
 console.log @grid.grid[1]
 console.log @grid.grid[2]
-testGrid.search seed, "3-4"
-console.log @grid.grid[0]
-console.log @grid.grid[1]
-console.log @grid.grid[2]
+# testGrid.search seed, "3-4"
+# console.log @grid.grid[0]
+# console.log @grid.grid[1]
+# console.log @grid.grid[2]
