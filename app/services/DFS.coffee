@@ -1,6 +1,6 @@
-AdjacentCellsCalculator = require ("./AdjacentCellsCalculator")
-GameGrid                = require ("../models/GameGrid")
-LastInColumn            = require ("./LastInColumn")
+AdjacentCellsCalculator = require "./AdjacentCellsCalculator"
+GameGrid                = require "../models/GameGrid"
+LastInColumn            = require "./LastInColumn"
 Tuple                   = require "../models/Tuple"
 TupleSet                = require "../models/TupleSet"
 

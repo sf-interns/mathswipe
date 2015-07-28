@@ -1,18 +1,19 @@
 class InputSolver
-  @parseInput = (input) ->
+
+  @parseInput: (input) ->
     numberRegex = /([0-9]+|[\+\-\*])/g
     numbers = input.match numberRegex
 
-  @isOperator = (element) ->
+  @isOperator: (element) ->
     return element is "+" or element is "-" or element is "*"
 
-  @operation = (sum, element, op) ->
+  @operation: (sum, element, op) ->
     if op is '+' then return sum + parseInt element
     if op is '-' then return sum - parseInt element
     if op is '*' then return sum * parseInt element
     return sum
 
-  @compute = (input) ->
+  @compute: (input) ->
     terms = @parseInput input
     previous = terms[0]
     sum = parseInt terms[0]

@@ -1,4 +1,4 @@
-GameGrid = require ("../models/GameGrid")
+GameGrid = require "../models/GameGrid"
 
 class LastInColumn
 
