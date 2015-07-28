@@ -1,5 +1,5 @@
-GameGrid                = require ("../models/GameGrid")
 AdjacentCellsCalculator = require ("./AdjacentCellsCalculator")
+GameGrid                = require ("../models/GameGrid")
 LastInColumn            = require ("./LastInColumn")
 
 class DFS

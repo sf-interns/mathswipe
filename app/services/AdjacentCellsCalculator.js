@@ -28,7 +28,7 @@ AdjacentCellsCalculator = (function() {
         if (i === this.y && j === this.x) {
           continue;
         }
-        this.cells.push(this.validLocation(this.grid, i, j));
+        this.cells.push(this.validLocation(this.grid, j, i));
       }
     }
     return this.cells.set;

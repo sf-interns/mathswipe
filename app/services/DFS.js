@@ -2,9 +2,9 @@
 var AdjacentCellsCalculator, DFS, GameGrid, LastInColumn,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-GameGrid = require("../models/GameGrid");
-
 AdjacentCellsCalculator = require("./AdjacentCellsCalculator");
+
+GameGrid = require("../models/GameGrid");
 
 LastInColumn = require("./LastInColumn");
 

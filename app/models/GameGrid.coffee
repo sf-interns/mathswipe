@@ -14,7 +14,7 @@ class GameGrid
     true
 
   validIndices: (x,y) =>
-    return x < @dimension and x >= 0 and y < @dimension and y >= 0  
+    return x < @dimension and x >= 0 and y < @dimension and y >= 0
 
   at: (x,y) =>
     return false unless @validIndices x, y
