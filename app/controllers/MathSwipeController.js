@@ -16,11 +16,11 @@ $ = require('jQuery');
 
 MathSwipeController = (function() {
   function MathSwipeController() {
+    this.testInputSolver = bind(this.testInputSolver, this);
     this.testCellDelete = bind(this.testCellDelete, this);
     this.testExpGen = bind(this.testExpGen, this);
     this.tests = bind(this.tests, this);
     var gridModel, symbols, two;
-    console.log(InputSolver.compute("1+2*3"));
     gridModel = new GameGrid(4);
     two = this.createTwo();
     symbols = this.getSymbols(two);
@@ -52,7 +52,8 @@ MathSwipeController = (function() {
 
   MathSwipeController.prototype.tests = function() {
     this.testExpGen();
-    return this.testCellDelete();
+    this.testCellDelete();
+    return this.testInputSolver();
   };
 
   MathSwipeController.prototype.testExpGen = function() {
@@ -69,6 +70,10 @@ MathSwipeController = (function() {
     var solution;
     solution = [new Tuple(1, 1), new Tuple(2, 2), new Tuple(3, 3)];
     return this.board.deleteCells(solution);
+  };
+
+  MathSwipeController.prototype.testInputSolver = function() {
+    return console.log(InputSolver.compute("1+2*3"));
   };
 
   return MathSwipeController;

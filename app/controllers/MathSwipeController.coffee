@@ -8,7 +8,6 @@ $                   = require 'jQuery'
 class MathSwipeController 
 
   constructor: ->
-    console.log InputSolver.compute("1+2*3")
     gridModel = new GameGrid(4)
 
     two = @createTwo()
@@ -42,6 +41,7 @@ class MathSwipeController
   tests: =>
     @testExpGen()
     @testCellDelete()
+    @testInputSolver()
 
   testExpGen: =>
     for length in [1..30]
@@ -51,5 +51,8 @@ class MathSwipeController
   testCellDelete: =>
     solution = [(new Tuple 1, 1), (new Tuple 2, 2), (new Tuple 3, 3)]
     @board.deleteCells solution
+
+  testInputSolver: =>
+    console.log InputSolver.compute("1+2*3")
 
 module.exports = MathSwipeController
