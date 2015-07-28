@@ -18,20 +18,13 @@ AdjacentCellsCalculator = (function() {
   }
 
   AdjacentCellsCalculator.prototype.calculate = function(takenCells) {
-    var each, i, j, k, l, len, len1, len2, m, ref, ref1, ref2;
-    console.log("takenCells = ", takenCells);
-    console.log("@grid in adj is ");
-    ref = this.grid.grid;
+    var i, j, k, l, len, len1, ref, ref1;
+    ref = [this.x - 1, this.x, this.x + 1];
     for (k = 0, len = ref.length; k < len; k++) {
-      each = ref[k];
-      console.log(each);
-    }
-    ref1 = [this.x - 1, this.x, this.x + 1];
-    for (l = 0, len1 = ref1.length; l < len1; l++) {
-      i = ref1[l];
-      ref2 = [this.y - 1, this.y, this.y + 1];
-      for (m = 0, len2 = ref2.length; m < len2; m++) {
-        j = ref2[m];
+      i = ref[k];
+      ref1 = [this.y - 1, this.y, this.y + 1];
+      for (l = 0, len1 = ref1.length; l < len1; l++) {
+        j = ref1[l];
         if (i === this.x && j === this.y) {
           continue;
         }
@@ -44,11 +37,9 @@ AdjacentCellsCalculator = (function() {
   AdjacentCellsCalculator.prototype.validLocation = function(grid, x, y, takenCells) {
     var cell, k, len;
     while (grid.validIndices(x, y)) {
-      console.log("x = " + x + ", y = " + y);
       for (k = 0, len = takenCells.length; k < len; k++) {
         cell = takenCells[k];
         if (x === cell.x && y < cell.y) {
-          console.log(cell);
           return null;
         }
       }

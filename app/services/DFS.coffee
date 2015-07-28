@@ -31,26 +31,15 @@ class DFS
     array
 
   search: (seed, input, takenCells) =>
-    for each in takenCells.list
-      console.log "takenCells.list = ", each
     return true if input.length is 0
     toVisit = (new AdjacentCellsCalculator( @grid, null, seed.x, seed.y)).calculate(takenCells.list)
     toVisit = @shuffle toVisit
-    # console.log "seed = ", seed
-    for each in toVisit
-      console.log "toVisit = ", each
     return false if toVisit.length is 0
     curr = toVisit.shift()
-    # console.log "curr = ", curr
-
-    checker = (new LastInColumn).isLastAndBlocking @grid.grid, curr.x, curr.y
-    return false if checker
+    return false if (new LastInColumn).isLastAndBlocking @grid.grid, curr.x, curr.y
     while curr != undefined
       @grid.set curr.x, curr.y, input[0]
       takenCells.push new Tuple curr.x, curr.y
-      # console.log "takenCells = ", takenCells
-      # for each in @grid.grid
-      #   console.log each
       solution = @search curr, input.slice(1, input.length), takenCells
       if solution
         return true

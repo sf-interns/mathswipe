@@ -50,27 +50,17 @@ DFS = (function() {
   };
 
   DFS.prototype.search = function(seed, input, takenCells) {
-    var checker, curr, each, j, k, len, len1, ref, solution, toVisit;
-    ref = takenCells.list;
-    for (j = 0, len = ref.length; j < len; j++) {
-      each = ref[j];
-      console.log("takenCells.list = ", each);
-    }
+    var curr, solution, toVisit;
     if (input.length === 0) {
       return true;
     }
     toVisit = (new AdjacentCellsCalculator(this.grid, null, seed.x, seed.y)).calculate(takenCells.list);
     toVisit = this.shuffle(toVisit);
-    for (k = 0, len1 = toVisit.length; k < len1; k++) {
-      each = toVisit[k];
-      console.log("toVisit = ", each);
-    }
     if (toVisit.length === 0) {
       return false;
     }
     curr = toVisit.shift();
-    checker = (new LastInColumn).isLastAndBlocking(this.grid.grid, curr.x, curr.y);
-    if (checker) {
+    if ((new LastInColumn).isLastAndBlocking(this.grid.grid, curr.x, curr.y)) {
       return false;
     }
     while (curr !== void 0) {
