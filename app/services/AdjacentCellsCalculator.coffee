@@ -12,7 +12,7 @@ class AdjacentCellsCalculator
       for j in [@y - 1, @y, @y + 1]
         unless @occupied(i, j, takenCells) or (i is @x and j is @y)
           tuple = @validLocation @grid, i, j
-          @cells.push tuple
+          @cells.push tuple unless tuple is null
     @cells.list
 
   # returns a valid location if it exists, otherwise null
