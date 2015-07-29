@@ -44,12 +44,12 @@ DFS = (function() {
   };
 
   DFS.search = function(seed, input, takenCells) {
-    var curr, solution, toVisit;
+    var calculator, curr, solution, toVisit;
     if (input.length === 0) {
       return true;
     }
-    toVisit = new this.AdjacentCells(this.grid, null, seed.x, seed.y);
-    toVisit = this.shuffle(toVisit.calculate(takenCells.list));
+    calculator = new this.AdjacentCells(this.grid, null, seed.x, seed.y);
+    toVisit = this.shuffle(calculator.calculate(takenCells.list));
     if (toVisit.length === 0) {
       return false;
     }

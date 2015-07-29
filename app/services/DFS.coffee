@@ -4,8 +4,7 @@ TupleSet = require '../models/TupleSet'
 class DFS
 
   @isValidSeed: (x, y) ->
-    if x - 1 < 0 or x + 1 >= @grid.dimension
-      return false
+    return false if x - 1 < 0 or x + 1 >= @grid.dimension
     colCount = []
     for col in [x - 1, x, x + 1]
       count = 0
@@ -13,8 +12,7 @@ class DFS
         if @grid.grid[row][col] is ' '
           count += 1
       colCount.push count
-    if colCount[1] is 1 and colCount[0] > 0 and colCount[2] > 0
-      return true
+    return true if colCount[1] is 1 and colCount[0] > 0 and colCount[2] > 0
     false
 
   @shuffle: (array) ->
@@ -30,8 +28,8 @@ class DFS
   @search: (seed, input, takenCells) ->
     return true if input.length is 0
 
-    toVisit = new @AdjacentCells @grid, null, seed.x, seed.y
-    toVisit = @shuffle toVisit.calculate takenCells.list
+    calculator = new @AdjacentCells @grid, null, seed.x, seed.y
+    toVisit = @shuffle calculator.calculate takenCells.list
     return false if toVisit.length is 0
     curr = toVisit.pop()
     return false if @isValidSeed curr.x, curr.y
