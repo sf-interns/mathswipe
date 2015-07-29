@@ -1,21 +1,27 @@
-AdjacentCellsCalculator = require "./AdjacentCellsCalculator"
-GameGrid                = require "../models/GameGrid"
-LastInColumn            = require "./LastInColumn"
-Tuple                   = require "../models/Tuple"
-TupleSet                = require "../models/TupleSet"
+Tuple    = require "../models/Tuple"
+TupleSet = require "../models/TupleSet"
 
 class DFS
+
+  @isValidSeed: (x, y) ->
+    if x - 1 < 0 or x + 1 >= @grid.dimension
+      return false
+    colCount = []
+    for col in [x - 1, x, x + 1]
+      count = 0
+      for row in [0...@grid.dimension]
+        if @grid.grid[row][col] is " "
+          count += 1
+      colCount.push count
+    if colCount[1] is 1 and colCount[0] > 0 and colCount[2] > 0
+      return true
+    false
 
   @shuffle: (array) ->
     # Fisher-Yates shuffle
     m = array.length
-    t = undefined
-    i = undefined
-    # While there remain elements to shuffle…
     while m
-      # Pick a remaining element…
       i = Math.floor(Math.random() * m--)
-      # And swap it with the current element.
       t = array[m]
       array[m] = array[i]
       array[i] = t
@@ -24,11 +30,11 @@ class DFS
   @search: (seed, input, takenCells) ->
     return true if input.length is 0
 
-    toVisit = (new AdjacentCellsCalculator(@grid, null, seed.x, seed.y))
-    toVisit = @shuffle toVisit.calculate(takenCells.list)
+    toVisit = new @AdjacentCells @grid, null, seed.x, seed.y
+    toVisit = @shuffle toVisit.calculate takenCells.list
     return false if toVisit.length is 0
-    curr = toVisit.shift()
-    return false if (new LastInColumn).isLastAndBlocking @grid.grid, curr.x, curr.y
+    curr = toVisit.pop()
+    return false if @isValidSeed curr.x, curr.y
 
     while curr != undefined
       @grid.set curr.x, curr.y, input[0]
@@ -42,7 +48,7 @@ class DFS
         curr = toVisit.pop()
     false
 
-  @initializeBoard: (allCells, inputList) ->
+  @initializeGrid: (allCells, inputList) ->
     for i in [0...inputList.length]
       takenCells = new TupleSet
       input = inputList[i]
@@ -56,14 +62,14 @@ class DFS
       return false
     true
 
-  @generateBoard: (@grid, inputList) ->
+  @setEquationsOnGrid: (@grid, inputList, @AdjacentCells) ->
     allCells = []
     for i in [0...@grid.dimension]
       for j in [0...@grid.dimension]
         allCells.push new Tuple i, j
 
     for i in [0...1000]
-      break if @initializeBoard allCells, inputList
+      break if @initializeGrid allCells, inputList
       for row in [0...@grid.dimension]
         for col in [0...@grid.dimension]
           @grid.set row, col, " "
