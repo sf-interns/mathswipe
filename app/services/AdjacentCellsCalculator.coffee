@@ -10,9 +10,9 @@ class AdjacentCellsCalculator
   getToVisit: (takenCells) =>
     for i in [@x - 1, @x, @x + 1]
       for j in [@y - 1, @y, @y + 1]
-        continue if @blocked(i, j, takenCells) or (i is @x and j is @y)
-        tuple = @validLocation @grid, i, j
-        @cells.push tuple
+        unless @occupied(i, j, takenCells) or (i is @x and j is @y)
+          tuple = @validLocation @grid, i, j
+          @cells.push tuple
     @cells.list
 
   # returns a valid location if it exists, otherwise null
@@ -24,7 +24,7 @@ class AdjacentCellsCalculator
 
   empty: (grid,x,y) => (grid.at x, y) is ' '
 
-  blocked: (x, y, takenCells) =>
+  occupied: (x, y, takenCells) =>
     for cell in takenCells
       if x is cell.x and y is cell.y
         return true
