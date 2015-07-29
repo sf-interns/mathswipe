@@ -15,10 +15,10 @@ AdjacentCellsCalculator = (function() {
     this.blocked = bind(this.blocked, this);
     this.empty = bind(this.empty, this);
     this.validLocation = bind(this.validLocation, this);
-    this.calculate = bind(this.calculate, this);
+    this.getToVisit = bind(this.getToVisit, this);
   }
 
-  AdjacentCellsCalculator.prototype.calculate = function(takenCells) {
+  AdjacentCellsCalculator.prototype.getToVisit = function(takenCells) {
     var i, j, k, l, len, len1, ref, ref1, tuple;
     ref = [this.x - 1, this.x, this.x + 1];
     for (k = 0, len = ref.length; k < len; k++) {

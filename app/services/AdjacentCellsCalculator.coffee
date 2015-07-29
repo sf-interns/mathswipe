@@ -7,7 +7,7 @@ class AdjacentCellsCalculator
   constructor: (@grid, @cells=(new TupleSet), @x, @y) ->
 
   # Gets the adjacent cells
-  calculate: (takenCells) =>
+  getToVisit: (takenCells) =>
     for i in [@x - 1, @x, @x + 1]
       for j in [@y - 1, @y, @y + 1]
         continue if @blocked(i, j, takenCells) or (i is @x and j is @y)
@@ -22,8 +22,7 @@ class AdjacentCellsCalculator
       y--
     null
 
-  empty: (grid,x,y) =>
-    (grid.at x, y) is ' '
+  empty: (grid,x,y) => (grid.at x, y) is ' '
 
   blocked: (x, y, takenCells) =>
     for cell in takenCells

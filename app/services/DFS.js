@@ -44,12 +44,12 @@ DFS = (function() {
   };
 
   DFS.search = function(seed, input, takenCells) {
-    var calculator, curr, solution, toVisit;
+    var calculator, curr, hasSolution, toVisit;
     if (input.length === 0) {
       return true;
     }
     calculator = new this.AdjacentCells(this.grid, null, seed.x, seed.y);
-    toVisit = this.shuffle(calculator.calculate(takenCells.list));
+    toVisit = this.shuffle(calculator.getToVisit(takenCells.list));
     if (toVisit.length === 0) {
       return false;
     }
@@ -60,35 +60,27 @@ DFS = (function() {
     while (curr !== void 0) {
       this.grid.set(curr.x, curr.y, input[0]);
       takenCells.push(new Tuple(curr.x, curr.y));
-      solution = this.search(curr, input.slice(1, input.length), takenCells);
-      if (solution) {
+      hasSolution = this.search(curr, input.slice(1, input.length), takenCells);
+      if (hasSolution) {
         return true;
-      } else {
-        this.grid.set(curr.x, curr.y, ' ');
-        takenCells.pop();
-        curr = toVisit.pop();
       }
+      this.grid.set(curr.x, curr.y, ' ');
+      takenCells.pop();
+      curr = toVisit.pop();
     }
     return false;
   };
 
   DFS.initializeGrid = function(allCells, inputList) {
-    var hasFoundSolution, i, index, input, k, l, ref, seed, takenCells;
+    var i, index, k, l, ref, seed;
     for (i = k = 0, ref = inputList.length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
-      takenCells = new TupleSet;
-      input = inputList[i];
-      hasFoundSolution = false;
       for (index = l = 0; l < 20; index = ++l) {
         seed = allCells[Math.floor(Math.random() * allCells.length)];
-        if (this.search(seed, input, takenCells)) {
-          hasFoundSolution = true;
+        if (this.search(seed, inputList[i], new TupleSet)) {
           break;
         }
+        return false;
       }
-      if (hasFoundSolution) {
-        continue;
-      }
-      return false;
     }
     return true;
   };
