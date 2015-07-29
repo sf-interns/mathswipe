@@ -6,7 +6,7 @@ class GameGrid
     for i in [0...@dimension]
       @grid.push []
       for j in [0...@dimension]
-        @grid[i].push " "
+        @grid[i].push ' '
 
   set: (x, y, element) =>
     return false unless @validIndices x, y

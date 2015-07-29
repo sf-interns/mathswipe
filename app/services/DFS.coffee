@@ -1,5 +1,5 @@
-Tuple    = require "../models/Tuple"
-TupleSet = require "../models/TupleSet"
+Tuple    = require '../models/Tuple'
+TupleSet = require '../models/TupleSet'
 
 class DFS
 
@@ -10,7 +10,7 @@ class DFS
     for col in [x - 1, x, x + 1]
       count = 0
       for row in [0...@grid.dimension]
-        if @grid.grid[row][col] is " "
+        if @grid.grid[row][col] is ' '
           count += 1
       colCount.push count
     if colCount[1] is 1 and colCount[0] > 0 and colCount[2] > 0
@@ -43,7 +43,7 @@ class DFS
       if solution
         return true
       else
-        @grid.set curr.x, curr.y, " "
+        @grid.set curr.x, curr.y, ' '
         takenCells.pop()
         curr = toVisit.pop()
     false
@@ -72,7 +72,7 @@ class DFS
       break if @initializeGrid allCells, inputList
       for row in [0...@grid.dimension]
         for col in [0...@grid.dimension]
-          @grid.set row, col, " "
+          @grid.set row, col, ' '
     true
 
 module.exports = DFS

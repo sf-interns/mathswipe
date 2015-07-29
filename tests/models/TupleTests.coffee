@@ -1,5 +1,5 @@
-Tuple = require "#{app_path}/models/Tuple"
-GameGrid = require "#{app_path}/models/GameGrid"
+Tuple = require '#{app_path}/models/Tuple'
+GameGrid = require '#{app_path}/models/GameGrid'
 
 describe 'Tuple', ->
   tupAt = (x,y) -> new Tuple x, y

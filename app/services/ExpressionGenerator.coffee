@@ -8,14 +8,14 @@ class ExpressionGenerator
 
   @genRandomOperator: ->
     switch @randInclusive 0, 2
-      when 0 then "+"
-      when 1 then "-"
-      when 2 then "*"
-      else "?"
+      when 0 then '+'
+      when 1 then '-'
+      when 2 then '*'
+      else '?'
 
   @generate: (length) ->
     if length < 1
-      throw "Length cannot be less than 1"
+      throw 'Length cannot be less than 1'
     else if length is 1
       @genRandomDigit 1, 9
     else if length is 2

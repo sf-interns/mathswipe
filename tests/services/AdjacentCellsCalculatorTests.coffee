@@ -1,7 +1,7 @@
-AdjacentCellsCalculator = require "#{app_path}/services/AdjacentCellsCalculator"
+AdjacentCellsCalculator = require '#{app_path}/services/AdjacentCellsCalculator'
 
 describe 'AdjacentCellsCalculator', ->
-  
+
   describe '#constructor', ->
     before => sinon.stub AdjacentCellsCalculator.prototype, 'validLocation', ->
     after  => AdjacentCellsCalculator.prototype.validLocation.restore()
@@ -31,9 +31,9 @@ describe 'AdjacentCellsCalculator', ->
     grid         = {at: (()->) , set: (()->), validIndices: (()->) }
     gridMock     = null
 
-    # before => 
+    # before =>
     #   sinon.stub AdjacentCellsCalculator.prototype, 'checkAbove', -> 'checkAbove called'
-    # after  => 
+    # after  =>
     #   AdjacentCellsCalculator.prototype.checkAbove.restore()
 
     beforeEach =>  gridMock = sinon.mock(grid)
@@ -41,7 +41,7 @@ describe 'AdjacentCellsCalculator', ->
 
     it 'returns null if the vertices are invalid', =>
       gridMock.expects('validIndices').once().returns false
-      
+
       result = AdjacentCellsCalculator.prototype.validLocation grid, 1, 1
 
       (expect result).to.equal null
@@ -50,11 +50,11 @@ describe 'AdjacentCellsCalculator', ->
     describe 'the vertices are valid', =>
       emptyStub = null
 
-      beforeEach => 
+      beforeEach =>
         (gridMock.expects 'validIndices').atLeast(1).returns true
         emptyStub = sinon.stub AdjacentCellsCalculator.prototype, 'empty'
 
-      afterEach  => 
+      afterEach  =>
         gridMock.verify()
         emptyStub.restore()
 
@@ -73,6 +73,6 @@ describe 'AdjacentCellsCalculator', ->
         emptyStub.onCall(1).returns true
 
         result = AdjacentCellsCalculator.prototype.validLocation grid, 1, 2
-        
+
         (expect result.x).to.equal 1
         (expect result.y).to.equal 1

@@ -5,7 +5,7 @@ class InputSolver
     numbers = input.match numberRegex
 
   @isOperator: (element) ->
-    return element is "+" or element is "-" or element is "*"
+    return element is '+' or element is '-' or element is '*'
 
   @operation: (sum, element, op) ->
     if op is '+' then return sum + parseInt element
