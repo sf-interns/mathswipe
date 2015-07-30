@@ -47,10 +47,10 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.getSymbols = function(two) {
-    var i, j, len, s, svgs, symbols;
+    var i, k, len, s, svgs, symbols;
     svgs = $('#assets svg');
     symbols = [];
-    for (i = j = 0, len = svgs.length; j < len; i = ++j) {
+    for (i = k = 0, len = svgs.length; k < len; i = ++k) {
       s = svgs[i];
       symbols.push(two.interpret(s));
       symbols[i].visible = false;
@@ -67,9 +67,9 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testExpGen = function() {
-    var expression, j, length, results;
+    var expression, k, length, results;
     results = [];
-    for (length = j = 1; j <= 30; length = ++j) {
+    for (length = k = 1; k <= 30; length = ++k) {
       expression = ExpressionGenerator.generate(length);
       results.push(console.log(length, expression, InputSolver.compute(expression)));
     }
@@ -87,16 +87,20 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testDFS = function() {
-    var each, inputList, j, len, ref, results;
+    var each, inputList, j, k, l, len, len1, line, ref, results;
     inputList = ["1111111", "2222222", "3333333", "4444444", "5555555", "6666666", "7777777"];
-    this.grid = new GameGrid(7);
     DFS.setEquationsOnGrid(this.grid, inputList, AdjacentCellsCalculator);
     console.log('\n');
     ref = this.grid.grid;
     results = [];
-    for (j = 0, len = ref.length; j < len; j++) {
-      each = ref[j];
-      results.push(console.log(each));
+    for (k = 0, len = ref.length; k < len; k++) {
+      each = ref[k];
+      line = '';
+      for (l = 0, len1 = each.length; l < len1; l++) {
+        j = each[l];
+        line += j.value + '\t';
+      }
+      results.push(console.log(line));
     }
     return results;
   };

@@ -63,10 +63,12 @@ class MathSwipeController
              "3333333", "4444444",
              "5555555", "6666666",
              "7777777" ]
-    @grid = new GameGrid(7)
     DFS.setEquationsOnGrid @grid, inputList, AdjacentCellsCalculator
     console.log '\n'
     for each in @grid.grid
-      console.log each
+      line = ''
+      for j in each
+        line += j.value + '\t'
+      console.log line
 
 module.exports = MathSwipeController
