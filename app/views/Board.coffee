@@ -1,8 +1,6 @@
-Cell = require './Cell'
-
 class Board
 
-  constructor: (@grid, @two) ->
+  constructor: (@grid, @two, @Cell) ->
 
     @size = @two.height * .80
     offset = @size * .025
@@ -13,33 +11,31 @@ class Board
     @y = if @y < @size / 2 then @size / 2 else @y
 
     board = @two.makeRectangle @x, @y, @size, @size
-    board.noStroke().fill =  '#c2d1e6' #'#B0C4DE' #'#F0F8FF' #'#CDE1FF'
+    board.noStroke().fill =  '#c2d1e6'
     board.visible = true
 
     @change = offset + width
-
     cellWidth = ((@size - offset ) / @grid.dimension ) - offset
-
     @createEmptyCells cellWidth - 5
-
     @createCells cellWidth
+    @two.update()
 
-  createEmptyCells: (width) ->
-    @cells = []
+  createEmptyCells: (width) =>
+    @empty_cells = []
     for row in [0...@grid.dimension]
-      @cells.push []
+      @empty_cells.push []
       for col in [0...@grid.dimension]
-        cell = new Cell col, row, width, @two, @
+        cell = new @Cell col, row, width, @two, this
         cell.setColor '#b7c9e1'
         cell.setBorder '#b7c9e1'
-        @cells[row].push cell
+        @empty_cells[row].push cell
 
   createCells: (width) ->
     @cells = []
     for row in [0...@grid.dimension]
       @cells.push []
       for col in [0...@grid.dimension]
-        cell = new Cell col, row, width, @two, @
+        cell = new @Cell col, row, width, @two, this
         @cells[row].push cell
 
   deleteCells: (solution) ->

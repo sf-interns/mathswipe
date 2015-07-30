@@ -3,7 +3,8 @@ GameGrid            = require '../models/GameGrid'
 ExpressionGenerator = require '../services/ExpressionGenerator'
 Board               = require '../views/Board'
 Tuple               = require '../models/Tuple'
-$                   = require 'jQuery'
+Cell                = require '../views/Cell'
+$                   = require 'jquery'
 
 class MathSwipeController 
 
@@ -12,8 +13,7 @@ class MathSwipeController
 
     two = @createTwo()
     symbols = @getSymbols two
-    @board = new Board gridModel, two
-    two.update()
+    @board = new Board gridModel, two, Cell
 
     @tests()
 
@@ -21,12 +21,10 @@ class MathSwipeController
     two = new Two(
       fullscreen: true
       autostart: true
-      # width: 700
-      # height: 700
     ).appendTo(document.getElementById('game'));
     return two
 
-  getSymbols: (two)->
+  getSymbols: (two) ->
     # note symbols 0-9 are numbers 0-9.
     # 10 -> &times
     # 11 -> +
@@ -36,6 +34,7 @@ class MathSwipeController
     for s,i in svgs
       symbols.push (two.interpret s)
       symbols[i].visible = false
+    two.update()
     symbols
 
   tests: =>
@@ -49,7 +48,7 @@ class MathSwipeController
       console.log length, expression, InputSolver.compute expression
 
   testCellDelete: =>
-    solution = [(new Tuple 1, 1), (new Tuple 2, 2), (new Tuple 3, 3)]
+    solution = [(new Tuple 0, 0), (new Tuple 1, 1), (new Tuple 2, 2)]
     @board.deleteCells solution
 
   testInputSolver: =>
