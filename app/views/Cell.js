@@ -9,8 +9,11 @@ Cell = (function() {
     this.size = size;
     this.two = two;
     this.board = board;
+    this["delete"] = bind(this["delete"], this);
     this.shiftTo = bind(this.shiftTo, this);
+    this.getY = bind(this.getY, this);
     this.getX = bind(this.getX, this);
+    this.hide = bind(this.hide, this);
     this.setBorder = bind(this.setBorder, this);
     this.setColor = bind(this.setColor, this);
     this.isDeleted = false;
@@ -31,7 +34,8 @@ Cell = (function() {
   };
 
   Cell.prototype.hide = function() {
-    return this.rect.opacity = 0;
+    this.rect.opacity = 0;
+    return this.two.update();
   };
 
   Cell.prototype.getX = function(col) {

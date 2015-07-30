@@ -56,7 +56,7 @@ class MathSwipeController
     @board.deleteCells solution
 
   testInputSolver: =>
-    console.log InputSolver.compute("1+2*3")
+    console.log InputSolver.compute('1+2*3')
 
   testDFS: =>
     inputList = ['111', '222', '333' ]

@@ -83,7 +83,7 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testInputSolver = function() {
-    return console.log(InputSolver.compute("1+2*3"));
+    return console.log(InputSolver.compute('1+2*3'));
   };
 
   MathSwipeController.prototype.testDFS = function() {

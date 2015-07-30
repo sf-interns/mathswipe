@@ -15,23 +15,24 @@ class Cell
     @rect.linewidth = 6
     @two.update()
 
-  hide: ->
+  hide: =>
     @rect.opacity = 0
+    @two.update()
 
-  getX: (col=@col) =>
+  getX: (col = @col) =>
     @board.x - (@board.size + @size) / 2 + (col + 1) * @board.change
 
-  getY: (row=@row)->
+  getY: (row = @row) =>
     @board.y - (@board.size + @size) / 2 + (row + 1) * @board.change
 
   shiftTo: (row, col) =>
-    end = new Two.Vector(@getX(col), @getY(row))
-    start = new Two.Vector(@getX(), @getY())
+    end = new Two.Vector @getX(col), @getY(row)
+    start = new Two.Vector @getX(), @getY() 
 
     @two.bind('update', (frameCount) =>
       dist = start.distanceTo end
       
-      if (dist < 1) 
+      if dist < 1
         @rect.translation.set (@getX col), (@getY row)
         @two.unbind 'update'
 
@@ -40,7 +41,7 @@ class Cell
       start = start.addSelf delta
     ).play()
 
-  delete: ->
+  delete: =>
     @hide()
     @isDeleted = true
 
