@@ -9,18 +9,18 @@ Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
 $                       = require 'jquery'
 
-class MathSwipeController 
+class MathSwipeController
 
   constructor: ->
-    gridModel = new GameGrid(3)
+    @gridModel = new GameGrid(3)
 
     two = @createTwo()
     symbols = @getSymbols two
-    @board = new Board gridModel, two, Cell, Colors
+    @board = new Board @gridModel, two, Cell, Colors
 
     @tests()
 
-  createTwo: -> 
+  createTwo: ->
     two = new Two(
       fullscreen: true
       autostart: true
@@ -59,13 +59,10 @@ class MathSwipeController
     console.log InputSolver.compute("1+2*3")
 
   testDFS: =>
-    inputList = ["1111111", "2222222",
-             "3333333", "4444444",
-             "5555555", "6666666",
-             "7777777" ]
-    DFS.setEquationsOnGrid @grid, inputList, AdjacentCellsCalculator
+    inputList = ['111', '222', '333' ]
+    DFS.setEquationsOnGrid @gridModel, inputList, AdjacentCellsCalculator
     console.log '\n'
-    for each in @grid.grid
+    for each in @gridModel.grid
       line = ''
       for j in each
         line += j.value + '\t'
