@@ -8,36 +8,41 @@ TupleSet = require('../models/TupleSet');
 DFS = (function() {
   function DFS() {}
 
-  DFS.isValidSeed = function(x, y) {
-    var col, emptyInCol, k, l, len, numEmpty, ref, ref1, row;
-    if (x - 1 < 0 || x + 1 >= this.grid.dimension) {
-      return false;
+  DFS.setEquationsOnGrid = function(grid, inputList, AdjacentCells) {
+    var allCells, col, i, j, k, l, n, o, p, ref, ref1, ref2, ref3, row;
+    this.grid = grid;
+    this.AdjacentCells = AdjacentCells;
+    allCells = [];
+    for (i = k = 0, ref = this.grid.dimension; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+      for (j = l = 0, ref1 = this.grid.dimension; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
+        allCells.push(new Tuple(i, j));
+      }
     }
-    emptyInCol = [];
-    ref = [x - 1, x, x + 1];
-    for (k = 0, len = ref.length; k < len; k++) {
-      col = ref[k];
-      numEmpty = 0;
-      for (row = l = 0, ref1 = this.grid.dimension; 0 <= ref1 ? l < ref1 : l > ref1; row = 0 <= ref1 ? ++l : --l) {
-        if (this.grid.grid[row][col] === ' ') {
-          numEmpty += 1;
+    for (i = n = 0; n < 10000; i = ++n) {
+      if (this.hasInitializeGrid(allCells, inputList)) {
+        break;
+      }
+      for (row = o = 0, ref2 = this.grid.dimension; 0 <= ref2 ? o < ref2 : o > ref2; row = 0 <= ref2 ? ++o : --o) {
+        for (col = p = 0, ref3 = this.grid.dimension; 0 <= ref3 ? p < ref3 : p > ref3; col = 0 <= ref3 ? ++p : --p) {
+          this.grid.set(row, col, ' ');
         }
       }
-      emptyInCol.push(numEmpty);
     }
-    return emptyInCol[0] > 0 && emptyInCol[1] === 1 && emptyInCol[2] > 0;
+    return true;
   };
 
-  DFS.shuffle = function(array) {
-    var i, m, t;
-    m = array.length;
-    while (m) {
-      i = Math.floor(Math.random() * m--);
-      t = array[m];
-      array[m] = array[i];
-      array[i] = t;
+  DFS.hasInitializeGrid = function(allCells, inputList) {
+    var i, index, k, l, ref, seed;
+    for (i = k = 0, ref = inputList.length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+      for (index = l = 0; l < 20; index = ++l) {
+        seed = allCells[Math.floor(Math.random() * allCells.length)];
+        if (this.search(seed, inputList[i], new TupleSet)) {
+          break;
+        }
+        return false;
+      }
     }
-    return array;
+    return true;
   };
 
   DFS.search = function(seed, input, takenCells) {
@@ -45,7 +50,7 @@ DFS = (function() {
     if (input.length === 0) {
       return true;
     }
-    calculator = new this.AdjacentCells(this.grid, null, seed.x, seed.y);
+    calculator = new this.AdjacentCells(this.grid, seed.x, seed.y);
     toVisit = this.shuffle(calculator.getToVisit(takenCells.list));
     if (toVisit.length === 0) {
       return false;
@@ -68,41 +73,36 @@ DFS = (function() {
     return false;
   };
 
-  DFS.initializeGrid = function(allCells, inputList) {
-    var i, index, k, l, ref, seed;
-    for (i = k = 0, ref = inputList.length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
-      for (index = l = 0; l < 20; index = ++l) {
-        seed = allCells[Math.floor(Math.random() * allCells.length)];
-        if (this.search(seed, inputList[i], new TupleSet)) {
-          break;
-        }
-        return false;
-      }
+  DFS.isValidSeed = function(x, y) {
+    var col, emptyInCol, k, l, len, numEmpty, ref, ref1, row;
+    if (x - 1 < 0 || x + 1 >= this.grid.dimension) {
+      return false;
     }
-    return true;
+    emptyInCol = [];
+    ref = [x - 1, x, x + 1];
+    for (k = 0, len = ref.length; k < len; k++) {
+      col = ref[k];
+      numEmpty = 0;
+      for (row = l = 0, ref1 = this.grid.dimension; 0 <= ref1 ? l < ref1 : l > ref1; row = 0 <= ref1 ? ++l : --l) {
+        if (this.grid.isEmpty(col, row)) {
+          numEmpty += 1;
+        }
+      }
+      emptyInCol.push(numEmpty);
+    }
+    return emptyInCol[0] > 0 && emptyInCol[1] === 1 && emptyInCol[2] > 0;
   };
 
-  DFS.setEquationsOnGrid = function(grid, inputList, AdjacentCells) {
-    var allCells, col, i, j, k, l, n, o, p, ref, ref1, ref2, ref3, row;
-    this.grid = grid;
-    this.AdjacentCells = AdjacentCells;
-    allCells = [];
-    for (i = k = 0, ref = this.grid.dimension; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
-      for (j = l = 0, ref1 = this.grid.dimension; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
-        allCells.push(new Tuple(i, j));
-      }
+  DFS.shuffle = function(array) {
+    var i, m, t;
+    m = array.length;
+    while (m) {
+      i = Math.floor(Math.random() * m--);
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
     }
-    for (i = n = 0; n < 1000; i = ++n) {
-      if (this.initializeGrid(allCells, inputList)) {
-        break;
-      }
-      for (row = o = 0, ref2 = this.grid.dimension; 0 <= ref2 ? o < ref2 : o > ref2; row = 0 <= ref2 ? ++o : --o) {
-        for (col = p = 0, ref3 = this.grid.dimension; 0 <= ref3 ? p < ref3 : p > ref3; col = 0 <= ref3 ? ++p : --p) {
-          this.grid.set(row, col, ' ');
-        }
-      }
-    }
-    return true;
+    return array;
   };
 
   return DFS;

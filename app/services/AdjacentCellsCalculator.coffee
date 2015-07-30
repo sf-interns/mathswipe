@@ -4,13 +4,13 @@ TupleSet = require '../models/TupleSet'
 class AdjacentCellsCalculator
 
   # Param grid is a GameGrid
-  constructor: (@grid, @cells=(new TupleSet), @x, @y) ->
+  constructor: (@grid, @x, @y) -> @cells = new TupleSet
 
-  # Gets the adjacent cells
+  # Gets valid placements in grid
   getToVisit: (takenCells) =>
     for i in [@x - 1, @x, @x + 1]
       for j in [@y - 1, @y, @y + 1]
-        unless @occupied(i, j, takenCells) or (i is @x and j is @y)
+        unless @isOccupied(i, j, takenCells) or (i is @x and j is @y)
           tuple = @validLocation @grid, i, j
           @cells.push tuple unless tuple is null
     @cells.list
@@ -18,16 +18,13 @@ class AdjacentCellsCalculator
   # returns a valid location if it exists, otherwise null
   validLocation: (grid, x, y) =>
     while grid.validIndices x, y
-      return new Tuple x, y if (@empty grid, x, y)
+      return (new Tuple x, y) if (@grid.isEmpty x, y)
       y--
     null
 
-  empty: (grid,x,y) => (grid.at x, y) is ' '
-
-  occupied: (x, y, takenCells) =>
+  isOccupied: (x, y, takenCells) =>
     for cell in takenCells
-      if x is cell.x and y is cell.y
-        return true
+      return true if x is cell.x and y is cell.y
     false
 
 module.exports = AdjacentCellsCalculator

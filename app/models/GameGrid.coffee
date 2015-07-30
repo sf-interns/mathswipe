@@ -20,4 +20,6 @@ class GameGrid
     return null unless @validIndices x, y
     @grid[y][x]
 
+  isEmpty: (x, y) => return @grid[y][x] is ' '
+
 module.exports = GameGrid
