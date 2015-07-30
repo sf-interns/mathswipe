@@ -1,0 +1,28 @@
+.game-background {
+  background: linear-gradient(#B9B9B9,#E5E5E5)
+}
+
+.title-image {
+  display: block;
+  margin: auto;
+  padding-top: 35px;
+}
+
+.button-background {
+  background-color: Transparent;
+  border-style: solid;
+  border-color: darkgray;
+  border-radius: 100px;
+}
+
+.left-column {
+  margin-top: 3%;
+  margin-left: 10%;
+  float: left;
+}
+
+.right-column {
+  float: right;
+  margin-top: 3%;
+  margin-right: 10%;
+}
