@@ -11,7 +11,7 @@ InputSolver = (function() {
   };
 
   InputSolver.isOperator = function(element) {
-    return element === "+" || element === "-" || element === "*";
+    return element === '+' || element === '-' || element === '*';
   };
 
   InputSolver.operation = function(sum, element, op) {

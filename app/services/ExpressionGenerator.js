@@ -15,20 +15,20 @@ ExpressionGenerator = (function() {
   ExpressionGenerator.genRandomOperator = function() {
     switch (this.randInclusive(0, 2)) {
       case 0:
-        return "+";
+        return '+';
       case 1:
-        return "-";
+        return '-';
       case 2:
-        return "*";
+        return '*';
       default:
-        return "?";
+        return '?';
     }
   };
 
   ExpressionGenerator.generate = function(length) {
     var opIndex;
     if (length < 1) {
-      throw "Length cannot be less than 1";
+      throw 'Length cannot be less than 1';
     } else if (length === 1) {
       return this.genRandomDigit(1, 9);
     } else if (length === 2) {

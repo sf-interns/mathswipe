@@ -1,11 +1,13 @@
-InputSolver         = require '../services/InputSolver'
-GameGrid            = require '../models/GameGrid'
-ExpressionGenerator = require '../services/ExpressionGenerator'
-Board               = require '../views/Board'
-Tuple               = require '../models/Tuple'
-Cell                = require '../views/Cell'
-Colors              = require '../views/Colors'
-$                   = require 'jquery'
+InputSolver             = require '../services/InputSolver'
+DFS                     = require '../services/DFS'
+ExpressionGenerator     = require '../services/ExpressionGenerator'
+AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
+Tuple                   = require '../models/Tuple'
+GameGrid                = require '../models/GameGrid'
+Board                   = require '../views/Board'
+Cell                    = require '../views/Cell'
+Colors                  = require '../views/Colors'
+$                       = require 'jquery'
 
 class MathSwipeController 
 
@@ -42,6 +44,7 @@ class MathSwipeController
     @testExpGen()
     @testCellDelete()
     @testInputSolver()
+    @testDFS()
 
   testExpGen: =>
     for length in [1..30]
@@ -54,5 +57,16 @@ class MathSwipeController
 
   testInputSolver: =>
     console.log InputSolver.compute("1+2*3")
+
+  testDFS: =>
+    inputList = ["1111111", "2222222",
+             "3333333", "4444444",
+             "5555555", "6666666",
+             "7777777" ]
+    @grid = new GameGrid(7)
+    DFS.setEquationsOnGrid @grid, inputList, AdjacentCellsCalculator
+    console.log '\n'
+    for each in @grid.grid
+      console.log each
 
 module.exports = MathSwipeController

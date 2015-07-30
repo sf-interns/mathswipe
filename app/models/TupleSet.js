@@ -13,7 +13,7 @@ TupleSet = (function() {
     this.length = bind(this.length, this);
     this.pop = bind(this.pop, this);
     this.push = bind(this.push, this);
-    this.set = [];
+    this.list = [];
     for (i = 0, len = tuples.length; i < len; i++) {
       t = tuples[i];
       this.push(t);
@@ -22,28 +22,28 @@ TupleSet = (function() {
 
   TupleSet.prototype.push = function(tuple) {
     if (!(tuple === null || this.contains(tuple))) {
-      return this.set.push(tuple);
+      return this.list.push(tuple);
     }
   };
 
   TupleSet.prototype.pop = function() {
-    return this.set.pop();
+    return this.list.pop();
   };
 
   TupleSet.prototype.length = function() {
-    return this.set.length;
+    return this.list.length;
   };
 
   TupleSet.prototype.at = function(idx) {
     if (idx < this.length()) {
-      return this.set[idx];
+      return this.list[idx];
     }
     return null;
   };
 
   TupleSet.prototype.contains = function(tuple) {
     var i, len, ref, t;
-    ref = this.set;
+    ref = this.list;
     for (i = 0, len = ref.length; i < len; i++) {
       t = ref[i];
       if (tuple.equals(t)) {

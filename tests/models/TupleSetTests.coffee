@@ -1,5 +1,5 @@
-TupleSet = require "#{app_path}/models/TupleSet"
-Tuple    = require "#{app_path}/models/Tuple"
+TupleSet = require '#{app_path}/models/TupleSet'
+Tuple    = require '#{app_path}/models/Tuple'
 
 describe 'TupleSet', ->
   describe '#constructor', ->
@@ -37,7 +37,7 @@ describe 'TupleSet', ->
 
 
     it 'given no parameters, gives empty list', ->
-      (expect (new TupleSet).set.length).to.equal 0     
+      (expect (new TupleSet).set.length).to.equal 0
 
   describe '#push', ->
     it 'adds unique non-null elements to the set', ->
