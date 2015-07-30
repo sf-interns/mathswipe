@@ -3,8 +3,6 @@ class Cell
   constructor: (@col, @row, @size, @two, @board) ->
     @isDeleted = false
     @rect = @two.makeRectangle @getX(), @getY(), @size, @size
-    @setColor '#FFEBCD'
-    @setBorder '#FFE1b4'
     @two.update()
 
   setColor: (c) =>

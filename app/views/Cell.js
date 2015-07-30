@@ -15,8 +15,6 @@ Cell = (function() {
     this.setColor = bind(this.setColor, this);
     this.isDeleted = false;
     this.rect = this.two.makeRectangle(this.getX(), this.getY(), this.size, this.size);
-    this.setColor('#FFEBCD');
-    this.setBorder('#FFE1b4');
     this.two.update();
   }
 

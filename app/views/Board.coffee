@@ -1,6 +1,6 @@
 class Board
 
-  constructor: (@grid, @two, @Cell) ->
+  constructor: (@grid, @two, @Cell, @colors) ->
 
     @size = @two.height * .80
     offset = @size * .025
@@ -11,7 +11,7 @@ class Board
     @y = if @y < @size / 2 then @size / 2 else @y
 
     board = @two.makeRectangle @x, @y, @size, @size
-    board.noStroke().fill =  '#c2d1e6'
+    board.noStroke().fill =  @colors.board
     board.visible = true
 
     @change = offset + width
@@ -26,8 +26,8 @@ class Board
       @empty_cells.push []
       for col in [0...@grid.dimension]
         cell = new @Cell col, row, width, @two, this
-        cell.setColor '#b7c9e1'
-        cell.setBorder '#b7c9e1'
+        cell.setColor @colors.emptyCell
+        cell.setBorder @colors.emptyCellBorder
         @empty_cells[row].push cell
 
   createCells: (width) ->
@@ -36,6 +36,8 @@ class Board
       @cells.push []
       for col in [0...@grid.dimension]
         cell = new @Cell col, row, width, @two, this
+        cell.setColor @colors.cell
+        cell.setBorder @colors.cellBorder
         @cells[row].push cell
 
   deleteCells: (solution) ->

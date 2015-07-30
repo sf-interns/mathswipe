@@ -4,16 +4,17 @@ ExpressionGenerator = require '../services/ExpressionGenerator'
 Board               = require '../views/Board'
 Tuple               = require '../models/Tuple'
 Cell                = require '../views/Cell'
+Colors              = require '../views/Colors'
 $                   = require 'jquery'
 
 class MathSwipeController 
 
   constructor: ->
-    gridModel = new GameGrid(4)
+    gridModel = new GameGrid(3)
 
     two = @createTwo()
     symbols = @getSymbols two
-    @board = new Board gridModel, two, Cell
+    @board = new Board gridModel, two, Cell, Colors
 
     @tests()
 
@@ -48,7 +49,7 @@ class MathSwipeController
       console.log length, expression, InputSolver.compute expression
 
   testCellDelete: =>
-    solution = [(new Tuple 0, 0), (new Tuple 1, 1), (new Tuple 2, 2)]
+    solution = [(new Tuple 0, 0), (new Tuple 1, 1), (new Tuple 0, 2)]
     @board.deleteCells solution
 
   testInputSolver: =>
