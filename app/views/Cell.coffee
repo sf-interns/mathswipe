@@ -5,7 +5,6 @@ class Cell
     @rect = @two.makeRectangle @getX(), @getY(), @size, @size
     @setColor '#FFEBCD'
     @setBorder '#FFE1b4'
-    # @board.add @rect
     @two.update()
 
   setColor: (c) =>
@@ -19,7 +18,6 @@ class Cell
     @two.update()
 
   hide: ->
-    #@setColor '#FFFFFF'
     @rect.opacity = 0
 
   getX: (col=@col) =>
@@ -40,9 +38,7 @@ class Cell
         @two.unbind 'update'
 
       delta = new Two.Vector 0, (dist * .125)
-
       @rect.translation.addSelf delta
-
       start = start.addSelf delta
     ).play()
 
