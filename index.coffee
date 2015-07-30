@@ -24,4 +24,7 @@ inputList = ["1111111", "2222222",
 DFS.setEquationsOnGrid @grid, inputList, AdjacentCellsCalculator
 console.log '\n'
 for each in @grid.grid
-  console.log each
+  line = ''
+  for j in each
+    line += j.value + '\t'
+  console.log line
