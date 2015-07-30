@@ -4,7 +4,6 @@ ExpressionGenerator     = require './app/services/ExpressionGenerator'
 GameGrid                = require './app/models/GameGrid'
 InputSolver             = require './app/services/InputSolver'
 Tuple                   = require './app/models/Tuple'
-TupleSet                = require './app/models/TupleSet'
 
 # for length in [1..30]
 #   expression = ExpressionGenerator.generate length
@@ -27,5 +26,5 @@ for each in @grid.grid
   for j in each
     line += j.value + '\t'
   console.log line
-for each in DFS.inputPositionList
-  console.log each.list
+for each in DFS.inputTupleLists
+  console.log each
