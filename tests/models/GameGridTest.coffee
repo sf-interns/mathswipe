@@ -1,4 +1,4 @@
-GameGrid = require "#{app_path}/models/GameGrid"
+GameGrid = require '#{app_path}/models/GameGrid'
 
 describe 'GameGrid', ->
   describe '#constructor', ->
@@ -55,7 +55,7 @@ describe 'GameGrid', ->
 
   describe '#invalidIndices', ->
     valid = (new GameGrid 2).validIndices
-    
+
     it 'allows valid values', ->
       (expect valid 0, 0).to.equal true
       (expect valid 0, 1).to.equal true

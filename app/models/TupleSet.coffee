@@ -1,23 +1,23 @@
 class TupleSet
 
   constructor: (tuples=[]) ->
-    @set = []
+    @list = []
     for t in tuples
       @push t
 
   push: (tuple) =>
-    return @set.push tuple unless tuple is null or @contains tuple
+    return @list.push tuple unless tuple is null or @contains tuple
 
-  pop: () => @set.pop()
+  pop: () => @list.pop()
 
-  length: () => @set.length
+  length: () => @list.length
 
   at: (idx) =>
-    return @set[idx] if idx < @length() 
+    return @list[idx] if idx < @length()
     null
 
   contains: (tuple) =>
-    for t in @set
+    for t in @list
       if tuple.equals t then return true
     false
 

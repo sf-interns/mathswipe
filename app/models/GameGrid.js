@@ -4,6 +4,7 @@ var GameGrid,
 
 GameGrid = (function() {
   function GameGrid(dimension) {
+    this.isEmpty = bind(this.isEmpty, this);
     this.at = bind(this.at, this);
     this.validIndices = bind(this.validIndices, this);
     this.set = bind(this.set, this);
@@ -13,7 +14,7 @@ GameGrid = (function() {
     for (i = k = 0, ref = this.dimension; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
       this.grid.push([]);
       for (j = l = 0, ref1 = this.dimension; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
-        this.grid[i].push(" ");
+        this.grid[i].push(' ');
       }
     }
   }
@@ -35,6 +36,10 @@ GameGrid = (function() {
       return null;
     }
     return this.grid[y][x];
+  };
+
+  GameGrid.prototype.isEmpty = function(x, y) {
+    return this.grid[y][x] === ' ';
   };
 
   return GameGrid;

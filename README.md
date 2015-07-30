@@ -39,7 +39,7 @@ This project uses [Mycha](https://github.com/Originate/mycha) for its tests. All
 ## Github Pages Information
 
 ### Hosting
-The website is hosted, currently, at <http://sf-interns.github.io/mathswipe/>. The `CNAME` file specifies the url from which the page can be accessed. After about 7/14/15 at noon, the website will be available at <http://mathswipe.com/>.
+The website is hosted, currently, at <http://sf-interns.github.io/mathswipe/>. The `CNAME` file specifies the url from which the page can be accessed. After about 8/14/15 at noon, the website will be available at <http://mathswipe.com/>.
 
 ### Development
  - The `master` branch is our 'development' branch. Changes should be merged here and it reflects the most recent version of our best code.

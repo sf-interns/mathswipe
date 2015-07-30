@@ -6,7 +6,7 @@ class GameGrid
     for i in [0...@dimension]
       @grid.push []
       for j in [0...@dimension]
-        @grid[i].push " "
+        @grid[i].push ' '
 
   set: (x, y, element) =>
     return false unless @validIndices x, y
@@ -14,10 +14,12 @@ class GameGrid
     true
 
   validIndices: (x,y) =>
-    return x < @dimension and x >= 0 and y < @dimension and y >= 0  
+    return x < @dimension and x >= 0 and y < @dimension and y >= 0
 
   at: (x,y) =>
     return null unless @validIndices x, y
     @grid[y][x]
+
+  isEmpty: (x, y) => return @grid[y][x] is ' '
 
 module.exports = GameGrid

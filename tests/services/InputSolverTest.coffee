@@ -1,4 +1,4 @@
-InputSolver = require "#{app_path}/services/InputSolver"
+InputSolver = require '#{app_path}/services/InputSolver'
 expect = chai.expect
 
 describe 'InputSolver', ->
@@ -17,7 +17,7 @@ describe 'InputSolver', ->
       (expect isOp '').to.equal false
 
   describe '#operation()', ->
-    OP = (operation) -> 
+    OP = (operation) ->
       return InputSolver.operation 12, '3', operation
 
     it 'adds when given plus sign', ->
