@@ -8,6 +8,8 @@ TupleSet = require('../models/TupleSet');
 DFS = (function() {
   function DFS() {}
 
+  DFS.inputPositionList = [];
+
   DFS.setEquationsOnGrid = function(grid, inputList, AdjacentCells) {
     var allCells, col, i, j, k, l, n, o, p, ref, ref1, ref2, ref3, row;
     this.grid = grid;
@@ -32,11 +34,13 @@ DFS = (function() {
   };
 
   DFS.hasInitializeGrid = function(allCells, inputList) {
-    var i, index, k, l, ref, seed;
+    var i, index, k, l, ref, seed, takenCells;
     for (i = k = 0, ref = inputList.length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
       for (index = l = 0; l < 20; index = ++l) {
+        takenCells = new TupleSet;
         seed = allCells[Math.floor(Math.random() * allCells.length)];
-        if (this.search(seed, inputList[i], new TupleSet)) {
+        if (this.search(seed, inputList[i], takenCells)) {
+          this.inputPositionList[i] = takenCells;
           break;
         }
         return false;

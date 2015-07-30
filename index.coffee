@@ -16,11 +16,10 @@ TupleSet                = require './app/models/TupleSet'
 #              '4444', '55555', '666666'
 #              '7777777', '88888888', '999999999',
 #              '++++']
-inputList = ["1111111", "2222222",
-             "3333333", "4444444",
-             "5555555", "6666666",
-             "7777777" ]
-@grid = new GameGrid(7)
+inputList = ["1111", "2222",
+             "3333", "4444"]
+
+@grid = new GameGrid(4)
 DFS.setEquationsOnGrid @grid, inputList, AdjacentCellsCalculator
 console.log '\n'
 for each in @grid.grid
@@ -28,3 +27,5 @@ for each in @grid.grid
   for j in each
     line += j.value + '\t'
   console.log line
+for each in DFS.inputPositionList
+  console.log each.list

@@ -3,6 +3,8 @@ TupleSet = require '../models/TupleSet'
 
 class DFS
 
+  @inputPositionList = []
+
   @setEquationsOnGrid: (@grid, inputList, @AdjacentCells) ->
     allCells = []
     for i in [0...@grid.dimension]
@@ -19,8 +21,11 @@ class DFS
   @hasInitializeGrid: (allCells, inputList) ->
     for i in [0...inputList.length]
       for index in [0...20]
+        takenCells = new TupleSet
         seed = allCells[Math.floor(Math.random() * allCells.length)]
-        break if @search seed, inputList[i], (new TupleSet)
+        if @search seed, inputList[i], takenCells
+          @inputPositionList[i] = takenCells
+          break
         return false
     true
 
