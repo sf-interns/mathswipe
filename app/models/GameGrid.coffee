@@ -22,9 +22,8 @@ class GameGrid
     return null unless @validIndices x, y
     @grid[y][x]
 
-  isEmpty: (x, y) => return @grid[y][x].value is ' '
+  isEmpty: (x, y) => @grid[y][x].isEmpty()
 
-  setEmpty: (x, y) =>
-    @set x, y, ' '
+  setEmpty: (x, y) => @set x, y, ' '
 
 module.exports = GameGrid

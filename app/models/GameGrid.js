@@ -42,7 +42,7 @@ GameGrid = (function() {
   };
 
   GameGrid.prototype.isEmpty = function(x, y) {
-    return this.grid[y][x].value === ' ';
+    return this.grid[y][x].isEmpty();
   };
 
   GameGrid.prototype.setEmpty = function(x, y) {
