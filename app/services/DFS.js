@@ -9,26 +9,23 @@ DFS = (function() {
   function DFS() {}
 
   DFS.isValidSeed = function(x, y) {
-    var col, colCount, count, k, l, len, ref, ref1, row;
+    var col, emptyInCol, k, l, len, numEmpty, ref, ref1, row;
     if (x - 1 < 0 || x + 1 >= this.grid.dimension) {
       return false;
     }
-    colCount = [];
+    emptyInCol = [];
     ref = [x - 1, x, x + 1];
     for (k = 0, len = ref.length; k < len; k++) {
       col = ref[k];
-      count = 0;
+      numEmpty = 0;
       for (row = l = 0, ref1 = this.grid.dimension; 0 <= ref1 ? l < ref1 : l > ref1; row = 0 <= ref1 ? ++l : --l) {
         if (this.grid.grid[row][col] === ' ') {
-          count += 1;
+          numEmpty += 1;
         }
       }
-      colCount.push(count);
+      emptyInCol.push(numEmpty);
     }
-    if (colCount[1] === 1 && colCount[0] > 0 && colCount[2] > 0) {
-      return true;
-    }
-    return false;
+    return emptyInCol[0] > 0 && emptyInCol[1] === 1 && emptyInCol[2] > 0;
   };
 
   DFS.shuffle = function(array) {

@@ -5,17 +5,16 @@ class DFS
 
   @isValidSeed: (x, y) ->
     return false if x - 1 < 0 or x + 1 >= @grid.dimension
-    colCount = []
+    emptyInCol = []
     for col in [x - 1, x, x + 1]
-      count = 0
+      numEmpty = 0
       for row in [0...@grid.dimension]
-        count += 1 if @grid.grid[row][col] is ' '
-      colCount.push count
-    return true if colCount[1] is 1 and colCount[0] > 0 and colCount[2] > 0
-    false
+        numEmpty += 1 if @grid.grid[row][col] is ' '
+      emptyInCol.push numEmpty
+    return (emptyInCol[0] > 0 and emptyInCol[1] is 1 and emptyInCol[2] > 0)
 
+  # Fisher-Yates shuffle
   @shuffle: (array) ->
-    # Fisher-Yates shuffle
     m = array.length
     while m
       i = Math.floor(Math.random() * m--)
