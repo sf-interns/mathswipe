@@ -9,6 +9,12 @@ Board = (function() {
     this.two = two;
     this.Cell = Cell;
     this.colors = colors;
+    this.swapCells = bind(this.swapCells, this);
+    this.pushAllCellsToBottom = bind(this.pushAllCellsToBottom, this);
+    this.deleteCellAt = bind(this.deleteCellAt, this);
+    this.deleteCells = bind(this.deleteCells, this);
+    this.compareYValues = bind(this.compareYValues, this);
+    this.createCells = bind(this.createCells, this);
     this.createEmptyCells = bind(this.createEmptyCells, this);
     this.size = this.two.height * .80;
     offset = this.size * .025;
@@ -27,15 +33,15 @@ Board = (function() {
   }
 
   Board.prototype.createEmptyCells = function(width) {
-    var cell, col, i, ref, results, row;
+    var cell, col, j, ref, results, row;
     this.empty_cells = [];
     results = [];
-    for (row = i = 0, ref = this.grid.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+    for (row = j = 0, ref = this.grid.dimension; 0 <= ref ? j < ref : j > ref; row = 0 <= ref ? ++j : --j) {
       this.empty_cells.push([]);
       results.push((function() {
-        var j, ref1, results1;
+        var k, ref1, results1;
         results1 = [];
-        for (col = j = 0, ref1 = this.grid.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+        for (col = k = 0, ref1 = this.grid.dimension; 0 <= ref1 ? k < ref1 : k > ref1; col = 0 <= ref1 ? ++k : --k) {
           cell = new this.Cell(col, row, width, this.two, this);
           cell.setColor(this.colors.emptyCell);
           cell.setBorder(this.colors.emptyCellBorder);
@@ -48,15 +54,15 @@ Board = (function() {
   };
 
   Board.prototype.createCells = function(width) {
-    var cell, col, i, ref, results, row;
+    var cell, col, j, ref, results, row;
     this.cells = [];
     results = [];
-    for (row = i = 0, ref = this.grid.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+    for (row = j = 0, ref = this.grid.dimension; 0 <= ref ? j < ref : j > ref; row = 0 <= ref ? ++j : --j) {
       this.cells.push([]);
       results.push((function() {
-        var j, ref1, results1;
+        var k, ref1, results1;
         results1 = [];
-        for (col = j = 0, ref1 = this.grid.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+        for (col = k = 0, ref1 = this.grid.dimension; 0 <= ref1 ? k < ref1 : k > ref1; col = 0 <= ref1 ? ++k : --k) {
           cell = new this.Cell(col, row, width, this.two, this);
           cell.setColor(this.colors.cell);
           cell.setBorder(this.colors.cellBorder);
@@ -68,10 +74,21 @@ Board = (function() {
     return results;
   };
 
+  Board.prototype.compareYValues = function(a, b) {
+    if (a.y < b.y) {
+      return -1;
+    }
+    if (a.y > b.y) {
+      return 1;
+    }
+    return 0;
+  };
+
   Board.prototype.deleteCells = function(solution) {
-    var i, len, results, tuple;
+    var i, j, len, results, tuple;
+    solution.sort(this.compareYValues);
     results = [];
-    for (i = 0, len = solution.length; i < len; i++) {
+    for (i = j = 0, len = solution.length; j < len; i = ++j) {
       tuple = solution[i];
       results.push(this.deleteCellAt(tuple.x, tuple.y));
     }
@@ -80,17 +97,20 @@ Board = (function() {
 
   Board.prototype.deleteCellAt = function(x, y) {
     this.cells[y][x]["delete"]();
-    return this.pushAllCellsToBottom();
+    this.grid["delete"](x, y);
+    this.pushAllCellsToBottom();
+    return this.two.update();
   };
 
   Board.prototype.pushAllCellsToBottom = function() {
-    var col, i, j, k, ref, ref1, ref2, row, up;
-    for (row = i = ref = this.grid.dimension - 1; ref <= 1 ? i <= 1 : i >= 1; row = ref <= 1 ? ++i : --i) {
-      for (col = j = ref1 = this.grid.dimension - 1; ref1 <= 0 ? j <= 0 : j >= 0; col = ref1 <= 0 ? ++j : --j) {
-        if (this.cells[row][col].isDeleted) {
-          for (up = k = ref2 = row - 1; ref2 <= 0 ? k <= 0 : k >= 0; up = ref2 <= 0 ? ++k : --k) {
-            if (!this.cells[up][col].isDeleted) {
+    var col, j, k, l, ref, ref1, ref2, row, up;
+    for (row = j = ref = this.grid.dimension - 1; ref <= 1 ? j <= 1 : j >= 1; row = ref <= 1 ? ++j : --j) {
+      for (col = k = ref1 = this.grid.dimension - 1; ref1 <= 0 ? k <= 0 : k >= 0; col = ref1 <= 0 ? ++k : --k) {
+        if (this.cells[row][col].isDeleted && this.grid.grid[row][col].isDeleted) {
+          for (up = l = ref2 = row - 1; ref2 <= 0 ? l <= 0 : l >= 0; up = ref2 <= 0 ? ++l : --l) {
+            if (!(this.cells[up][col].isDeleted && this.grid.grid[up][col].isDeleted)) {
               this.swapCells(row, col, up, col);
+              this.grid.swapCells(row, col, up, col);
               break;
             }
           }

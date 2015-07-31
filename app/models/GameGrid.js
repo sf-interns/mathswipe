@@ -6,7 +6,8 @@ GridCell = require('./GridCell');
 
 GameGrid = (function() {
   function GameGrid(dimension) {
-    this.setEmpty = bind(this.setEmpty, this);
+    this.swapCells = bind(this.swapCells, this);
+    this["delete"] = bind(this["delete"], this);
     this.isEmpty = bind(this.isEmpty, this);
     this.at = bind(this.at, this);
     this.validIndices = bind(this.validIndices, this);
@@ -45,8 +46,16 @@ GameGrid = (function() {
     return this.grid[y][x].isEmpty();
   };
 
-  GameGrid.prototype.setEmpty = function(x, y) {
-    return this.set(x, y, ' ');
+  GameGrid.prototype["delete"] = function(x, y) {
+    this.set(x, y, ' ');
+    return this.grid[y][x]["delete"]();
+  };
+
+  GameGrid.prototype.swapCells = function(r1, c1, r2, c2) {
+    var temp;
+    temp = this.grid[r1][c1];
+    this.grid[r1][c1] = this.grid[r2][c2];
+    return this.grid[r2][c2] = temp;
   };
 
   return GameGrid;

@@ -4,13 +4,19 @@ var GridCell,
 
 GridCell = (function() {
   function GridCell() {
+    this["delete"] = bind(this["delete"], this);
     this.isEmpty = bind(this.isEmpty, this);
     this.value = ' ';
     this.isClicked = false;
+    this.isDeleted = false;
   }
 
   GridCell.prototype.isEmpty = function() {
     return this.value === ' ';
+  };
+
+  GridCell.prototype["delete"] = function() {
+    return this.isDeleted = true;
   };
 
   return GridCell;

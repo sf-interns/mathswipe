@@ -42,7 +42,7 @@ class MathSwipeController
 
   tests: =>
     @testExpGen()
-    @testCellDelete()
+    # @testCellDelete()
     @testInputSolver()
     @testDFS()
 
@@ -62,6 +62,16 @@ class MathSwipeController
     inputList = ['111', '222', '333' ]
     DFS.setEquationsOnGrid @gridModel, inputList, AdjacentCellsCalculator
     console.log '\n'
+    for each in @gridModel.grid
+      line = ''
+      for j in each
+        line += j.value + '\t'
+      console.log line
+    for each in DFS.inputPositionList
+      console.log each
+    solution = DFS.inputPositionList[0]
+    console.log '\n'
+    @board.deleteCells solution
     for each in @gridModel.grid
       line = ''
       for j in each
