@@ -1,10 +1,9 @@
 Tuple    = require '../models/Tuple'
-TupleSet = require '../models/TupleSet'
 
 class AdjacentCellsCalculator
 
   # Param grid is a GameGrid
-  constructor: (@grid, @x, @y) -> @cells = new TupleSet
+  constructor: (@grid, @x, @y) -> @cells = []
 
   # Gets valid placements in grid
   getToVisit: (takenCells) =>
@@ -13,7 +12,7 @@ class AdjacentCellsCalculator
         unless @isOccupied(i, j, takenCells) or (i is @x and j is @y)
           tuple = @validLocation @grid, i, j
           @cells.push tuple unless tuple is null
-    @cells.list
+    @cells
 
   # returns a valid location if it exists, otherwise null
   validLocation: (grid, x, y) =>
