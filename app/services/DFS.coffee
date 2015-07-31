@@ -1,9 +1,8 @@
 Tuple    = require '../models/Tuple'
-TupleSet = require '../models/TupleSet'
 
 class DFS
 
-  @inputPositionList = []
+  @inputTupleLists = []
 
   @setEquationsOnGrid: (@grid, inputList, @AdjacentCells) ->
     allCells = []
@@ -21,10 +20,10 @@ class DFS
   @hasInitializeGrid: (allCells, inputList) ->
     for i in [0...inputList.length]
       for index in [0...20]
-        takenCells = new TupleSet
+        takenCells = []
         seed = allCells[Math.floor(Math.random() * allCells.length)]
         if @search seed, inputList[i], takenCells
-          @inputPositionList[i] = takenCells
+          @inputTupleLists[i] = takenCells
           break
         return false
     true
@@ -33,7 +32,7 @@ class DFS
     return true if input.length is 0
 
     calculator = new @AdjacentCells @grid, seed.x, seed.y
-    toVisit = @shuffle (calculator.getToVisit takenCells.list)
+    toVisit = @shuffle (calculator.getToVisit takenCells)
     return false if toVisit.length is 0
 
     curr = toVisit.pop()
