@@ -42,9 +42,9 @@ class MathSwipeController
 
   tests: =>
     @testExpGen()
-    # @testCellDelete()
-    @testInputSolver()
     @testDFS()
+    @testCellDelete()
+    @testInputSolver()
 
   testExpGen: =>
     for length in [1..30]
@@ -52,8 +52,10 @@ class MathSwipeController
       console.log length, expression, InputSolver.compute expression
 
   testCellDelete: =>
-    solution = [(new Tuple 0, 0), (new Tuple 1, 1), (new Tuple 0, 2)]
+    solution = [(new Tuple 0, 3), (new Tuple 0, 2), (new Tuple 1, 1)]
+    soln = [(new Tuple 3, 3), (new Tuple 2, 3), (new Tuple 0, 3)]
     @board.deleteCells solution
+    @board.deleteCells soln
 
   testInputSolver: =>
     console.log InputSolver.compute('1+2*3')
@@ -61,21 +63,6 @@ class MathSwipeController
   testDFS: =>
     inputList = ['1111', '2222', '3333', '4444' ]
     DFS.setEquationsOnGrid @gridModel, inputList, AdjacentCellsCalculator
-    console.log '\n'
-    for each in @gridModel.grid
-      line = ''
-      for j in each
-        line += j.value + '\t'
-      console.log line
-    for each in DFS.inputPositionList
-      console.log each
-    solution = DFS.inputPositionList[0]
-    console.log '\n'
-    @board.deleteCells solution
-    for each in @gridModel.grid
-      line = ''
-      for j in each
-        line += j.value + '\t'
-      console.log line
+
 
 module.exports = MathSwipeController

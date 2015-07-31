@@ -10,7 +10,9 @@ Cell = (function() {
     this.two = two;
     this.board = board;
     this["delete"] = bind(this["delete"], this);
+    this.updateLoc = bind(this.updateLoc, this);
     this.shiftTo = bind(this.shiftTo, this);
+    this.moveTo = bind(this.moveTo, this);
     this.getY = bind(this.getY, this);
     this.getX = bind(this.getX, this);
     this.hide = bind(this.hide, this);
@@ -52,6 +54,11 @@ Cell = (function() {
     return this.board.y - (this.board.size + this.size) / 2 + (row + 1) * this.board.change;
   };
 
+  Cell.prototype.moveTo = function(row, col) {
+    this.shiftTo(row, col);
+    return this.updateLoc(row, col);
+  };
+
   Cell.prototype.shiftTo = function(row, col) {
     var end, start;
     end = new Two.Vector(this.getX(col), this.getY(row));
@@ -60,8 +67,8 @@ Cell = (function() {
       return function(frameCount) {
         var delta, dist;
         dist = start.distanceTo(end);
-        if (dist < 1) {
-          _this.rect.translation.set(_this.getX(col), _this.getY(row));
+        if (dist < .00000001) {
+          _this.rect.translation.clone(end);
           _this.two.unbind('update');
         }
         delta = new Two.Vector(0, dist * .125);
@@ -69,6 +76,11 @@ Cell = (function() {
         return start = start.addSelf(delta);
       };
     })(this)).play();
+  };
+
+  Cell.prototype.updateLoc = function(row, col) {
+    this.row = row;
+    return this.col = col;
   };
 
   Cell.prototype["delete"] = function() {

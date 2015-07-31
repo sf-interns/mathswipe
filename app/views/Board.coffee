@@ -47,9 +47,6 @@ class Board
     solution.sort @compareYValues
     for tuple, i in solution
       @deleteCellAt tuple.x, tuple.y
-    for row in [0..@grid.dimension-1]
-      for col in [0..@grid.dimension-1]
-        console.log @cells[row][col].isDeleted, @grid.grid[row][col].isDeleted
 
   deleteCellAt: (x, y) =>
     @cells[y][x].delete()
@@ -58,20 +55,20 @@ class Board
     @two.update()
 
   pushAllCellsToBottom: ->
-    for row in [@grid.dimension-1..1]
+    for row in [@grid.dimension-1..0]
       for col in [@grid.dimension-1..0]
-        if @cells[row][col].isDeleted# and @grid.grid[row][col].isDeleted
-          for up in [row-1..0]
-            unless @cells[up][col].isDeleted# and @grid.grid[up][col].isDeleted
-              @swapCells row, col, up, col
-              @grid.swapCells row, col, up, col
-              break
+        if @cells[row][col].isDeleted and @grid.grid[row][col].isDeleted
+          for up in [row..0]
+            continue if (@cells[up][col].isDeleted and @grid.grid[up][col].isDeleted)
+            @swapCells row, col, up, col
+            @grid.swapCells row, col, up, col
+            break
     @two.update()
 
   swapCells: (r1, c1, r2, c2) =>
     # move the locations
-    @cells[r1][c1].shiftTo r2, c2
-    @cells[r2][c2].shiftTo r1, c1
+    @cells[r1][c1].moveTo r2, c2
+    @cells[r2][c2].moveTo r1, c1
 
     # move the pointers
     temp = @cells[r1][c1]

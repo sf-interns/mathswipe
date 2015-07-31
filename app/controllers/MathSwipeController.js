@@ -47,10 +47,10 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.getSymbols = function(two) {
-    var i, k, len, s, svgs, symbols;
+    var i, j, len, s, svgs, symbols;
     svgs = $('#assets svg');
     symbols = [];
-    for (i = k = 0, len = svgs.length; k < len; i = ++k) {
+    for (i = j = 0, len = svgs.length; j < len; i = ++j) {
       s = svgs[i];
       symbols.push(two.interpret(s));
       symbols[i].visible = false;
@@ -61,14 +61,15 @@ MathSwipeController = (function() {
 
   MathSwipeController.prototype.tests = function() {
     this.testExpGen();
-    this.testInputSolver();
-    return this.testDFS();
+    this.testDFS();
+    this.testCellDelete();
+    return this.testInputSolver();
   };
 
   MathSwipeController.prototype.testExpGen = function() {
-    var expression, k, length, results;
+    var expression, j, length, results;
     results = [];
-    for (length = k = 1; k <= 30; length = ++k) {
+    for (length = j = 1; j <= 30; length = ++j) {
       expression = ExpressionGenerator.generate(length);
       results.push(console.log(length, expression, InputSolver.compute(expression)));
     }
@@ -76,9 +77,11 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testCellDelete = function() {
-    var solution;
-    solution = [new Tuple(0, 0), new Tuple(1, 1), new Tuple(0, 2)];
-    return this.board.deleteCells(solution);
+    var soln, solution;
+    solution = [new Tuple(0, 3), new Tuple(0, 2), new Tuple(1, 1)];
+    soln = [new Tuple(3, 3), new Tuple(2, 3), new Tuple(0, 3)];
+    this.board.deleteCells(solution);
+    return this.board.deleteCells(soln);
   };
 
   MathSwipeController.prototype.testInputSolver = function() {
@@ -86,40 +89,9 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testDFS = function() {
-    var each, inputList, j, k, l, len, len1, len2, len3, len4, line, m, n, o, ref, ref1, ref2, results, solution;
+    var inputList;
     inputList = ['1111', '2222', '3333', '4444'];
-    DFS.setEquationsOnGrid(this.gridModel, inputList, AdjacentCellsCalculator);
-    console.log('\n');
-    ref = this.gridModel.grid;
-    for (k = 0, len = ref.length; k < len; k++) {
-      each = ref[k];
-      line = '';
-      for (l = 0, len1 = each.length; l < len1; l++) {
-        j = each[l];
-        line += j.value + '\t';
-      }
-      console.log(line);
-    }
-    ref1 = DFS.inputPositionList;
-    for (m = 0, len2 = ref1.length; m < len2; m++) {
-      each = ref1[m];
-      console.log(each);
-    }
-    solution = DFS.inputPositionList[0];
-    console.log('\n');
-    this.board.deleteCells(solution);
-    ref2 = this.gridModel.grid;
-    results = [];
-    for (n = 0, len3 = ref2.length; n < len3; n++) {
-      each = ref2[n];
-      line = '';
-      for (o = 0, len4 = each.length; o < len4; o++) {
-        j = each[o];
-        line += j.value + '\t';
-      }
-      results.push(console.log(line));
-    }
-    return results;
+    return DFS.setEquationsOnGrid(this.gridModel, inputList, AdjacentCellsCalculator);
   };
 
   return MathSwipeController;

@@ -25,6 +25,10 @@ class Cell
   getY: (row = @row) =>
     @board.y - (@board.size + @size) / 2 + (row + 1) * @board.change
 
+  moveTo: (row, col) =>
+    @shiftTo row, col
+    @updateLoc row, col
+
   shiftTo: (row, col) =>
     end = new Two.Vector @getX(col), @getY(row)
     start = new Two.Vector @getX(), @getY()
@@ -32,14 +36,18 @@ class Cell
     @two.bind('update', (frameCount) =>
       dist = start.distanceTo end
 
-      if dist < 1
-        @rect.translation.set (@getX col), (@getY row)
+      if dist < .00000001
+        @rect.translation.clone end
         @two.unbind 'update'
 
       delta = new Two.Vector 0, (dist * .125)
       @rect.translation.addSelf delta
       start = start.addSelf delta
     ).play()
+
+  updateLoc: (row, col) =>
+    @row = row
+    @col = col
 
   delete: =>
     @hide()

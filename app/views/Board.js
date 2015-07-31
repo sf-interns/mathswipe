@@ -78,22 +78,12 @@ Board = (function() {
   };
 
   Board.prototype.deleteCells = function(solution) {
-    var col, i, j, k, len, ref, results, row, tuple;
+    var i, j, len, results, tuple;
     solution.sort(this.compareYValues);
+    results = [];
     for (i = j = 0, len = solution.length; j < len; i = ++j) {
       tuple = solution[i];
-      this.deleteCellAt(tuple.x, tuple.y);
-    }
-    results = [];
-    for (row = k = 0, ref = this.grid.dimension - 1; 0 <= ref ? k <= ref : k >= ref; row = 0 <= ref ? ++k : --k) {
-      results.push((function() {
-        var l, ref1, results1;
-        results1 = [];
-        for (col = l = 0, ref1 = this.grid.dimension - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; col = 0 <= ref1 ? ++l : --l) {
-          results1.push(console.log(this.cells[row][col].isDeleted, this.grid.grid[row][col].isDeleted));
-        }
-        return results1;
-      }).call(this));
+      results.push(this.deleteCellAt(tuple.x, tuple.y));
     }
     return results;
   };
@@ -107,15 +97,16 @@ Board = (function() {
 
   Board.prototype.pushAllCellsToBottom = function() {
     var col, j, k, l, ref, ref1, ref2, row, up;
-    for (row = j = ref = this.grid.dimension - 1; ref <= 1 ? j <= 1 : j >= 1; row = ref <= 1 ? ++j : --j) {
+    for (row = j = ref = this.grid.dimension - 1; ref <= 0 ? j <= 0 : j >= 0; row = ref <= 0 ? ++j : --j) {
       for (col = k = ref1 = this.grid.dimension - 1; ref1 <= 0 ? k <= 0 : k >= 0; col = ref1 <= 0 ? ++k : --k) {
-        if (this.cells[row][col].isDeleted) {
-          for (up = l = ref2 = row - 1; ref2 <= 0 ? l <= 0 : l >= 0; up = ref2 <= 0 ? ++l : --l) {
-            if (!this.cells[up][col].isDeleted) {
-              this.swapCells(row, col, up, col);
-              this.grid.swapCells(row, col, up, col);
-              break;
+        if (this.cells[row][col].isDeleted && this.grid.grid[row][col].isDeleted) {
+          for (up = l = ref2 = row; ref2 <= 0 ? l <= 0 : l >= 0; up = ref2 <= 0 ? ++l : --l) {
+            if (this.cells[up][col].isDeleted && this.grid.grid[up][col].isDeleted) {
+              continue;
             }
+            this.swapCells(row, col, up, col);
+            this.grid.swapCells(row, col, up, col);
+            break;
           }
         }
       }
@@ -125,8 +116,8 @@ Board = (function() {
 
   Board.prototype.swapCells = function(r1, c1, r2, c2) {
     var temp;
-    this.cells[r1][c1].shiftTo(r2, c2);
-    this.cells[r2][c2].shiftTo(r1, c1);
+    this.cells[r1][c1].moveTo(r2, c2);
+    this.cells[r2][c2].moveTo(r1, c1);
     temp = this.cells[r1][c1];
     this.cells[r1][c1] = this.cells[r2][c2];
     return this.cells[r2][c2] = temp;
