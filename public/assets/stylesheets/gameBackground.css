@@ -26,3 +26,13 @@
   margin-top: 3%;
   margin-right: 10%;
 }
+
+.test {
+  background-color: black;
+  float: left;
+  margin-left: 35%;
+}
+
+.title-spacing {
+  margin-bottom: 60px;
+}

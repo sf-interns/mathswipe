@@ -22,7 +22,7 @@ class MathSwipeController
 
   createTwo: ->
     two = new Two(
-      fullscreen: true
+      fullscreen: false
       autostart: true
     ).appendTo(document.getElementById('game'));
     return two

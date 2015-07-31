@@ -40,7 +40,7 @@ MathSwipeController = (function() {
   MathSwipeController.prototype.createTwo = function() {
     var two;
     two = new Two({
-      fullscreen: true,
+      fullscreen: false,
       autostart: true
     }).appendTo(document.getElementById('game'));
     return two;

@@ -1,15 +1,24 @@
 <head>
   <link rel="StyleSheet" type="text/css" href="../assets/stylesheets/gameBackground.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
 <body class = "game-background">
+  <div class = "row title-spacing">
+    <div class = "col-md-6 col-md-offset-3">
+      <img src = "../assets/images/title.png" class = "title-image">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 col-md-offset-2">
+      <button type="submit" class="button-background"><img src = "../assets/images/new-game.png" width="250px"></button>
+    </div>
+    <div class="col-md-4">
+      <foreignObject id="game">
+    </div>
+    <div class="col-md-2">
+      <img src = "../assets/images/goals.png" width="250px">
+    </div>
+  </div>
+  <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
   <script src = "/bundle.js"></script>
-  <div>
-    <img src = "../assets/images/title.png" class = "title-image">
-  </div>
-  <div class="left-column">
-    <button type="submit" class="button-background"><img src = "../assets/images/new-game.png" width="250px"></button>
-  </div>
-  <div class="right-column">
-    <img src = "../assets/images/goals.png" width="250px">
-  </div>
 </body>
