@@ -37,11 +37,11 @@ DFS = (function() {
       for (index = l = 0; l < 20; index = ++l) {
         takenCells = [];
         seed = allCells[Math.floor(Math.random() * allCells.length)];
-        if (this.search(seed, inputList[i], takenCells)) {
-          this.inputTupleLists[i] = takenCells;
-          break;
+        if (!this.search(seed, inputList[i], takenCells)) {
+          return false;
         }
-        return false;
+        this.inputTupleLists[i] = takenCells;
+        break;
       }
     }
     return true;

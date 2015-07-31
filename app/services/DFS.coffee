@@ -1,4 +1,4 @@
-Tuple    = require '../models/Tuple'
+Tuple = require '../models/Tuple'
 
 class DFS
 
@@ -22,10 +22,9 @@ class DFS
       for index in [0...20]
         takenCells = []
         seed = allCells[Math.floor(Math.random() * allCells.length)]
-        if @search seed, inputList[i], takenCells
-          @inputTupleLists[i] = takenCells
-          break
-        return false
+        return false unless @search seed, inputList[i], takenCells
+        @inputTupleLists[i] = takenCells
+        break
     true
 
   @search: (seed, input, takenCells) ->

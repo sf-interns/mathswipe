@@ -27,11 +27,11 @@ class Cell
 
   shiftTo: (row, col) =>
     end = new Two.Vector @getX(col), @getY(row)
-    start = new Two.Vector @getX(), @getY() 
+    start = new Two.Vector @getX(), @getY()
 
     @two.bind('update', (frameCount) =>
       dist = start.distanceTo end
-      
+
       if dist < 1
         @rect.translation.set (@getX col), (@getY row)
         @two.unbind 'update'
