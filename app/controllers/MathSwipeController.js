@@ -30,7 +30,7 @@ MathSwipeController = (function() {
     this.testExpGen = bind(this.testExpGen, this);
     this.tests = bind(this.tests, this);
     var symbols, two;
-    this.gridModel = new GameGrid(3);
+    this.gridModel = new GameGrid(4);
     two = this.createTwo();
     symbols = this.getSymbols(two);
     this.board = new Board(this.gridModel, two, Cell, Colors);
@@ -87,7 +87,7 @@ MathSwipeController = (function() {
 
   MathSwipeController.prototype.testDFS = function() {
     var each, inputList, j, k, l, len, len1, len2, len3, len4, line, m, n, o, ref, ref1, ref2, results, solution;
-    inputList = ['111', '222', '333'];
+    inputList = ['1111', '2222', '3333', '4444'];
     DFS.setEquationsOnGrid(this.gridModel, inputList, AdjacentCellsCalculator);
     console.log('\n');
     ref = this.gridModel.grid;

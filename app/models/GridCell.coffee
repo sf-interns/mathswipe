@@ -7,6 +7,8 @@ class GridCell
 
   isEmpty: => @value is ' '
 
-  delete: => @isDeleted = true
+  delete: =>
+    @isDeleted = true
+    @value = ' '
 
 module.exports = GridCell

@@ -25,7 +25,6 @@ class GameGrid
   isEmpty: (x, y) => @grid[y][x].isEmpty()
 
   delete: (x, y) =>
-    @set x, y, ' '
     @grid[y][x].delete()
 
   swapCells: (r1, c1, r2, c2) =>

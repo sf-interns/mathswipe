@@ -41,14 +41,15 @@ class Board
         @cells[row].push cell
 
   compareYValues: (a, b) =>
-    return -1 if a.y < b.y
-    return 1 if a.y > b.y
-    0
+    a.y - b.y
 
   deleteCells: (solution) =>
     solution.sort @compareYValues
     for tuple, i in solution
       @deleteCellAt tuple.x, tuple.y
+    for row in [0..@grid.dimension-1]
+      for col in [0..@grid.dimension-1]
+        console.log @cells[row][col].isDeleted, @grid.grid[row][col].isDeleted
 
   deleteCellAt: (x, y) =>
     @cells[y][x].delete()
@@ -56,12 +57,12 @@ class Board
     @pushAllCellsToBottom()
     @two.update()
 
-  pushAllCellsToBottom: =>
+  pushAllCellsToBottom: ->
     for row in [@grid.dimension-1..1]
       for col in [@grid.dimension-1..0]
-        if @cells[row][col].isDeleted and @grid.grid[row][col].isDeleted
+        if @cells[row][col].isDeleted# and @grid.grid[row][col].isDeleted
           for up in [row-1..0]
-            unless @cells[up][col].isDeleted and @grid.grid[up][col].isDeleted
+            unless @cells[up][col].isDeleted# and @grid.grid[up][col].isDeleted
               @swapCells row, col, up, col
               @grid.swapCells row, col, up, col
               break

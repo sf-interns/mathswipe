@@ -12,7 +12,7 @@ $                       = require 'jquery'
 class MathSwipeController
 
   constructor: ->
-    @gridModel = new GameGrid(3)
+    @gridModel = new GameGrid(4)
 
     two = @createTwo()
     symbols = @getSymbols two
@@ -59,7 +59,7 @@ class MathSwipeController
     console.log InputSolver.compute('1+2*3')
 
   testDFS: =>
-    inputList = ['111', '222', '333' ]
+    inputList = ['1111', '2222', '3333', '4444' ]
     DFS.setEquationsOnGrid @gridModel, inputList, AdjacentCellsCalculator
     console.log '\n'
     for each in @gridModel.grid

@@ -10,7 +10,6 @@ Board = (function() {
     this.Cell = Cell;
     this.colors = colors;
     this.swapCells = bind(this.swapCells, this);
-    this.pushAllCellsToBottom = bind(this.pushAllCellsToBottom, this);
     this.deleteCellAt = bind(this.deleteCellAt, this);
     this.deleteCells = bind(this.deleteCells, this);
     this.compareYValues = bind(this.compareYValues, this);
@@ -75,22 +74,26 @@ Board = (function() {
   };
 
   Board.prototype.compareYValues = function(a, b) {
-    if (a.y < b.y) {
-      return -1;
-    }
-    if (a.y > b.y) {
-      return 1;
-    }
-    return 0;
+    return a.y - b.y;
   };
 
   Board.prototype.deleteCells = function(solution) {
-    var i, j, len, results, tuple;
+    var col, i, j, k, len, ref, results, row, tuple;
     solution.sort(this.compareYValues);
-    results = [];
     for (i = j = 0, len = solution.length; j < len; i = ++j) {
       tuple = solution[i];
-      results.push(this.deleteCellAt(tuple.x, tuple.y));
+      this.deleteCellAt(tuple.x, tuple.y);
+    }
+    results = [];
+    for (row = k = 0, ref = this.grid.dimension - 1; 0 <= ref ? k <= ref : k >= ref; row = 0 <= ref ? ++k : --k) {
+      results.push((function() {
+        var l, ref1, results1;
+        results1 = [];
+        for (col = l = 0, ref1 = this.grid.dimension - 1; 0 <= ref1 ? l <= ref1 : l >= ref1; col = 0 <= ref1 ? ++l : --l) {
+          results1.push(console.log(this.cells[row][col].isDeleted, this.grid.grid[row][col].isDeleted));
+        }
+        return results1;
+      }).call(this));
     }
     return results;
   };
@@ -106,9 +109,9 @@ Board = (function() {
     var col, j, k, l, ref, ref1, ref2, row, up;
     for (row = j = ref = this.grid.dimension - 1; ref <= 1 ? j <= 1 : j >= 1; row = ref <= 1 ? ++j : --j) {
       for (col = k = ref1 = this.grid.dimension - 1; ref1 <= 0 ? k <= 0 : k >= 0; col = ref1 <= 0 ? ++k : --k) {
-        if (this.cells[row][col].isDeleted && this.grid.grid[row][col].isDeleted) {
+        if (this.cells[row][col].isDeleted) {
           for (up = l = ref2 = row - 1; ref2 <= 0 ? l <= 0 : l >= 0; up = ref2 <= 0 ? ++l : --l) {
-            if (!(this.cells[up][col].isDeleted && this.grid.grid[up][col].isDeleted)) {
+            if (!this.cells[up][col].isDeleted) {
               this.swapCells(row, col, up, col);
               this.grid.swapCells(row, col, up, col);
               break;

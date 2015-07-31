@@ -16,7 +16,8 @@ GridCell = (function() {
   };
 
   GridCell.prototype["delete"] = function() {
-    return this.isDeleted = true;
+    this.isDeleted = true;
+    return this.value = ' ';
   };
 
   return GridCell;

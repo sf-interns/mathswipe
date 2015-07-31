@@ -47,7 +47,6 @@ GameGrid = (function() {
   };
 
   GameGrid.prototype["delete"] = function(x, y) {
-    this.set(x, y, ' ');
     return this.grid[y][x]["delete"]();
   };
 
