@@ -24,6 +24,13 @@ class GameGrid
 
   isEmpty: (x, y) => @grid[y][x].isEmpty()
 
-  setEmpty: (x, y) => @set x, y, ' '
+  delete: (x, y) =>
+    @set x, y, ' '
+    @grid[y][x].delete()
+
+  swapCells: (r1, c1, r2, c2) =>
+    temp = @grid[r1][c1]
+    @grid[r1][c1] = @grid[r2][c2]
+    @grid[r2][c2] = temp
 
 module.exports = GameGrid

@@ -30,7 +30,7 @@ class Board
         cell.setBorder @colors.emptyCellBorder
         @empty_cells[row].push cell
 
-  createCells: (width) ->
+  createCells: (width) =>
     @cells = []
     for row in [0...@grid.dimension]
       @cells.push []
@@ -40,32 +40,41 @@ class Board
         cell.setBorder @colors.cellBorder
         @cells[row].push cell
 
-  deleteCells: (solution) ->
-    for tuple in solution
-      @deleteCellAt tuple.x, tuple.y
-  
-  deleteCellAt: (x, y) ->
-    @cells[y][x].delete()
-    @pushAllCellsToBottom()
+  compareYValues: (a, b) =>
+    return -1 if a.y < b.y
+    return 1 if a.y > b.y
+    0
 
-  pushAllCellsToBottom: ->
+  deleteCells: (solution) =>
+    solution.sort @compareYValues
+    for tuple, i in solution
+      @deleteCellAt tuple.x, tuple.y
+
+  deleteCellAt: (x, y) =>
+    @cells[y][x].delete()
+    @grid.delete x, y
+    @pushAllCellsToBottom()
+    @two.update()
+
+  pushAllCellsToBottom: =>
     for row in [@grid.dimension-1..1]
       for col in [@grid.dimension-1..0]
-        if @cells[row][col].isDeleted
+        if @cells[row][col].isDeleted and @grid.grid[row][col].isDeleted
           for up in [row-1..0]
-            unless @cells[up][col].isDeleted
+            unless @cells[up][col].isDeleted and @grid.grid[up][col].isDeleted
               @swapCells row, col, up, col
+              @grid.swapCells row, col, up, col
               break
     @two.update()
 
-  swapCells: (r1, c1, r2, c2) ->
+  swapCells: (r1, c1, r2, c2) =>
     # move the locations
     @cells[r1][c1].shiftTo r2, c2
     @cells[r2][c2].shiftTo r1, c1
 
-    # move the pointers 
+    # move the pointers
     temp = @cells[r1][c1]
     @cells[r1][c1] = @cells[r2][c2]
-    @cells[r2][c2] = temp    
+    @cells[r2][c2] = temp
 
 module.exports = Board
