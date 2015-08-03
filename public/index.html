@@ -1,40 +1,35 @@
 <head>
   <link rel="StyleSheet" type="text/css" href="../assets/stylesheets/gameBackground.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
 <body class = "game-background">
-  <div class = "row title-spacing">
-    <div class = "col-md-6 col-md-offset-3">
+  <div class = "title-spacing">
       <img src = "../assets/images/title.png" class = "title-image">
-    </div>
   </div>
-  <div class="row">
-    <div class="col-md-5 col-md-offset-2">
-      <foreignObject id="game">
-    </div>
-    <div class="col-md-4">
-      <div class="row">
-        <img src = "../assets/images/goals.png" width="250px">
-      </div>
-      <div class ="row">
-        <ul class="goals">
-          <li>13</li>
-          <li>7</li>
-          <li>12</li>
-        </ul>
-      </div>
-      <div class="row">
-        <button type="submit" class="button-background reset"><img src = "../assets/images/reset.png" width="250px" height="50px"></button>
-      </div>
-      <div class="row">
-        <button type="submit" class="button-background"><img src = "../assets/images/new-game.png" width="250px" height="50px"></button>
-      </div>
-    </div>
+  <div class="left-column">
+    <foreignObject id="game">
+  </div>
+  <div class="right-column">
+    <table>
+      <tr>
+        <td><img src = "../assets/images/goals.png" width="250px"></td>
+      </tr>
+      <tr>
+        <td><p>15</p></td>
+      </tr>
+      <tr>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td><button type="submit" class="button-background reset"><img src = "../assets/images/reset.png" width="250px" height="50px"></button></td>
+      </tr>
+      <tr>
+        <td><button type="submit" class="button-background"><img src = "../assets/images/new-game.png" width="250px" height="50px"></button></td>
+      </tr>
+    </table>
+  </div>
 <!--     <div class="col-md-2 col-md-offset-2">
       <button type="submit" class="button-background"><img src = "../assets/images/new-game.png" width="250px"></button>
     </div> -->
-  </div>
-
   <div id= "assets">
     <?xml version="1.0"?>
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="480px" height="480px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">

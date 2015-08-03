@@ -17,10 +17,12 @@
 
 .left-column {
   float: left;
+  margin-left: 25%;
 }
 
 .right-column {
   float: right;
+  margin-right: 30%;
 }
 
 .test {
