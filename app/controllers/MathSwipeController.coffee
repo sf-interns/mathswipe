@@ -17,14 +17,16 @@ class MathSwipeController
     two = @createTwo()
     symbols = @getSymbols two
     @board = new Board @gridModel, two, Cell, Colors
-
     @tests()
 
   createTwo: ->
+    game = document.getElementById('game')
     two = new Two(
-      fullscreen: true
+      fullscreen: false
       autostart: true
-    ).appendTo(document.getElementById('game'));
+      width: game.width
+      height: game.height
+    ).appendTo(game);
     return two
 
   getSymbols: (two) ->

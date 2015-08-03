@@ -1,0 +1,50 @@
+.game-background {
+  background: linear-gradient(#B9B9B9,#E5E5E5)
+}
+
+.title-image {
+  display: block;
+  margin: auto;
+  padding-top: 35px;
+}
+
+.button-background {
+  background-color: Transparent;
+  border-style: solid;
+  border-color: darkgray;
+  border-radius: 100px;
+}
+
+.left-column {
+  float: left;
+}
+
+.right-column {
+  float: right;
+}
+
+.test {
+  background-color: black;
+}
+
+.test2 {
+  background-color: yellow;
+}
+
+.title-spacing {
+  margin-bottom: 60px;
+}
+
+.goals {
+  color: #00007f;
+  margin-bottom: 20px;
+}
+
+.reset {
+  margin-bottom: 20px;
+}
+
+#game {
+  width: inherit;
+  height: inherit;
+}

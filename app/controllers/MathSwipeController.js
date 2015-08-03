@@ -38,11 +38,14 @@ MathSwipeController = (function() {
   }
 
   MathSwipeController.prototype.createTwo = function() {
-    var two;
+    var game, two;
+    game = document.getElementById('game');
     two = new Two({
-      fullscreen: true,
-      autostart: true
-    }).appendTo(document.getElementById('game'));
+      fullscreen: false,
+      autostart: true,
+      width: game.width,
+      height: game.height
+    }).appendTo(game);
     return two;
   };
 
