@@ -1,65 +1,68 @@
 Tuple = require '../models/Tuple'
+GridCell = require '../models/GridCell'
 
 class DFS
 
-  @inputTupleLists = []
-
   @setEquationsOnGrid: (@grid, inputList, @AdjacentCells) ->
-    allCells = []
-    for i in [0...@grid.dimension]
-      for j in [0...@grid.dimension]
-        allCells.push (new Tuple i, j)
-
+    @clearSolutionGrid()
     for i in [0...10000]
-      break if @hasInitializeGrid allCells, inputList
+      break if @hasFoundSolution inputList
       for row in [0...@grid.dimension]
         for col in [0...@grid.dimension]
           @grid.set row, col, ' '
-    true
+          @clearSolutionGrid()
 
-  @hasInitializeGrid: (allCells, inputList) ->
+  @clearSolutionGrid: ->
+    @solutionGrid = []
+    for row in [0...@grid.dimension]
+      @solutionGrid.push []
+      for col in [0...@grid.dimension]
+        @solutionGrid[row].push (new GridCell col, row)
+
+  @hasFoundSolution: (inputList) ->
     for i in [0...inputList.length]
+      hasPlaced = false
       for index in [0...20]
-        takenCells = []
-        seed = allCells[Math.floor(Math.random() * allCells.length)]
-        return false unless @search seed, inputList[i], takenCells
-        @inputTupleLists[i] = takenCells
-        break
+        unless hasPlaced
+          cloneGrid = @cloneSolutionGrid()
+          seedX = Math.floor(Math.random() * @grid.dimension)
+          seedY = Math.floor(Math.random() * @grid.dimension)
+          if @search seedX, seedY, inputList[i]
+            hasPlaced = true
+          else
+            @solutionGrid = cloneGrid
+      if hasPlaced
+        # TODO call push-up/push-down
+        @pushDownSolutionGrid()
+      else return false
     true
 
-  @search: (seed, input, takenCells) ->
+  @search: (seedX, seedY, input) ->
     return true if input.length is 0
 
-    calculator = new @AdjacentCells @grid, seed.x, seed.y
-    toVisit = @shuffle (calculator.getToVisit takenCells)
+    toVisit = @shuffle AdjacentCells.getAdjacent @solutionGrid, seedX, seedY
     return false if toVisit.length is 0
 
     curr = toVisit.pop()
-    return false if @isValidSeed curr.x, curr.y
-
     while curr != undefined
-      @grid.set curr.x, curr.y, input[0]
-      takenCells.push (new Tuple curr.x, curr.y)
-
-      hasSolution = @search curr, input.slice(1, input.length), takenCells
-      return true if hasSolution
-
-      @grid.set curr.x, curr.y, ' '
-      takenCells.pop()
-      curr = toVisit.pop()
+      @solutionGrid[curr.y][curr.x].value = input[0]
+      unless @search curr.x, curr.y, input.slice(1, input.length)
+        @solutionGrid = cloneGrid
+        curr = toVisit.pop()
+      else return true
     false
 
-  # checks seed if it blocks a path from one side
-  # of the grid to the other side
-  @isValidSeed: (x, y) ->
-    return false if x - 1 < 0 or x + 1 >= @grid.dimension
-    emptyInCol = []
-    for col in [x - 1, x, x + 1]
-      numEmpty = 0
-      for row in [0...@grid.dimension]
-        numEmpty += 1 if @grid.isEmpty col, row
-      emptyInCol.push numEmpty
-    return (emptyInCol[0] > 0 and emptyInCol[1] is 1 and emptyInCol[2] > 0)
+  @cloneSolutionGrid: ->
+    cloneGrid = []
+    for row in [0...@solutionGrid.length]
+      cloneGrid.push []
+      for col in [0...@solutionGrid.length]
+        cloneGrid[row].push (new GridCell @solutionGrid[y][x].y, @solutionGrid[y][x].x)
+        cloneGrid[row][col].value = @solutionGrid[y][x].value
+    cloneGrid
+
+  @pushDownSolutionGrid: ->
+    # TODO
 
   # Fisher-Yates shuffle
   @shuffle: (array) ->

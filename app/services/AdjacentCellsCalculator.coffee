@@ -2,28 +2,26 @@ Tuple    = require '../models/Tuple'
 
 class AdjacentCellsCalculator
 
-  # Param grid is a GameGrid
-  constructor: (@grid, @x, @y) -> @cells = []
+  # Gets valid adjacent placements in solutionGrid
+  @getAdjacent: (solutionGrid, x, y) ->
+    cells = []
+    for i in [x - 1, x, x + 1]
+      for j in [y - 1, y, y + 1]
+        unless (i is x and j is y)
+          tuple = @validLocation solutionGrid, i, j
+          cells.push tuple unless tuple is null
+    cells
 
-  # Gets valid placements in grid
-  getToVisit: (takenCells) =>
-    for i in [@x - 1, @x, @x + 1]
-      for j in [@y - 1, @y, @y + 1]
-        unless @isOccupied(i, j, takenCells) or (i is @x and j is @y)
-          tuple = @validLocation @grid, i, j
-          @cells.push tuple unless tuple is null
-    @cells
-
-  # returns a valid location if it exists, otherwise null
-  validLocation: (grid, x, y) =>
-    while grid.validIndices x, y
-      return (new Tuple x, y) if (@grid.isEmpty x, y)
-      y--
+  @validLocation: (solutionGrid, x, y) ->
+    if @isValidIndex solutionGrid x, y
+      return (new Tuple x, y) if (@isEmpty solutionGrid, x, y)
     null
 
-  isOccupied: (x, y, takenCells) =>
-    for cell in takenCells
-      return true if x is cell.x and y is cell.y
-    false
+  @isValidIndex: (solutionGrid, x, y) ->
+    return x < solutionGrid.length and x >= 0 and
+      y < solutionGrid.length and y >= 0
+
+  @isEmpty: (solutionGrid, x, y) ->
+    return solutionGrid[y][x].value is ' '
 
 module.exports = AdjacentCellsCalculator
