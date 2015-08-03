@@ -6,18 +6,18 @@ GridCell = require('./GridCell');
 
 GameGrid = (function() {
   function GameGrid(dimension) {
+    var col, i, j, ref, ref1, row;
+    this.dimension = dimension;
     this.setEmpty = bind(this.setEmpty, this);
     this.isEmpty = bind(this.isEmpty, this);
     this.at = bind(this.at, this);
     this.validIndices = bind(this.validIndices, this);
     this.set = bind(this.set, this);
-    var i, j, k, l, ref, ref1;
     this.grid = [];
-    this.dimension = dimension;
-    for (i = k = 0, ref = this.dimension; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+    for (row = i = 0, ref = this.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
       this.grid.push([]);
-      for (j = l = 0, ref1 = this.dimension; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
-        this.grid[i].push(new GridCell);
+      for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+        this.grid[row].push(new GridCell(col, row));
       }
     }
   }
