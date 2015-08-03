@@ -32,7 +32,6 @@ class MathSwipeController
     # 10 -> &times
     # 11 -> +
     # 12 -> &divide
-    # console.log $('#assets')
     svgs = $('#assets svg')
     symbols = []
     for s,i in svgs
