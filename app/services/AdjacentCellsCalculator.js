@@ -27,7 +27,7 @@ AdjacentCellsCalculator = (function() {
   };
 
   AdjacentCellsCalculator.validLocation = function(solutionGrid, x, y) {
-    if (this.isValidIndex(solutionGrid(x, y))) {
+    if (this.isValidIndex(solutionGrid, x, y)) {
       if (this.isEmpty(solutionGrid, x, y)) {
         return new Tuple(x, y);
       }

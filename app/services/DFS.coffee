@@ -11,6 +11,12 @@ class DFS
         for col in [0...@grid.dimension]
           @grid.set row, col, ' '
           @clearSolutionGrid()
+    if @hasFoundSolution
+      for row in [0...@solutionGrid.length]
+        for col in [0...@solutionGrid.length]
+          @grid.set @solutionGrid[row][col].x, @solutionGrid[row][col].y, @solutionGrid[row][col].value
+      return true
+    false
 
   @clearSolutionGrid: ->
     @solutionGrid = []
@@ -32,7 +38,6 @@ class DFS
           else
             @solutionGrid = cloneGrid
       if hasPlaced
-        # TODO call push-up/push-down
         @pushDownSolutionGrid()
       else return false
     true
@@ -40,14 +45,14 @@ class DFS
   @search: (seedX, seedY, input) ->
     return true if input.length is 0
 
-    toVisit = @shuffle AdjacentCells.getAdjacent @solutionGrid, seedX, seedY
+    toVisit = @shuffle @AdjacentCells.getAdjacent @solutionGrid, seedX, seedY
     return false if toVisit.length is 0
 
     curr = toVisit.pop()
     while curr != undefined
       @solutionGrid[curr.y][curr.x].value = input[0]
       unless @search curr.x, curr.y, input.slice(1, input.length)
-        @solutionGrid = cloneGrid
+        @solutionGrid[curr.y][curr.x].value = ' '
         curr = toVisit.pop()
       else return true
     false
@@ -57,12 +62,23 @@ class DFS
     for row in [0...@solutionGrid.length]
       cloneGrid.push []
       for col in [0...@solutionGrid.length]
-        cloneGrid[row].push (new GridCell @solutionGrid[y][x].y, @solutionGrid[y][x].x)
-        cloneGrid[row][col].value = @solutionGrid[y][x].value
+        cloneGrid[row].push (new GridCell @solutionGrid[row][col].x, @solutionGrid[row][col].y)
+        cloneGrid[row][col].value = @solutionGrid[row][col].value
     cloneGrid
 
   @pushDownSolutionGrid: ->
-    # TODO
+    for row in [@solutionGrid.length-1..1]
+      for col in [@solutionGrid.length-1..0]
+        if @solutionGrid[row][col].value != ' '
+          for up in [row-1..0]
+            unless @solutionGrid[up][col].value != ' '
+              @swapCells row, col, up, col
+              break
+
+  @swapCells: (r1, c1, r2, c2) ->
+    temp = @solutionGrid[r1][c1]
+    @solutionGrid[r1][c1] = @solutionGrid[r2][c2]
+    @solutionGrid[r2][c2] = temp
 
   # Fisher-Yates shuffle
   @shuffle: (array) ->

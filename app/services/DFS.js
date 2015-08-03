@@ -8,34 +8,31 @@ GridCell = require('../models/GridCell');
 DFS = (function() {
   function DFS() {}
 
-  DFS.setEquationsOnGrid = function(grid, inputList, AdjacentCells1) {
-    var col, i, j, results, row;
+  DFS.setEquationsOnGrid = function(grid, inputList, AdjacentCells) {
+    var col, i, j, k, l, n, o, ref, ref1, ref2, ref3, row;
     this.grid = grid;
-    this.AdjacentCells = AdjacentCells1;
+    this.AdjacentCells = AdjacentCells;
     this.clearSolutionGrid();
-    results = [];
     for (i = j = 0; j < 10000; i = ++j) {
       if (this.hasFoundSolution(inputList)) {
         break;
       }
-      results.push((function() {
-        var k, ref, results1;
-        results1 = [];
-        for (row = k = 0, ref = this.grid.dimension; 0 <= ref ? k < ref : k > ref; row = 0 <= ref ? ++k : --k) {
-          results1.push((function() {
-            var l, ref1, results2;
-            results2 = [];
-            for (col = l = 0, ref1 = this.grid.dimension; 0 <= ref1 ? l < ref1 : l > ref1; col = 0 <= ref1 ? ++l : --l) {
-              this.grid.set(row, col, ' ');
-              results2.push(this.clearSolutionGrid());
-            }
-            return results2;
-          }).call(this));
+      for (row = k = 0, ref = this.grid.dimension; 0 <= ref ? k < ref : k > ref; row = 0 <= ref ? ++k : --k) {
+        for (col = l = 0, ref1 = this.grid.dimension; 0 <= ref1 ? l < ref1 : l > ref1; col = 0 <= ref1 ? ++l : --l) {
+          this.grid.set(row, col, ' ');
+          this.clearSolutionGrid();
         }
-        return results1;
-      }).call(this));
+      }
     }
-    return results;
+    if (this.hasFoundSolution) {
+      for (row = n = 0, ref2 = this.solutionGrid.length; 0 <= ref2 ? n < ref2 : n > ref2; row = 0 <= ref2 ? ++n : --n) {
+        for (col = o = 0, ref3 = this.solutionGrid.length; 0 <= ref3 ? o < ref3 : o > ref3; col = 0 <= ref3 ? ++o : --o) {
+          this.grid.set(this.solutionGrid[row][col].x, this.solutionGrid[row][col].y, this.solutionGrid[row][col].value);
+        }
+      }
+      return true;
+    }
+    return false;
   };
 
   DFS.clearSolutionGrid = function() {
@@ -86,7 +83,7 @@ DFS = (function() {
     if (input.length === 0) {
       return true;
     }
-    toVisit = this.shuffle(AdjacentCells.getAdjacent(this.solutionGrid, seedX, seedY));
+    toVisit = this.shuffle(this.AdjacentCells.getAdjacent(this.solutionGrid, seedX, seedY));
     if (toVisit.length === 0) {
       return false;
     }
@@ -94,7 +91,7 @@ DFS = (function() {
     while (curr !== void 0) {
       this.solutionGrid[curr.y][curr.x].value = input[0];
       if (!this.search(curr.x, curr.y, input.slice(1, input.length))) {
-        this.solutionGrid = cloneGrid;
+        this.solutionGrid[curr.y][curr.x].value = ' ';
         curr = toVisit.pop();
       } else {
         return true;
@@ -109,14 +106,51 @@ DFS = (function() {
     for (row = j = 0, ref = this.solutionGrid.length; 0 <= ref ? j < ref : j > ref; row = 0 <= ref ? ++j : --j) {
       cloneGrid.push([]);
       for (col = k = 0, ref1 = this.solutionGrid.length; 0 <= ref1 ? k < ref1 : k > ref1; col = 0 <= ref1 ? ++k : --k) {
-        cloneGrid[row].push(new GridCell(this.solutionGrid[y][x].y, this.solutionGrid[y][x].x));
-        cloneGrid[row][col].value = this.solutionGrid[y][x].value;
+        cloneGrid[row].push(new GridCell(this.solutionGrid[row][col].x, this.solutionGrid[row][col].y));
+        cloneGrid[row][col].value = this.solutionGrid[row][col].value;
       }
     }
     return cloneGrid;
   };
 
-  DFS.pushDownSolutionGrid = function() {};
+  DFS.pushDownSolutionGrid = function() {
+    var col, j, ref, results, row, up;
+    results = [];
+    for (row = j = ref = this.solutionGrid.length - 1; ref <= 1 ? j <= 1 : j >= 1; row = ref <= 1 ? ++j : --j) {
+      results.push((function() {
+        var k, ref1, results1;
+        results1 = [];
+        for (col = k = ref1 = this.solutionGrid.length - 1; ref1 <= 0 ? k <= 0 : k >= 0; col = ref1 <= 0 ? ++k : --k) {
+          if (this.solutionGrid[row][col].value !== ' ') {
+            results1.push((function() {
+              var l, ref2, results2;
+              results2 = [];
+              for (up = l = ref2 = row - 1; ref2 <= 0 ? l <= 0 : l >= 0; up = ref2 <= 0 ? ++l : --l) {
+                if (this.solutionGrid[up][col].value === ' ') {
+                  this.swapCells(row, col, up, col);
+                  break;
+                } else {
+                  results2.push(void 0);
+                }
+              }
+              return results2;
+            }).call(this));
+          } else {
+            results1.push(void 0);
+          }
+        }
+        return results1;
+      }).call(this));
+    }
+    return results;
+  };
+
+  DFS.swapCells = function(r1, c1, r2, c2) {
+    var temp;
+    temp = this.solutionGrid[r1][c1];
+    this.solutionGrid[r1][c1] = this.solutionGrid[r2][c2];
+    return this.solutionGrid[r2][c2] = temp;
+  };
 
   DFS.shuffle = function(array) {
     var i, m, t;

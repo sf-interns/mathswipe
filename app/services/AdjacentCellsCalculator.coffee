@@ -13,7 +13,7 @@ class AdjacentCellsCalculator
     cells
 
   @validLocation: (solutionGrid, x, y) ->
-    if @isValidIndex solutionGrid x, y
+    if @isValidIndex solutionGrid, x, y
       return (new Tuple x, y) if (@isEmpty solutionGrid, x, y)
     null
 
