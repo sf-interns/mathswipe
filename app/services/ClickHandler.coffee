@@ -34,6 +34,10 @@ class ClickHandler
     @numClicked--
     if isFirst then @clicked.shift() else @clicked.pop()
 
+  resetSelection: ->
+    while @numClicked > 0
+      @unclickCell @firstClicked()
+
   firstClicked: ->
     @clicked[0]
 
@@ -50,12 +54,11 @@ class ClickHandler
       cell.select()
       @addToClicked cell
     else 
-      console.log 'not adjacent.. reset'
-
+      @resetSelection()
+      @clickCell cell
 
   areAdjacent: (cell, otherCell) ->
-    return Math.abs cell.row - otherCell.row <= 1 and 
-      Math.abs cell.col - otherCell.col <=1
+    return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col)<=1
 
   unclickCell: (cell) ->
     return null unless cell is @firstClicked() or cell is @lastClicked()

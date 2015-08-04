@@ -68,6 +68,15 @@ ClickHandler = (function() {
     }
   };
 
+  ClickHandler.prototype.resetSelection = function() {
+    var results;
+    results = [];
+    while (this.numClicked > 0) {
+      results.push(this.unclickCell(this.firstClicked()));
+    }
+    return results;
+  };
+
   ClickHandler.prototype.firstClicked = function() {
     return this.clicked[0];
   };
@@ -85,12 +94,15 @@ ClickHandler = (function() {
       cell.select();
       return this.addToClicked(cell);
     } else {
-      return console.log('not adjacent.. reset');
+      this.resetSelection();
+      return this.clickCell(cell);
     }
   };
 
   ClickHandler.prototype.areAdjacent = function(cell, otherCell) {
-    return Math.abs(cell.row - otherCell.row <= 1 && Math.abs(cell.col - otherCell.col <= 1));
+    console.log(cell.row, otherCell.row);
+    console.log(cell.col, otherCell.col);
+    return Math.abs(cell.row - otherCell.row) <= 1 && Math.abs(cell.col - otherCell.col) <= 1;
   };
 
   ClickHandler.prototype.unclickCell = function(cell) {
