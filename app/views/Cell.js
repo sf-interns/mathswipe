@@ -97,10 +97,11 @@ Cell = (function() {
           return;
         }
         if (_this.isSelected) {
-          return _this.clickHandler.unclickCell(_this);
+          _this.clickHandler.unclickCell(_this);
         } else {
-          return _this.clickHandler.clickCell(_this);
+          _this.clickHandler.clickCell(_this);
         }
+        return e.stopPropagation();
       };
     })(this));
   };

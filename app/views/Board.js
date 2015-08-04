@@ -9,8 +9,9 @@ Board = (function() {
     this.two = two;
     this.Cell = Cell;
     this.colors = colors;
+    this.createCells = bind(this.createCells, this);
     this.createEmptyCells = bind(this.createEmptyCells, this);
-    this.clickHandler = new ClickHandler(this);
+    this.clickHandler = new ClickHandler(this, this.two);
     this.size = this.two.height * .80;
     offset = this.size * .025;
     width = (this.size - offset) / this.grid.dimension - offset;
@@ -24,6 +25,7 @@ Board = (function() {
     cellWidth = ((this.size - offset) / this.grid.dimension) - offset;
     this.createEmptyCells(cellWidth - 5);
     this.createCells(cellWidth);
+    this.clickHandler.bindDefaultClick(board);
     this.clickHandler.bindClickTo(this.cells);
     this.two.update();
   }

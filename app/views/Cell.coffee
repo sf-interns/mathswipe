@@ -66,12 +66,11 @@ class Cell
         @clickHandler.unclickCell this
       else
         @clickHandler.clickCell this
+      e.stopPropagation()
 
-  x: ->
-    @col
+  x: -> @col
 
-  y: ->
-    @row
+  y: -> @row
 
   delete: ->
     @hide()

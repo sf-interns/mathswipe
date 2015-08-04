@@ -1,8 +1,8 @@
+$ = require 'jquery'
+
 class ClickHandler
 
-  @numClicked = 0
-
-  constructor: (@board, @clicked=[]) ->
+  constructor: (@board, two, @clicked=[]) ->
     @numClicked = @clicked.length
     return unless @board.cells?
     for row in @board.cells
@@ -10,6 +10,11 @@ class ClickHandler
       for cell in row
         @addToClicked (cell) if cell.isSelected
     console.log @clicked
+
+  bindDefaultClick: (board) ->
+    $('body').click (e) =>
+      e.preventDefault()
+      @resetClicked()
 
   bindClickTo: (cells) ->
     if cells.bindClick?
@@ -34,7 +39,7 @@ class ClickHandler
     @numClicked--
     if isFirst then @clicked.shift() else @clicked.pop()
 
-  resetSelection: ->
+  resetClicked: ->
     while @numClicked > 0
       @unclickCell @firstClicked()
 
@@ -46,15 +51,12 @@ class ClickHandler
 
   clickCell: (cell) ->
     # if cell is adjacent to lastClicked
-    if @numClicked is 0
+    if @numClicked is 0 or @clicked.length is 0 or @areAdjacent cell, @lastClicked()
+      return if @cell in @clicked
       cell.select()
       @addToClicked cell
-    else if @areAdjacent cell, @lastClicked()
-      console.log 'an adjacent cell'
-      cell.select()
-      @addToClicked cell
-    else 
-      @resetSelection()
+    else
+      @resetClicked()
       @clickCell cell
 
   areAdjacent: (cell, otherCell) ->

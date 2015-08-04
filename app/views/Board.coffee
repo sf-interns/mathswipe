@@ -1,7 +1,7 @@
 class Board
 
   constructor: (@grid, @two, @Cell, @colors, ClickHandler) ->
-    @clickHandler = new ClickHandler this
+    @clickHandler = new ClickHandler this, @two
 
     @size = @two.height * .80
     offset = @size * .025
@@ -17,9 +17,13 @@ class Board
 
     @change = offset + width
     cellWidth = ((@size - offset ) / @grid.dimension ) - offset
+
     @createEmptyCells cellWidth - 5
     @createCells cellWidth
+
+    @clickHandler.bindDefaultClick board
     @clickHandler.bindClickTo @cells
+
     @two.update()
 
   createEmptyCells: (width) =>
@@ -32,7 +36,7 @@ class Board
         cell.setBorder @colors.emptyCellBorder
         @empty_cells[row].push cell
 
-  createCells: (width) ->
+  createCells: (width) =>
     @cells = []
     for row in [0...@grid.dimension]
       @cells.push []
