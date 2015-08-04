@@ -1,33 +1,38 @@
+$      = require 'jquery'
+Colors = require './colors'
+
 class Cell
 
   constructor: (@col, @row, @size, @two, @board) ->
     @isDeleted = false
+    @isSelected = false
     @rect = @two.makeRectangle @getX(), @getY(), @size, @size
     @two.update()
 
-  setColor: (c) =>
+  setColor: (c) ->
     @color = c
     @rect.fill = c
     @two.update()
 
-  setBorder: (c) =>
+  setBorder: (c) ->
     @rect.stroke = c
     @rect.linewidth = 6
     @two.update()
 
-  hide: =>
-    @rect.opacity = 0
+  hide: ->
+    @rect.visible = false
     @two.update()
 
-  getX: (col = @col) =>
+  getX: (col = @col) ->
     @board.x - (@board.size + @size) / 2 + (col + 1) * @board.change
 
-  getY: (row = @row) =>
+  getY: (row = @row) ->
     @board.y - (@board.size + @size) / 2 + (row + 1) * @board.change
 
-  shiftTo: (row, col) =>
+  shiftTo: (row, col) ->
     end = new Two.Vector @getX(col), @getY(row)
     start = new Two.Vector @getX(), @getY() 
+    goingDown = end.y > start.y
 
     @two.bind('update', (frameCount) =>
       dist = start.distanceTo end
@@ -37,11 +42,25 @@ class Cell
         @two.unbind 'update'
 
       delta = new Two.Vector 0, (dist * .125)
-      @rect.translation.addSelf delta
+      if goingDown then @rect.translation.addSelf delta
+      else @rect.translation.subSelf delta
       start = start.addSelf delta
     ).play()
 
-  delete: =>
+  bindClick: ->
+    $(@rect._renderer.elem).click (e) =>
+      console.log @col, @row, 'isSelected', @isSelected, 'isDeleted', @isDeleted
+      e.preventDefault()
+      return if @isDeleted
+      if @isSelected
+        @isSelected = false
+        @setColor Colors.cell
+      else
+        @isSelected = true
+        @setColor Colors.select
+
+
+  delete: ->
     @hide()
     @isDeleted = true
 

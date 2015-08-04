@@ -38,6 +38,7 @@ class Board
         cell = new @Cell col, row, width, @two, this
         cell.setColor @colors.cell
         cell.setBorder @colors.cellBorder
+        cell.bindClick()
         @cells[row].push cell
 
   deleteCells: (solution) ->
@@ -60,7 +61,7 @@ class Board
 
   swapCells: (r1, c1, r2, c2) ->
     # move the locations
-    @cells[r1][c1].shiftTo r2, c2
+    @cells[r1][c1].shiftTo r2, c2 
     @cells[r2][c2].shiftTo r1, c1
 
     # move the pointers 

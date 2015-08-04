@@ -60,6 +60,7 @@ Board = (function() {
           cell = new this.Cell(col, row, width, this.two, this);
           cell.setColor(this.colors.cell);
           cell.setBorder(this.colors.cellBorder);
+          cell.bindClick();
           results1.push(this.cells[row].push(cell));
         }
         return results1;
