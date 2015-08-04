@@ -40,6 +40,8 @@ MathSwipeController = (function() {
   MathSwipeController.prototype.createTwo = function() {
     var game, two;
     game = document.getElementById('game');
+    console.log(game.width);
+    console.log(game.height);
     two = new Two({
       fullscreen: false,
       autostart: true,

@@ -1,61 +1,32 @@
-<svg 
-     version="1.1" 
-     xmlns="http://www.w3.org/2000/svg" 
-     xmlns:xlink="http://www.w3.org/1999/xlink" 
-     width="212px" height="92px" 
-     viewBox="0 0 212 92" preserveAspectRatio="none"> 
-   <g> 
-<image width="212" height="92" xlink:href="data:image/png;base64, 
-iVBORw0KGgoAAAANSUhEUgAAANQAAABcCAMAAAAh42ufAAAABGdBTUEAALGPC/xhBQAAAwBQTFRF
-QzGzMCWsNSmuSDO0QC+wSDS0MietRDKzQDCxQjGyOCquQC+vQjGzPCywRzO0OCqvNimuOCqtNiqv
-OCqvRDKzOSqwOiqsOyywMietOyywOSuvNyqvOSuxPCyxOyyuOCqvQjGzOiuwOCqvNSmuOCqwNyqv
-NyqvPC2xQTCzNyqvPCyxNSmuOyytPy2xNCivOSqxOCqvNymvOSusNSiuNSmuPy6xOCqxOSqwNiqv
-OiuxNCiuOyyxMyitNCiuNyqvMSatOiuvNCiuNiqvNCiuOyuxMietNSmvMyiuMietMCasLyWsOyyx
-MCasNimuMCasAAAAplzA0HOLNCaDHxIVNx8lOiuhRydOMBlgOymRSilNql9yWjM8LBkdKBdWOimP
-Nh5LQCJzUDahUDanSCdhLhlaRzCTPSFUMRteQyl5OSqlUjm2NyiUGA03OSBi436iTDOfIhI2f0ZV
-RCYtVC44Qi2TlFJjOCV8OR9nKhc93HmSLh5aKxg1g0nRNyV9KhgcPiJNRyp0hkpZQyVlSShXKhdF
-TClpKRdMjE1eAgICNiNmOyBARy1+SS+COSiNOyIoUCtgKRYzQC2oOSqnLhk1QCqFSDCaNiN0SzGP
-Nx9dMhs+QCh40XSMPSyVOieDNh1Rn1hqOyBHIRMWRS6WOB9VRSyGUDiyQzChTys1NiaFQC2nUDar
-NR5FKRZHLhofNCNyKhdKSzSmOSVrRSZtQSl+Py6rQS2gQTCyOiusOiqiMxtWMyJvOyVlOSmfCQYH
-SzSiPyRsRy6JPCh8OCZ8RTKwLBdQwmuysGK8PSyg4HyUMB9cKhdBQjCwTje4KxhETDSsSDKsPiqS
-TDaxdkJPMCJqPyyhNiR6STGWNyiOMiFlOCiVEgoMMh9jQC6wQi+qSDKkOimXSjW1QiuBKxgwPy6w
-PS2tKRc5QzGzOiuuPSqZPCufPC2yNiWCOCiTOiqgOiqdSDO0NCR4OiqmNiN3PCyvyW+GGA0QzXKt
-KBdMPy6yPyMqNyV/PSyhmVXGsWN27YOeAgL//VIbegAAAFB0Uk5TwwhQ5+HzGtXbydv3+YH5Vm7D
-gYHbdM/5FJnnk4GT8WLPyaVWq42Hn+tQvWLVpWK3z2jhRDK3dHoygSaNLCxcGrE+bjiHIEoyJg4C
-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
-"/> 
-   </g> 
-</svg>	
-
+<?xml version="1.0"?>
+<svg width="640" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - http://svg-edit.googlecode.com/ -->
+ <g>
+  <title>Layer 1</title>
+  <line fill="none" stroke="#000000" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x1="236" y1="174" x2="236" y2="174" id="svg_2"/>
+  <line fill="none" stroke="#000000" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x1="228" y1="201" x2="228" y2="201" id="svg_3"/>
+  <rect stroke="#000000" id="svg_22" height="15" width="73.999998" y="230" x="263.999999" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" fill="#ff436d"/>
+  <line fill="none" stroke="#000000" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x1="249" y1="186" x2="249" y2="186" id="svg_4"/>
+  <line fill="none" stroke="#000000" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x1="248" y1="269" x2="248" y2="269" id="svg_5"/>
+  <line fill="none" stroke="#000000" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x1="202" y1="156" x2="202" y2="156" id="svg_6"/>
+  <line fill="none" stroke="#000000" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x1="202" y1="295" x2="202" y2="295" id="svg_7"/>
+  <line fill="none" stroke="#000000" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x1="204" y1="208" x2="204" y2="208" id="svg_9"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="252" y="181" width="0" height="0" id="svg_10"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="260" y="280" width="0" height="0" id="svg_11"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="313" y="113" width="0" height="0" id="svg_12"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="314" y="117" width="0" height="0" id="svg_13"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="190" y="193" width="0" height="0" id="svg_14"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="-107" y="-10" width="0" height="0" id="svg_15"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="180" y="175" width="0" height="0" id="svg_16"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="281" y="290" width="0" height="0" id="svg_17"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="281" y="290" width="0" height="0" id="svg_18"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="281" y="290" width="0" height="0" id="svg_19"/>
+  <rect fill="#ff436d" stroke="#000000" stroke-width="0" stroke-dasharray="null" stroke-linejoin="null" stroke-linecap="null" opacity="0.5" x="281" y="107" width="0" height="0" id="svg_20"/>
+  <rect stroke="#000000" id="svg_25" height="12.000001" width="61" y="297.5" x="270.500002" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" fill="#ff436d"/>
+  <rect stroke="#000000" id="svg_21" height="12.000001" width="52.000003" y="262" x="276.999998" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" fill="#ff436d"/>
+  <rect stroke="#000000" id="svg_23" height="12.000001" width="25.000001" y="239.499999" x="302.999999" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" fill="#ff436d"/>
+  <rect stroke="#000000" id="svg_26" height="12.000001" width="26.999999" y="289.499999" x="264.5" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" fill="#ff436d"/>
+  <rect stroke="#000000" id="svg_24" height="28.000001" width="20.000001" y="272.499999" x="317" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" fill="#ff436d"/>
+  <rect stroke="#000000" id="svg_27" height="13" width="28.999996" y="250.5" x="289.000001" stroke-linecap="null" stroke-linejoin="null" stroke-dasharray="null" stroke-width="0" fill="#ff436d"/>
+ </g>
+</svg>

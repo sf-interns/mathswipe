@@ -1,6 +1,6 @@
 .game-background {
-  /*background: linear-gradient(#B9B9B9,#E5E5E5);*/
-  background: linear-gradient(#000033,#000040);
+  background: linear-gradient(#B9B9B9,#E5E5E5);
+  /*background: linear-gradient(#000033,#000040);*/
 }
 
 .title-image {
@@ -27,7 +27,7 @@
 }
 
 .center-column {
-  width: 200px;
+  width: 480px;
   display: block;
   margin-left: auto;
   margin-right: auto;
