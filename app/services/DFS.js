@@ -8,12 +8,12 @@ GridCell = require('../models/GridCell');
 DFS = (function() {
   function DFS() {}
 
-  DFS.setEquationsOnGrid = function(size1, inputList, AdjacentCells) {
+  DFS.setEquationsOnGrid = function(size, inputList, AdjacentCells) {
     var col, grid, i, j, k, l, ref, ref1, row;
-    this.size = size1;
+    this.size = size;
     this.AdjacentCells = AdjacentCells;
     this.clearSolutionGrid();
-    grid = this.createEmptyGrid(this.size);
+    grid = this.createEmptyGrid();
     for (i = j = 0; j < 10000; i = ++j) {
       if (this.hasFoundSolution(inputList)) {
         for (row = k = 0, ref = this.solutionGrid.length; 0 <= ref ? k < ref : k > ref; row = 0 <= ref ? ++k : --k) {
@@ -145,12 +145,12 @@ DFS = (function() {
     return this.solutionGrid[r2][c2] = temp;
   };
 
-  DFS.createEmptyGrid = function(size) {
+  DFS.createEmptyGrid = function() {
     var col, grid, j, k, ref, ref1, row;
     grid = [];
-    for (row = j = 0, ref = size; 0 <= ref ? j < ref : j > ref; row = 0 <= ref ? ++j : --j) {
+    for (row = j = 0, ref = this.size; 0 <= ref ? j < ref : j > ref; row = 0 <= ref ? ++j : --j) {
       grid.push([]);
-      for (col = k = 0, ref1 = size; 0 <= ref1 ? k < ref1 : k > ref1; col = 0 <= ref1 ? ++k : --k) {
+      for (col = k = 0, ref1 = this.size; 0 <= ref1 ? k < ref1 : k > ref1; col = 0 <= ref1 ? ++k : --k) {
         grid[row].push(' ');
       }
     }

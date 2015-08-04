@@ -5,7 +5,7 @@ class DFS
 
   @setEquationsOnGrid: (@size, inputList, @AdjacentCells) ->
     @clearSolutionGrid()
-    grid = @createEmptyGrid @size
+    grid = @createEmptyGrid()
     for i in [0...10000]
       if @hasFoundSolution inputList
         for row in [0...@solutionGrid.length]
@@ -77,11 +77,11 @@ class DFS
     @solutionGrid[r1][c1] = @solutionGrid[r2][c2]
     @solutionGrid[r2][c2] = temp
 
-  @createEmptyGrid: (size) ->
+  @createEmptyGrid: ->
     grid = []
-    for row in [0...size]
+    for row in [0...@size]
       grid.push []
-      for col in [0...size]
+      for col in [0...@size]
         grid[row].push ' '
     grid
 
