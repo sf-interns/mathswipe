@@ -58,6 +58,7 @@ MathSwipeController = (function() {
     for (i = k = 0, len = svgs.length; k < len; i = ++k) {
       s = svgs[i];
       symbols.push(two.interpret(s));
+      console.log(s, symbols[i]);
       symbols[i].visible = false;
     }
     two.update();

@@ -40,7 +40,9 @@ class MathSwipeController
     symbols = []
     for s,i in svgs
       symbols.push (two.interpret s)
+      console.log s, symbols[i]
       symbols[i].visible = false
+      # symbols[i].opacity = 0
     two.update()
     symbols
 
