@@ -85,9 +85,9 @@ class Board
     @cells[r2][c2] = temp
 
     # Move the values
-    temp = boardValues[r1][c1]
-    boardValues[r1][c1] = boardValues[r2][c2]
-    boardValues[r2][c2] = temp
+    temp = @boardValues[r1][c1]
+    @boardValues[r1][c1] = @boardValues[r2][c2]
+    @boardValues[r2][c2] = temp
 
   copyValues: (source) ->
     dest = []

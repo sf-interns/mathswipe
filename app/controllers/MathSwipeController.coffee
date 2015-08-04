@@ -4,7 +4,6 @@ ExpressionGenerator     = require '../services/ExpressionGenerator'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
 Tuple                   = require '../models/Tuple'
-GameGrid                = require '../models/GameGrid'
 Board                   = require '../views/Board'
 Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
@@ -13,7 +12,11 @@ $                       = require 'jquery'
 class MathSwipeController
 
   constructor: ->
-    @gridModel = new GameGrid(5)
+    @gridModel = [
+      ['a','b','c'],
+      ['d','e','f'],
+      ['g','h','i']
+    ]
 
     two = @createTwo()
     symbols = @getSymbols two
@@ -63,10 +66,10 @@ class MathSwipeController
     inputList = ['abcde', 'fghij', 'klmno', 'pqrst', 'uvwxy' ]
     DFS.setEquationsOnGrid @gridModel, inputList, AdjacentCellsCalculator
     console.log '\n'
-    for each in @gridModel.grid
+    for each in @gridModel
       line = ''
       for j in each
-        line += j.value + '\t'
+        line += j+ '\t'
       console.log line
 
 module.exports = MathSwipeController

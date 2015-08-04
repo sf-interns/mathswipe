@@ -1,5 +1,5 @@
 $      = require 'jquery'
-Colors = require './colors'
+Colors = require './Colors'
 
 class Cell
 
@@ -36,7 +36,7 @@ class Cell
 
   shiftTo: (row, col) ->
     end = new Two.Vector @getX(col), @getY(row)
-    start = new Two.Vector @getX(), @getY() 
+    start = new Two.Vector @getX(), @getY()
     goingDown = end.y > start.y
 
     @two.bind('update', (frameCount) =>
@@ -47,10 +47,10 @@ class Cell
         @two.unbind 'update'
 
       delta = new Two.Vector 0, (dist * .125)
-      if goingDown 
+      if goingDown
         @rect.translation.addSelf delta
         start = start.addSelf delta
-      else 
+      else
         @rect.translation.subSelf delta
         start = start.subSelf delta
     ).play()

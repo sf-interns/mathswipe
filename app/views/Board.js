@@ -3,8 +3,8 @@ var Board,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Board = (function() {
-  function Board(boardValues1, two, Cell, Colors, ClickHandler) {
-    this.boardValues = boardValues1;
+  function Board(boardValues, two, Cell, Colors, ClickHandler) {
+    this.boardValues = boardValues;
     this.two = two;
     this.Cell = Cell;
     this.Colors = Colors;
@@ -116,9 +116,9 @@ Board = (function() {
     temp = this.cells[r1][c1];
     this.cells[r1][c1] = this.cells[r2][c2];
     this.cells[r2][c2] = temp;
-    temp = boardValues[r1][c1];
-    boardValues[r1][c1] = boardValues[r2][c2];
-    return boardValues[r2][c2] = temp;
+    temp = this.boardValues[r1][c1];
+    this.boardValues[r1][c1] = this.boardValues[r2][c2];
+    return this.boardValues[r2][c2] = temp;
   };
 
   Board.prototype.copyValues = function(source) {
