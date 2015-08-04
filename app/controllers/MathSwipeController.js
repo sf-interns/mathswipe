@@ -44,8 +44,6 @@ MathSwipeController = (function() {
   MathSwipeController.prototype.createTwo = function() {
     var game, size, two;
     game = document.getElementById('game');
-    console.log(game.width);
-    console.log(game.height);
     size = Math.min(Math.max($(window).width(), 310), 500);
     two = new Two({
       fullscreen: false,
@@ -63,7 +61,6 @@ MathSwipeController = (function() {
     for (i = k = 0, len = svgs.length; k < len; i = ++k) {
       s = svgs[i];
       symbols.push(two.interpret(s));
-      console.log(s, symbols[i]);
       symbols[i].visible = false;
     }
     two.update();
