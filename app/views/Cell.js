@@ -6,7 +6,7 @@ $ = require('jquery');
 Colors = require('./colors');
 
 Cell = (function() {
-  function Cell(col1, row1, size, two, board, clickHandler) {
+  function Cell(col1, row1, size, two, board, clickHandler, symbols) {
     this.col = col1;
     this.row = row1;
     this.size = size;
@@ -16,8 +16,22 @@ Cell = (function() {
     this.isDeleted = false;
     this.isSelected = false;
     this.rect = this.two.makeRectangle(this.getX(), this.getY(), this.size, this.size);
+    if (symbols != null) {
+      this.cell = this.two.makeGroup(this.rect, this.newSymbol(symbols, 8));
+    } else {
+      this.cell = this.two.makeGroup(this.rect);
+    }
     this.two.update();
   }
+
+  Cell.prototype.newSymbol = function(symbols, value) {
+    var symbol;
+    symbol = symbols[value].clone();
+    symbol.translation.set(this.getX() - 0.4 * this.size, this.getY() - 0.4 * this.size);
+    symbol.scale = (this.size / 480) * .8;
+    symbol.fill = 'black';
+    return symbol;
+  };
 
   Cell.prototype.setColor = function(c) {
     this.color = c;
@@ -32,7 +46,7 @@ Cell = (function() {
   };
 
   Cell.prototype.hide = function() {
-    this.rect.visible = false;
+    this.cell.visible = false;
     return this.two.update();
   };
 
@@ -67,15 +81,15 @@ Cell = (function() {
         var delta, dist;
         dist = start.distanceTo(end);
         if (dist < .00001) {
-          _this.rect.translation.set(_this.getX(col), _this.getY(row));
+          _this.cell.translation.clone(end);
           _this.two.unbind('update');
         }
         delta = new Two.Vector(0, dist * .125);
         if (goingDown) {
-          _this.rect.translation.addSelf(delta);
+          _this.cell.translation.addSelf(delta);
           return start = start.addSelf(delta);
         } else {
-          _this.rect.translation.subSelf(delta);
+          _this.cell.translation.subSelf(delta);
           return start = start.subSelf(delta);
         }
       };
@@ -97,7 +111,7 @@ Cell = (function() {
     if (this.clickHandler == null) {
       return;
     }
-    return $(this.rect._renderer.elem).click((function(_this) {
+    return $(this.cell._renderer.elem).click((function(_this) {
       return function(e) {
         e.preventDefault();
         if (_this.isDeleted) {

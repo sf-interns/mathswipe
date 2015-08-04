@@ -3,11 +3,22 @@ Colors = require './colors'
 
 class Cell
 
-  constructor: (@col, @row, @size, @two, @board, @clickHandler) ->
+  constructor: (@col, @row, @size, @two, @board, @clickHandler, symbols) ->
     @isDeleted = false
     @isSelected = false
     @rect = @two.makeRectangle @getX(), @getY(), @size, @size
+    if symbols? 
+      @cell = @two.makeGroup @rect, (@newSymbol symbols, 8)
+    else 
+      @cell = @two.makeGroup @rect
     @two.update()
+
+  newSymbol: (symbols, value)->
+    symbol = symbols[value].clone()
+    symbol.translation.set @getX() - 0.4*@size, @getY() - 0.4*@size
+    symbol.scale = (@size / 480) *.8
+    symbol.fill = 'black'
+    symbol
 
   setColor: (c) ->
     @color = c
@@ -20,7 +31,7 @@ class Cell
     @two.update()
 
   hide: ->
-    @rect.visible = false
+    @cell.visible = false
     @two.update()
 
   getX: (col = @col) ->
@@ -43,15 +54,15 @@ class Cell
       dist = start.distanceTo end
 
       if dist < .00001
-        @rect.translation.set (@getX col), (@getY row)
+        @cell.translation.clone end
         @two.unbind 'update'
 
       delta = new Two.Vector 0, (dist * .125)
       if goingDown 
-        @rect.translation.addSelf delta
+        @cell.translation.addSelf delta
         start = start.addSelf delta
       else 
-        @rect.translation.subSelf delta
+        @cell.translation.subSelf delta
         start = start.subSelf delta
     ).play()
 
@@ -67,7 +78,7 @@ class Cell
 
   bindClick: ->
     return unless @clickHandler?
-    $(@rect._renderer.elem).click (e) =>
+    $(@cell._renderer.elem).click (e) =>
       e.preventDefault()
       return if @isDeleted
       if @isSelected

@@ -32,10 +32,10 @@ MathSwipeController = (function() {
     this.testExpGen = bind(this.testExpGen, this);
     this.tests = bind(this.tests, this);
     var symbols, two;
-    this.gridModel = new GameGrid(5);
+    this.gridModel = [['1', '2', '3'], ['1', '2', '3'], ['1', '2', '3']];
     two = this.createTwo();
     symbols = this.getSymbols(two);
-    this.board = new Board(this.gridModel, two, Cell, Colors, ClickHandler);
+    this.board = new Board(this.gridModel, two, Cell, Colors, ClickHandler, symbols);
     this.tests();
   }
 
@@ -62,10 +62,7 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.tests = function() {
-    this.testExpGen();
-    this.testCellDelete();
-    this.testInputSolver();
-    return this.testDFS();
+    return this.testCellDelete();
   };
 
   MathSwipeController.prototype.testExpGen = function() {

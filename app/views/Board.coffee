@@ -1,15 +1,16 @@
 class Board
 
   # @boardValues is a 2D array of characters
-  constructor: (@boardValues, @two, @Cell, @Colors, ClickHandler) ->
+  constructor: (@boardValues, @two, @Cell, @Colors, ClickHandler, symbols) ->
     # Unused now, but will be used for board reset
     @initialValues = @copyValues @boardValues
     @dimension = @boardValues.length or 3
+
     @clickHandler = new ClickHandler this, @two
 
     @createBoard()
     @createEmptyCells @cellWidth - 5
-    @createCells @cellWidth
+    @createCells @cellWidth, symbols
 
     @clickHandler.bindDefaultClick @board
     @clickHandler.bindClickTo @cells
@@ -45,12 +46,12 @@ class Board
         cell.setBorder @Colors.emptyCellBorder
         @empty_cells[row].push cell
 
-  createCells: (width) =>
+  createCells: (width, symbols) =>
     @cells = []
     for row in [0...@dimension]
       @cells.push []
       for col in [0...@dimension]
-        cell = new @Cell col, row, width, @two, this, @clickHandler
+        cell = new @Cell col, row, width, @two, this, @clickHandler, symbols
         cell.setColor @Colors.cell
         cell.setBorder @Colors.cellBorder
         @cells[row].push cell
@@ -85,9 +86,9 @@ class Board
     @cells[r2][c2] = temp
 
     # Move the values
-    temp = boardValues[r1][c1]
-    boardValues[r1][c1] = boardValues[r2][c2]
-    boardValues[r2][c2] = temp
+    temp = @boardValues[r1][c1]
+    @boardValues[r1][c1] = @boardValues[r2][c2]
+    @boardValues[r2][c2] = temp
 
   copyValues: (source) ->
     dest = []

@@ -3,8 +3,8 @@ var Board,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Board = (function() {
-  function Board(boardValues1, two, Cell, Colors, ClickHandler) {
-    this.boardValues = boardValues1;
+  function Board(boardValues, two, Cell, Colors, ClickHandler, symbols) {
+    this.boardValues = boardValues;
     this.two = two;
     this.Cell = Cell;
     this.Colors = Colors;
@@ -16,7 +16,7 @@ Board = (function() {
     this.clickHandler = new ClickHandler(this, this.two);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
-    this.createCells(this.cellWidth);
+    this.createCells(this.cellWidth, symbols);
     this.clickHandler.bindDefaultClick(this.board);
     this.clickHandler.bindClickTo(this.cells);
     this.two.update();
@@ -57,7 +57,7 @@ Board = (function() {
     return results;
   };
 
-  Board.prototype.createCells = function(width) {
+  Board.prototype.createCells = function(width, symbols) {
     var cell, col, i, ref, results, row;
     this.cells = [];
     results = [];
@@ -67,7 +67,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler);
+          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symbols);
           cell.setColor(this.Colors.cell);
           cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));
@@ -116,9 +116,9 @@ Board = (function() {
     temp = this.cells[r1][c1];
     this.cells[r1][c1] = this.cells[r2][c2];
     this.cells[r2][c2] = temp;
-    temp = boardValues[r1][c1];
-    boardValues[r1][c1] = boardValues[r2][c2];
-    return boardValues[r2][c2] = temp;
+    temp = this.boardValues[r1][c1];
+    this.boardValues[r1][c1] = this.boardValues[r2][c2];
+    return this.boardValues[r2][c2] = temp;
   };
 
   Board.prototype.copyValues = function(source) {

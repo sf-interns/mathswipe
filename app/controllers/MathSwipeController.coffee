@@ -13,11 +13,13 @@ $                       = require 'jquery'
 class MathSwipeController
 
   constructor: ->
-    @gridModel = new GameGrid(5)
+    @gridModel = [['1','2','3'],
+                  ['1','2','3'],
+                  ['1','2','3']]
 
     two = @createTwo()
     symbols = @getSymbols two
-    @board = new Board @gridModel, two, Cell, Colors, ClickHandler
+    @board = new Board @gridModel, two, Cell, Colors, ClickHandler, symbols
 
     @tests()
 
@@ -42,10 +44,10 @@ class MathSwipeController
     symbols
 
   tests: =>
-    @testExpGen()
+    # @testExpGen()
     @testCellDelete()
-    @testInputSolver()
-    @testDFS()
+    # @testInputSolver()
+    # @testDFS()
 
   testExpGen: =>
     for length in [1..30]
