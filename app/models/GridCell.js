@@ -3,7 +3,9 @@ var GridCell,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 GridCell = (function() {
-  function GridCell() {
+  function GridCell(x, y) {
+    this.x = x;
+    this.y = y;
     this.isEmpty = bind(this.isEmpty, this);
     this.value = ' ';
     this.isClicked = false;
