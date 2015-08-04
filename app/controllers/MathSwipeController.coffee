@@ -14,8 +14,8 @@ class MathSwipeController
 
   constructor: ->
     @gridModel = [['1','2','3'],
-                  ['1','2','3'],
-                  ['1','2','3']]
+                  ['+','5','6'],
+                  ['0','8','9']]
 
     two = @createTwo()
     symbols = @getSymbols two

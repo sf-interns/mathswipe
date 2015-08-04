@@ -3,19 +3,28 @@ Colors = require './colors'
 
 class Cell
 
-  constructor: (@col, @row, @size, @two, @board, @clickHandler, symbols) ->
+  constructor: (@col, @row, @size, @two, @board, @clickHandler, symbols, value) ->
     @isDeleted = false
     @isSelected = false
     @rect = @two.makeRectangle @getX(), @getY(), @size, @size
     if symbols? 
-      @cell = @two.makeGroup @rect, (@newSymbol symbols, 8)
+      @cell = @two.makeGroup @rect, (@newSymbol symbols, @toIdx value)
     else 
       @cell = @two.makeGroup @rect
     @two.update()
 
+  toIdx: (val) ->
+    return null unless val.length is 1
+    switch val
+      when '*' then 10
+      when '+' then 11
+      when '-' then 12
+      else parseInt val
+
   newSymbol: (symbols, value)->
+
     symbol = symbols[value].clone()
-    symbol.translation.set @getX() - 0.4*@size, @getY() - 0.4*@size
+    symbol.translation.set @getX() - (0.4 * @size), @getY() - (0.4 * @size)
     symbol.scale = (@size / 480) *.8
     symbol.fill = 'black'
     symbol

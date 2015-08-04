@@ -6,7 +6,7 @@ $ = require('jquery');
 Colors = require('./colors');
 
 Cell = (function() {
-  function Cell(col1, row1, size, two, board, clickHandler, symbols) {
+  function Cell(col1, row1, size, two, board, clickHandler, symbols, value) {
     this.col = col1;
     this.row = row1;
     this.size = size;
@@ -17,17 +17,33 @@ Cell = (function() {
     this.isSelected = false;
     this.rect = this.two.makeRectangle(this.getX(), this.getY(), this.size, this.size);
     if (symbols != null) {
-      this.cell = this.two.makeGroup(this.rect, this.newSymbol(symbols, 8));
+      this.cell = this.two.makeGroup(this.rect, this.newSymbol(symbols, this.toIdx(value)));
     } else {
       this.cell = this.two.makeGroup(this.rect);
     }
     this.two.update();
   }
 
+  Cell.prototype.toIdx = function(val) {
+    if (val.length !== 1) {
+      return null;
+    }
+    switch (val) {
+      case '*':
+        return 10;
+      case '+':
+        return 11;
+      case '-':
+        return 12;
+      default:
+        return parseInt(val);
+    }
+  };
+
   Cell.prototype.newSymbol = function(symbols, value) {
     var symbol;
     symbol = symbols[value].clone();
-    symbol.translation.set(this.getX() - 0.4 * this.size, this.getY() - 0.4 * this.size);
+    symbol.translation.set(this.getX() - (0.4 * this.size), this.getY() - (0.4 * this.size));
     symbol.scale = (this.size / 480) * .8;
     symbol.fill = 'black';
     return symbol;

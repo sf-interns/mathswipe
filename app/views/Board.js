@@ -67,7 +67,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symbols);
+          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symbols, this.boardValues[row][col]);
           cell.setColor(this.Colors.cell);
           cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));

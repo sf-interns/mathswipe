@@ -32,7 +32,7 @@ MathSwipeController = (function() {
     this.testExpGen = bind(this.testExpGen, this);
     this.tests = bind(this.tests, this);
     var symbols, two;
-    this.gridModel = [['1', '2', '3'], ['1', '2', '3'], ['1', '2', '3']];
+    this.gridModel = [['1', '2', '3'], ['+', '5', '6'], ['0', '8', '9']];
     two = this.createTwo();
     symbols = this.getSymbols(two);
     this.board = new Board(this.gridModel, two, Cell, Colors, ClickHandler, symbols);

@@ -51,7 +51,7 @@ class Board
     for row in [0...@dimension]
       @cells.push []
       for col in [0...@dimension]
-        cell = new @Cell col, row, width, @two, this, @clickHandler, symbols
+        cell = new @Cell col, row, width, @two, this, @clickHandler, symbols, @boardValues[row][col]
         cell.setColor @Colors.cell
         cell.setBorder @Colors.cellBorder
         @cells[row].push cell
