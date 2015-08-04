@@ -9,7 +9,6 @@ ClickHandler = (function() {
     var cell, i, j, len, len1, ref, row;
     this.board = board1;
     this.clicked = clicked != null ? clicked : [];
-    this.numClicked = this.clicked.length;
     if (this.board.cells == null) {
       return;
     }
@@ -64,19 +63,17 @@ ClickHandler = (function() {
     if (cell.isDeleted) {
       return;
     }
-    this.numClicked++;
     return this.clicked.push(cell);
   };
 
   ClickHandler.prototype.removeFromClicked = function(cell) {
-    this.numClicked--;
     return this.clicked.pop();
   };
 
   ClickHandler.prototype.resetClicked = function() {
-    var results;
+    var i, numClicked, ref, results;
     results = [];
-    while (this.numClicked > 0) {
+    for (numClicked = i = ref = this.clicked.length; ref <= 0 ? i < 0 : i > 0; numClicked = ref <= 0 ? ++i : --i) {
       results.push(this.unclickCell(this.lastClicked()));
     }
     return results;
@@ -87,12 +84,12 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.lastClicked = function() {
-    return this.clicked[this.numClicked - 1];
+    return this.clicked[this.clicked.length - 1];
   };
 
   ClickHandler.prototype.clickCell = function(cell) {
     var ref;
-    if (this.numClicked === 0 || this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
+    if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
       if (ref = this.cell, indexOf.call(this.clicked, ref) >= 0) {
         return;
       }
@@ -115,9 +112,7 @@ ClickHandler = (function() {
       return null;
     }
     cell.unSelect();
-    console.log(this.numClicked);
-    this.removeFromClicked(cell);
-    return console.log(this.numClicked);
+    return this.removeFromClicked(cell);
   };
 
   return ClickHandler;

@@ -3,7 +3,6 @@ $ = require 'jquery'
 class ClickHandler
 
   constructor: (@board, two, @clicked=[]) ->
-    @numClicked = @clicked.length
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
@@ -31,26 +30,25 @@ class ClickHandler
 
   addToClicked: (cell) ->
     return if cell.isDeleted
-    @numClicked++
     @clicked.push cell
 
   removeFromClicked: (cell) ->
-    @numClicked--
     @clicked.pop()
 
   resetClicked: ->
-    while @numClicked > 0
-      @unclickCell @lastClicked()
+    @unclickCell @lastClicked() for numClicked in [@clicked.length...0]
+
+
 
   firstClicked: ->
     @clicked[0]
 
   lastClicked: ->
-    @clicked[@numClicked - 1]
+    @clicked[@clicked.length - 1]
 
   clickCell: (cell) ->
     # if cell is adjacent to lastClicked
-    if @numClicked is 0 or @clicked.length is 0 or @areAdjacent cell, @lastClicked()
+    if @clicked.length is 0 or @areAdjacent cell, @lastClicked()
       return if @cell in @clicked
       cell.select()
       @addToClicked cell
@@ -65,8 +63,6 @@ class ClickHandler
     last = @lastClicked()
     return null unless cell is @lastClicked()
     cell.unSelect()
-    console.log @numClicked
     @removeFromClicked cell
-    console.log @numClicked
 
 module.exports = ClickHandler
