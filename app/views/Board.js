@@ -116,7 +116,6 @@ Board = (function() {
     temp = this.cells[r1][c1];
     this.cells[r1][c1] = this.cells[r2][c2];
     this.cells[r2][c2] = temp;
-    Move(the(values));
     temp = boardValues[r1][c1];
     boardValues[r1][c1] = boardValues[r2][c2];
     return boardValues[r2][c2] = temp;

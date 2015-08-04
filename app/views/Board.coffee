@@ -84,7 +84,7 @@ class Board
     @cells[r1][c1] = @cells[r2][c2]
     @cells[r2][c2] = temp
 
-    Move the values
+    # Move the values
     temp = boardValues[r1][c1]
     boardValues[r1][c1] = boardValues[r2][c2]
     boardValues[r2][c2] = temp
