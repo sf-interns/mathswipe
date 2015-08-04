@@ -3,46 +3,52 @@ var Board,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Board = (function() {
-  function Board(grid, two, Cell, colors, ClickHandler) {
-    var board, cellWidth, offset, width;
-    this.grid = grid;
+  function Board(boardValues1, two, Cell, Colors, ClickHandler) {
+    this.boardValues = boardValues1;
     this.two = two;
     this.Cell = Cell;
-    this.colors = colors;
+    this.Colors = Colors;
     this.createCells = bind(this.createCells, this);
     this.createEmptyCells = bind(this.createEmptyCells, this);
+    this.createBoard = bind(this.createBoard, this);
+    this.initialValues = this.copyValues(this.boardValues);
+    this.dimension = this.boardValues.length || 3;
     this.clickHandler = new ClickHandler(this, this.two);
-    this.size = this.two.height * .80;
-    offset = this.size * .025;
-    width = (this.size - offset) / this.grid.dimension - offset;
-    this.x = this.two.width / 2;
-    this.y = this.two.height / 2;
-    this.y = this.y < this.size / 2 ? this.size / 2 : this.y;
-    board = this.two.makeRectangle(this.x, this.y, this.size, this.size);
-    board.noStroke().fill = this.colors.board;
-    board.visible = true;
-    this.change = offset + width;
-    cellWidth = ((this.size - offset) / this.grid.dimension) - offset;
-    this.createEmptyCells(cellWidth - 5);
-    this.createCells(cellWidth);
-    this.clickHandler.bindDefaultClick(board);
+    this.createBoard();
+    this.createEmptyCells(this.cellWidth - 5);
+    this.createCells(this.cellWidth);
+    this.clickHandler.bindDefaultClick(this.board);
     this.clickHandler.bindClickTo(this.cells);
     this.two.update();
   }
+
+  Board.prototype.createBoard = function() {
+    var offset;
+    this.size = this.two.height * .80;
+    offset = this.size * .025;
+    this.cellWidth = ((this.size - offset) / this.dimension) - offset;
+    this.change = offset + this.cellWidth;
+    this.x = this.two.width / 2;
+    this.y = this.two.height / 2;
+    this.y = this.y < this.size / 2 ? this.size / 2 : this.y;
+    this.board = this.two.makeRectangle(this.x, this.y, this.size, this.size);
+    this.board.noStroke().fill = this.Colors.board;
+    return this.board.visible = true;
+  };
 
   Board.prototype.createEmptyCells = function(width) {
     var cell, col, i, ref, results, row;
     this.empty_cells = [];
     results = [];
-    for (row = i = 0, ref = this.grid.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+    for (row = i = 0, ref = this.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
       this.empty_cells.push([]);
       results.push((function() {
         var j, ref1, results1;
         results1 = [];
-        for (col = j = 0, ref1 = this.grid.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+        for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
           cell = new this.Cell(col, row, width, this.two, this);
-          cell.setColor(this.colors.emptyCell);
-          cell.setBorder(this.colors.emptyCellBorder);
+          cell.setColor(this.Colors.emptyCell);
+          cell.setBorder(this.Colors.emptyCellBorder);
           results1.push(this.empty_cells[row].push(cell));
         }
         return results1;
@@ -55,15 +61,15 @@ Board = (function() {
     var cell, col, i, ref, results, row;
     this.cells = [];
     results = [];
-    for (row = i = 0, ref = this.grid.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+    for (row = i = 0, ref = this.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
       this.cells.push([]);
       results.push((function() {
         var j, ref1, results1;
         results1 = [];
-        for (col = j = 0, ref1 = this.grid.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+        for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
           cell = new this.Cell(col, row, width, this.two, this, this.clickHandler);
-          cell.setColor(this.colors.cell);
-          cell.setBorder(this.colors.cellBorder);
+          cell.setColor(this.Colors.cell);
+          cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));
         }
         return results1;
@@ -73,24 +79,23 @@ Board = (function() {
   };
 
   Board.prototype.deleteCells = function(solution) {
-    var i, len, results, tuple;
-    results = [];
+    var i, len, tuple;
     for (i = 0, len = solution.length; i < len; i++) {
       tuple = solution[i];
-      results.push(this.deleteCellAt(tuple.x, tuple.y));
+      this.deleteCellAt(tuple.x, tuple.y);
     }
-    return results;
+    return this.pushAllCellsToBottom();
   };
 
   Board.prototype.deleteCellAt = function(x, y) {
-    this.cells[y][x]["delete"]();
-    return this.pushAllCellsToBottom();
+    this.boardValues[y][x] = ' ';
+    return this.cells[y][x]["delete"]();
   };
 
   Board.prototype.pushAllCellsToBottom = function() {
     var col, i, j, k, ref, ref1, ref2, row, up;
-    for (row = i = ref = this.grid.dimension - 1; ref <= 1 ? i <= 1 : i >= 1; row = ref <= 1 ? ++i : --i) {
-      for (col = j = ref1 = this.grid.dimension - 1; ref1 <= 0 ? j <= 0 : j >= 0; col = ref1 <= 0 ? ++j : --j) {
+    for (row = i = ref = this.dimension - 1; ref <= 1 ? i <= 1 : i >= 1; row = ref <= 1 ? ++i : --i) {
+      for (col = j = ref1 = this.dimension - 1; ref1 <= 0 ? j <= 0 : j >= 0; col = ref1 <= 0 ? ++j : --j) {
         if (this.cells[row][col].isDeleted) {
           for (up = k = ref2 = row - 1; ref2 <= 0 ? k <= 0 : k >= 0; up = ref2 <= 0 ? ++k : --k) {
             if (!this.cells[up][col].isDeleted) {
@@ -110,7 +115,23 @@ Board = (function() {
     this.cells[r2][c2].shiftTo(r1, c1);
     temp = this.cells[r1][c1];
     this.cells[r1][c1] = this.cells[r2][c2];
-    return this.cells[r2][c2] = temp;
+    this.cells[r2][c2] = temp;
+    Move(the(values));
+    temp = boardValues[r1][c1];
+    boardValues[r1][c1] = boardValues[r2][c2];
+    return boardValues[r2][c2] = temp;
+  };
+
+  Board.prototype.copyValues = function(source) {
+    var col, dest, i, j, ref, ref1, row;
+    dest = [];
+    for (row = i = 0, ref = this.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+      dest.push([]);
+      for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+        dest[row].push(source[row][col]);
+      }
+    }
+    return dest;
   };
 
   return Board;
