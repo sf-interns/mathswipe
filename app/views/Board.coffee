@@ -66,7 +66,7 @@ class Board
 
   swapCells: (r1, c1, r2, c2) ->
     # move the locations
-    @cells[r1][c1].shiftTo r2, c2 
+    @cells[r1][c1].shiftTo r2, c2
     @cells[r2][c2].shiftTo r1, c1
 
     # move the pointers

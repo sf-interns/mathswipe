@@ -2,12 +2,12 @@ $ = require 'jquery'
 
 class ClickHandler
 
-  constructor: (@board, two, @clicked=[]) ->
+  constructor: (@board, two, @clicked = []) ->
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
       for cell in row
-        @addToClicked (cell) if cell.isSelected
+        (@addToClicked cell) if cell.isSelected
 
   bindDefaultClick: (board) ->
     $('body').click (e) =>
@@ -37,8 +37,6 @@ class ClickHandler
 
   resetClicked: ->
     @unclickCell @lastClicked() for numClicked in [@clicked.length...0]
-
-
 
   firstClicked: ->
     @clicked[0]
