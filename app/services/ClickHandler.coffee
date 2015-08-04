@@ -27,7 +27,7 @@ class ClickHandler
         if cell.bindClick?
           cell.bindClick()
         else
-          console.log 'binding supported for 2D arrays and simpler'
+          console.log 'WARN: object not 2D arrays or simpler or no BindClick method'
 
   addToClicked: (cell) ->
     return if cell.isDeleted
