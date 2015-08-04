@@ -36,7 +36,7 @@ class Cell
 
     @two.bind('update', (frameCount) =>
       dist = start.distanceTo end
-      
+
       if dist < 1
         @rect.translation.set (@getX col), (@getY row)
         @two.unbind 'update'

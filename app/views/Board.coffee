@@ -45,7 +45,7 @@ class Board
   deleteCells: (solution) ->
     for tuple in solution
       @deleteCellAt tuple.x, tuple.y
-  
+
   deleteCellAt: (x, y) ->
     @cells[y][x].delete()
     @pushAllCellsToBottom()
@@ -65,9 +65,9 @@ class Board
     @cells[r1][c1].shiftTo r2, c2 
     @cells[r2][c2].shiftTo r1, c1
 
-    # move the pointers 
+    # move the pointers
     temp = @cells[r1][c1]
     @cells[r1][c1] = @cells[r2][c2]
-    @cells[r2][c2] = temp    
+    @cells[r2][c2] = temp
 
 module.exports = Board
