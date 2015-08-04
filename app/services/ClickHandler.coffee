@@ -9,7 +9,6 @@ class ClickHandler
       break if row.length is 0
       for cell in row
         @addToClicked (cell) if cell.isSelected
-    console.log @clicked
 
   bindDefaultClick: (board) ->
     $('body').click (e) =>

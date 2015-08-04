@@ -42,11 +42,10 @@ class MathSwipeController
     symbols
 
   tests: =>
-    # @testExpGen()
-    # @testCellDelete()
-    @testClickHelper()
-    # @testInputSolver()
-    # @testDFS()
+    @testExpGen()
+    @testCellDelete()
+    @testInputSolver()
+    @testDFS()
 
   testExpGen: =>
     for length in [1..30]
@@ -69,8 +68,5 @@ class MathSwipeController
       for j in each
         line += j.value + '\t'
       console.log line
-
-  testClickHelper: ->
-    clickHelper = new ClickHandler @board, []
 
 module.exports = MathSwipeController

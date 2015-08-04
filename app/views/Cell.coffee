@@ -57,9 +57,7 @@ class Cell
 
   bindClick: ->
     return unless @clickHandler?
-    console.log 'bindClick'
     $(@rect._renderer.elem).click (e) =>
-      console.log @col, @row, 'isSelected', @isSelected, 'isDeleted', @isDeleted
       e.preventDefault()
       return if @isDeleted
       if @isSelected

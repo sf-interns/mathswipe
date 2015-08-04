@@ -26,7 +26,6 @@ ClickHandler = (function() {
         }
       }
     }
-    console.log(this.clicked);
   }
 
   ClickHandler.prototype.bindDefaultClick = function(board) {

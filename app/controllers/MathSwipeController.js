@@ -62,7 +62,10 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.tests = function() {
-    return this.testClickHelper();
+    this.testExpGen();
+    this.testCellDelete();
+    this.testInputSolver();
+    return this.testDFS();
   };
 
   MathSwipeController.prototype.testExpGen = function() {
@@ -102,11 +105,6 @@ MathSwipeController = (function() {
       results.push(console.log(line));
     }
     return results;
-  };
-
-  MathSwipeController.prototype.testClickHelper = function() {
-    var clickHelper;
-    return clickHelper = new ClickHandler(this.board, []);
   };
 
   return MathSwipeController;
