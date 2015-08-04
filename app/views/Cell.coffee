@@ -3,7 +3,7 @@ Colors = require './colors'
 
 class Cell
 
-  constructor: (@col, @row, @size, @two, @board) ->
+  constructor: (@col, @row, @size, @two, @board, @clickHandler) ->
     @isDeleted = false
     @isSelected = false
     @rect = @two.makeRectangle @getX(), @getY(), @size, @size
@@ -47,17 +47,25 @@ class Cell
       start = start.addSelf delta
     ).play()
 
+  select: ->
+    return unless @clickHandler?
+    @isSelected = true
+    @setColor Colors.select
+
+  unSelect: ->
+    return unless @clickHandler?
+    @isSelected = false
+    @setColor Colors.cell
+
   bindClick: ->
     $(@rect._renderer.elem).click (e) =>
       console.log @col, @row, 'isSelected', @isSelected, 'isDeleted', @isDeleted
       e.preventDefault()
       return if @isDeleted
       if @isSelected
-        @isSelected = false
-        @setColor Colors.cell
+        @unSelect()
       else
-        @isSelected = true
-        @setColor Colors.select
+        @select()
 
 
   delete: ->

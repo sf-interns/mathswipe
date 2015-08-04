@@ -6,12 +6,13 @@ $ = require('jquery');
 Colors = require('./colors');
 
 Cell = (function() {
-  function Cell(col1, row1, size, two, board) {
+  function Cell(col1, row1, size, two, board, clickHandler) {
     this.col = col1;
     this.row = row1;
     this.size = size;
     this.two = two;
     this.board = board;
+    this.clickHandler = clickHandler;
     this.isDeleted = false;
     this.isSelected = false;
     this.rect = this.two.makeRectangle(this.getX(), this.getY(), this.size, this.size);
@@ -73,6 +74,22 @@ Cell = (function() {
     })(this)).play();
   };
 
+  Cell.prototype.select = function() {
+    if (this.clickHandler == null) {
+      return;
+    }
+    this.isSelected = true;
+    return this.setColor(Colors.select);
+  };
+
+  Cell.prototype.unSelect = function() {
+    if (this.clickHandler == null) {
+      return;
+    }
+    this.isSelected = false;
+    return this.setColor(Colors.cell);
+  };
+
   Cell.prototype.bindClick = function() {
     return $(this.rect._renderer.elem).click((function(_this) {
       return function(e) {
@@ -82,11 +99,9 @@ Cell = (function() {
           return;
         }
         if (_this.isSelected) {
-          _this.isSelected = false;
-          return _this.setColor(Colors.cell);
+          return _this.unSelect();
         } else {
-          _this.isSelected = true;
-          return _this.setColor(Colors.select);
+          return _this.select();
         }
       };
     })(this));

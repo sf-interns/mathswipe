@@ -2,6 +2,7 @@ InputSolver             = require '../services/InputSolver'
 DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
+ClickHandler            = require '../services/ClickHandler'
 Tuple                   = require '../models/Tuple'
 GameGrid                = require '../models/GameGrid'
 Board                   = require '../views/Board'
@@ -16,7 +17,7 @@ class MathSwipeController
 
     two = @createTwo()
     symbols = @getSymbols two
-    @board = new Board @gridModel, two, Cell, Colors
+    @board = new Board @gridModel, two, Cell, Colors, ClickHandler
 
     @tests()
 
@@ -41,10 +42,11 @@ class MathSwipeController
     symbols
 
   tests: =>
-    @testExpGen()
-    @testCellDelete()
-    @testInputSolver()
-    @testDFS()
+    # @testExpGen()
+    # @testCellDelete()
+    @testClickHelper()
+    # @testInputSolver()
+    # @testDFS()
 
   testExpGen: =>
     for length in [1..30]
@@ -67,5 +69,8 @@ class MathSwipeController
       for j in each
         line += j.value + '\t'
       console.log line
+
+  testClickHelper: ->
+    clickHelper = new ClickHandler @board, []
 
 module.exports = MathSwipeController
