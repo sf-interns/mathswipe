@@ -42,11 +42,15 @@ MathSwipeController = (function() {
   }
 
   MathSwipeController.prototype.createTwo = function() {
-    var two;
+    var game, size, two;
+    game = document.getElementById('game');
+    size = Math.min(Math.max($(window).width(), 310), 500);
     two = new Two({
-      fullscreen: true,
-      autostart: true
-    }).appendTo(document.getElementById('game'));
+      fullscreen: false,
+      autostart: true,
+      width: size,
+      height: size
+    }).appendTo(game);
     return two;
   };
 

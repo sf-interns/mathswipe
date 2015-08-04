@@ -24,7 +24,7 @@ Board = (function() {
 
   Board.prototype.createBoard = function() {
     var offset;
-    this.size = this.two.height * .80;
+    this.size = this.two.height * .95;
     offset = this.size * .025;
     this.cellWidth = ((this.size - offset) / this.dimension) - offset;
     this.change = offset + this.cellWidth;
