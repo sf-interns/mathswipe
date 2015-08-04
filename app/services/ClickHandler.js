@@ -9,7 +9,6 @@ ClickHandler = (function() {
     var cell, i, j, len, len1, ref, row;
     this.board = board1;
     this.clicked = clicked != null ? clicked : [];
-    this.numClicked = this.clicked.length;
     if (this.board.cells == null) {
       return;
     }
@@ -64,44 +63,35 @@ ClickHandler = (function() {
     if (cell.isDeleted) {
       return;
     }
-    this.numClicked++;
     return this.clicked.push(cell);
   };
 
-  ClickHandler.prototype.removeFromClicked = function(cell, isFirst) {
-    this.numClicked--;
-    if (isFirst) {
-      return this.clicked.shift();
-    } else {
-      return this.clicked.pop();
-    }
+  ClickHandler.prototype.removeFromClicked = function() {
+    return this.clicked.pop();
   };
 
   ClickHandler.prototype.resetClicked = function() {
-    var results;
+    var cell, i, ref, results;
+    ref = this.clicked;
     results = [];
-    while (this.numClicked > 0) {
-      results.push(this.unclickCell(this.firstClicked()));
+    for (i = ref.length - 1; i >= 0; i += -1) {
+      cell = ref[i];
+      results.push(this.unclickCell(cell));
     }
     return results;
   };
 
-  ClickHandler.prototype.firstClicked = function() {
-    return this.clicked[0];
-  };
-
   ClickHandler.prototype.lastClicked = function() {
-    return this.clicked[this.numClicked - 1];
+    return this.clicked[this.clicked.length - 1];
   };
 
   ClickHandler.prototype.clickCell = function(cell) {
     var ref;
-    if (this.numClicked === 0 || this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
-      if (ref = this.cell, indexOf.call(this.clicked, ref) >= 0) {
-        return;
+    if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
+      if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
+        cell.select();
+        return this.addToClicked(cell);
       }
-      cell.select();
-      return this.addToClicked(cell);
     } else {
       this.resetClicked();
       return this.clickCell(cell);
@@ -113,11 +103,13 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.unclickCell = function(cell) {
-    if (!(cell === this.firstClicked() || cell === this.lastClicked())) {
+    var last;
+    last = this.lastClicked();
+    if (cell !== this.lastClicked()) {
       return null;
     }
     cell.unSelect();
-    return this.removeFromClicked(cell, this.firstClicked());
+    return this.removeFromClicked(cell);
   };
 
   return ClickHandler;

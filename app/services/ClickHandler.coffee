@@ -2,13 +2,12 @@ $ = require 'jquery'
 
 class ClickHandler
 
-  constructor: (@board, two, @clicked=[]) ->
-    @numClicked = @clicked.length
+  constructor: (@board, two, @clicked = []) ->
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
       for cell in row
-        @addToClicked (cell) if cell.isSelected
+        (@addToClicked cell) if cell.isSelected
 
   bindDefaultClick: (board) ->
     $('body').click (e) =>
@@ -31,39 +30,34 @@ class ClickHandler
 
   addToClicked: (cell) ->
     return if cell.isDeleted
-    @numClicked++
     @clicked.push cell
 
-  removeFromClicked: (cell, isFirst) ->
-    @numClicked--
-    if isFirst then @clicked.shift() else @clicked.pop()
+  removeFromClicked: ->
+    @clicked.pop()
 
   resetClicked: ->
-    while @numClicked > 0
-      @unclickCell @firstClicked()
-
-  firstClicked: ->
-    @clicked[0]
+    @unclickCell cell for cell in @clicked by -1
 
   lastClicked: ->
-    @clicked[@numClicked - 1]
+    @clicked[@clicked.length - 1]
 
   clickCell: (cell) ->
     # if cell is adjacent to lastClicked
-    if @numClicked is 0 or @clicked.length is 0 or @areAdjacent cell, @lastClicked()
-      return if @cell in @clicked
-      cell.select()
-      @addToClicked cell
+    if @clicked.length is 0 or @areAdjacent cell, @lastClicked()
+      unless @cell in @clicked
+        cell.select()
+        @addToClicked cell
     else
       @resetClicked()
       @clickCell cell
 
   areAdjacent: (cell, otherCell) ->
-    return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col)<=1
+    return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col) <= 1
 
   unclickCell: (cell) ->
-    return null unless cell is @firstClicked() or cell is @lastClicked()
+    last = @lastClicked()
+    return null unless cell is @lastClicked()
     cell.unSelect()
-    @removeFromClicked cell, @firstClicked()
+    @removeFromClicked cell
 
 module.exports = ClickHandler

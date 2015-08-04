@@ -29,6 +29,11 @@ class Cell
   getY: (row = @row) ->
     @board.y - (@board.size + @size) / 2 + (row + 1) * @board.change
 
+  setIndices: (row, col) ->
+    if row? and col?
+      @row = row
+      @col = col
+
   shiftTo: (row, col) ->
     end = new Two.Vector @getX(col), @getY(row)
     start = new Two.Vector @getX(), @getY() 
@@ -37,15 +42,20 @@ class Cell
     @two.bind('update', (frameCount) =>
       dist = start.distanceTo end
 
-      if dist < 1
+      if dist < .00001
         @rect.translation.set (@getX col), (@getY row)
         @two.unbind 'update'
 
       delta = new Two.Vector 0, (dist * .125)
-      if goingDown then @rect.translation.addSelf delta
-      else @rect.translation.subSelf delta
-      start = start.addSelf delta
+      if goingDown 
+        @rect.translation.addSelf delta
+        start = start.addSelf delta
+      else 
+        @rect.translation.subSelf delta
+        start = start.subSelf delta
     ).play()
+
+    @setIndices row, col
 
   select: ->
     @isSelected = true
