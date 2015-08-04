@@ -21,13 +21,9 @@ class MathSwipeController
 
   createTwo: ->
     game = document.getElementById('game')
-    console.log game.width
-    console.log game.height
     two = new Two(
       fullscreen: false
       autostart: true
-      width: game.width
-      height: game.height
     ).appendTo(game);
     return two
 
@@ -40,9 +36,7 @@ class MathSwipeController
     symbols = []
     for s,i in svgs
       symbols.push (two.interpret s)
-      console.log s, symbols[i]
       symbols[i].visible = false
-      # symbols[i].opacity = 0
     two.update()
     symbols
 

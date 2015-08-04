@@ -40,13 +40,9 @@ MathSwipeController = (function() {
   MathSwipeController.prototype.createTwo = function() {
     var game, two;
     game = document.getElementById('game');
-    console.log(game.width);
-    console.log(game.height);
     two = new Two({
       fullscreen: false,
-      autostart: true,
-      width: game.width,
-      height: game.height
+      autostart: true
     }).appendTo(game);
     return two;
   };
@@ -58,7 +54,6 @@ MathSwipeController = (function() {
     for (i = k = 0, len = svgs.length; k < len; i = ++k) {
       s = svgs[i];
       symbols.push(two.interpret(s));
-      console.log(s, symbols[i]);
       symbols[i].visible = false;
     }
     two.update();
