@@ -29,11 +29,15 @@ MathSwipeController = (function() {
     this.testCellDelete = bind(this.testCellDelete, this);
     this.testExpGen = bind(this.testExpGen, this);
     this.tests = bind(this.tests, this);
-    var symbols, two;
-    this.gridModel = [['a', 'b', 'c'], ['d', 'e', 'f'], ['g', 'h', 'i']];
+    var gridModel, i, k, length, ref, symbols, two;
+    length = 3;
+    gridModel = [];
     two = this.createTwo();
     symbols = this.getSymbols(two);
-    this.board = new Board(this.gridModel, two, Cell, Colors, ClickHandler);
+    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+      gridModel.push((ExpressionGenerator.generate(length)).split(''));
+    }
+    this.board = new Board(gridModel, two, Cell, Colors, ClickHandler);
     this.tests();
   }
 
@@ -87,17 +91,24 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testDFS = function() {
-    var each, inputList, j, k, l, len, len1, line, ref, results;
-    inputList = ['abcde', 'fghij', 'klmno', 'pqrst', 'uvwxy'];
-    DFS.setEquationsOnGrid(this.gridModel, inputList, AdjacentCellsCalculator);
+    var each, i, inputList, j, k, l, len, len1, len2, length, line, m, n, ref, ref1, results;
+    length = 5;
+    inputList = [];
+    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+      inputList.push((ExpressionGenerator.generate(length)).split(''));
+    }
+    for (l = 0, len = inputList.length; l < len; l++) {
+      each = inputList[l];
+      console.log(each);
+    }
     console.log('\n');
-    ref = this.gridModel;
+    ref1 = DFS.setEquationsOnGrid(length, inputList, AdjacentCellsCalculator);
     results = [];
-    for (k = 0, len = ref.length; k < len; k++) {
-      each = ref[k];
+    for (m = 0, len1 = ref1.length; m < len1; m++) {
+      each = ref1[m];
       line = '';
-      for (l = 0, len1 = each.length; l < len1; l++) {
-        j = each[l];
+      for (n = 0, len2 = each.length; n < len2; n++) {
+        j = each[n];
         line += j + '\t';
       }
       results.push(console.log(line));

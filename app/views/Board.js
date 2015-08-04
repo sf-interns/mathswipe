@@ -12,7 +12,7 @@ Board = (function() {
     this.createEmptyCells = bind(this.createEmptyCells, this);
     this.createBoard = bind(this.createBoard, this);
     this.initialValues = this.copyValues(this.boardValues);
-    this.dimension = this.boardValues.length || 3;
+    this.dimension = this.boardValues.length;
     this.clickHandler = new ClickHandler(this, this.two);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);

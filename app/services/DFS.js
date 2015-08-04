@@ -8,43 +8,36 @@ GridCell = require('../models/GridCell');
 DFS = (function() {
   function DFS() {}
 
-  DFS.setEquationsOnGrid = function(grid, inputList, AdjacentCells) {
-    var col, i, j, k, l, n, o, ref, ref1, ref2, ref3, row;
-    this.grid = grid;
+  DFS.setEquationsOnGrid = function(size1, inputList, AdjacentCells) {
+    var col, grid, i, j, k, l, ref, ref1, row;
+    this.size = size1;
     this.AdjacentCells = AdjacentCells;
     this.clearSolutionGrid();
+    grid = this.createEmptyGrid(this.size);
     for (i = j = 0; j < 10000; i = ++j) {
       if (this.hasFoundSolution(inputList)) {
-        break;
-      }
-      for (row = k = 0, ref = this.grid.dimension; 0 <= ref ? k < ref : k > ref; row = 0 <= ref ? ++k : --k) {
-        for (col = l = 0, ref1 = this.grid.dimension; 0 <= ref1 ? l < ref1 : l > ref1; col = 0 <= ref1 ? ++l : --l) {
-          this.grid.set(row, col, ' ');
-          this.clearSolutionGrid();
+        for (row = k = 0, ref = this.solutionGrid.length; 0 <= ref ? k < ref : k > ref; row = 0 <= ref ? ++k : --k) {
+          for (col = l = 0, ref1 = this.solutionGrid.length; 0 <= ref1 ? l < ref1 : l > ref1; col = 0 <= ref1 ? ++l : --l) {
+            grid[this.solutionGrid[row][col].y][this.solutionGrid[row][col].x] = this.solutionGrid[row][col].value;
+          }
         }
+        return grid;
       }
+      this.clearSolutionGrid();
     }
-    if (this.hasFoundSolution) {
-      for (row = n = 0, ref2 = this.solutionGrid.length; 0 <= ref2 ? n < ref2 : n > ref2; row = 0 <= ref2 ? ++n : --n) {
-        for (col = o = 0, ref3 = this.solutionGrid.length; 0 <= ref3 ? o < ref3 : o > ref3; col = 0 <= ref3 ? ++o : --o) {
-          this.grid.set(this.solutionGrid[row][col].x, this.solutionGrid[row][col].y, this.solutionGrid[row][col].value);
-        }
-      }
-      return true;
-    }
-    return false;
+    return null;
   };
 
   DFS.clearSolutionGrid = function() {
     var col, j, ref, results, row;
     this.solutionGrid = [];
     results = [];
-    for (row = j = 0, ref = this.grid.dimension; 0 <= ref ? j < ref : j > ref; row = 0 <= ref ? ++j : --j) {
+    for (row = j = 0, ref = this.size; 0 <= ref ? j < ref : j > ref; row = 0 <= ref ? ++j : --j) {
       this.solutionGrid.push([]);
       results.push((function() {
         var k, ref1, results1;
         results1 = [];
-        for (col = k = 0, ref1 = this.grid.dimension; 0 <= ref1 ? k < ref1 : k > ref1; col = 0 <= ref1 ? ++k : --k) {
+        for (col = k = 0, ref1 = this.size; 0 <= ref1 ? k < ref1 : k > ref1; col = 0 <= ref1 ? ++k : --k) {
           results1.push(this.solutionGrid[row].push(new GridCell(col, row)));
         }
         return results1;
@@ -60,8 +53,8 @@ DFS = (function() {
       for (index = k = 0; k < 20; index = ++k) {
         if (!hasPlaced) {
           cloneGrid = this.cloneSolutionGrid();
-          seedX = Math.floor(Math.random() * this.grid.dimension);
-          seedY = Math.floor(Math.random() * this.grid.dimension);
+          seedX = Math.floor(Math.random() * this.size);
+          seedY = Math.floor(Math.random() * this.size);
           if (this.search(seedX, seedY, inputList[i])) {
             hasPlaced = true;
           } else {
@@ -150,6 +143,18 @@ DFS = (function() {
     temp = this.solutionGrid[r1][c1];
     this.solutionGrid[r1][c1] = this.solutionGrid[r2][c2];
     return this.solutionGrid[r2][c2] = temp;
+  };
+
+  DFS.createEmptyGrid = function(size) {
+    var col, grid, j, k, ref, ref1, row;
+    grid = [];
+    for (row = j = 0, ref = size; 0 <= ref ? j < ref : j > ref; row = 0 <= ref ? ++j : --j) {
+      grid.push([]);
+      for (col = k = 0, ref1 = size; 0 <= ref1 ? k < ref1 : k > ref1; col = 0 <= ref1 ? ++k : --k) {
+        grid[row].push(' ');
+      }
+    }
+    return grid;
   };
 
   DFS.shuffle = function(array) {

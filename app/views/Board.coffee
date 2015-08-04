@@ -4,7 +4,7 @@ class Board
   constructor: (@boardValues, @two, @Cell, @Colors, ClickHandler) ->
     # Unused now, but will be used for board reset
     @initialValues = @copyValues @boardValues
-    @dimension = @boardValues.length or 3
+    @dimension = @boardValues.length
     @clickHandler = new ClickHandler this, @two
 
     @createBoard()

@@ -3,26 +3,23 @@ GridCell = require '../models/GridCell'
 
 class DFS
 
-  @setEquationsOnGrid: (@grid, inputList, @AdjacentCells) ->
+  @setEquationsOnGrid: (@size, inputList, @AdjacentCells) ->
     @clearSolutionGrid()
+    grid = @createEmptyGrid @size
     for i in [0...10000]
-      break if @hasFoundSolution inputList
-      for row in [0...@grid.dimension]
-        for col in [0...@grid.dimension]
-          @grid.set row, col, ' '
-          @clearSolutionGrid()
-    if @hasFoundSolution
-      for row in [0...@solutionGrid.length]
-        for col in [0...@solutionGrid.length]
-          @grid.set @solutionGrid[row][col].x, @solutionGrid[row][col].y, @solutionGrid[row][col].value
-      return true
-    false
+      if @hasFoundSolution inputList
+        for row in [0...@solutionGrid.length]
+          for col in [0...@solutionGrid.length]
+            grid[@solutionGrid[row][col].y][@solutionGrid[row][col].x] = @solutionGrid[row][col].value
+        return grid
+      @clearSolutionGrid()
+    null
 
   @clearSolutionGrid: ->
     @solutionGrid = []
-    for row in [0...@grid.dimension]
+    for row in [0...@size]
       @solutionGrid.push []
-      for col in [0...@grid.dimension]
+      for col in [0...@size]
         @solutionGrid[row].push (new GridCell col, row)
 
   @hasFoundSolution: (inputList) ->
@@ -31,8 +28,8 @@ class DFS
       for index in [0...20]
         unless hasPlaced
           cloneGrid = @cloneSolutionGrid()
-          seedX = Math.floor(Math.random() * @grid.dimension)
-          seedY = Math.floor(Math.random() * @grid.dimension)
+          seedX = Math.floor(Math.random() * @size)
+          seedY = Math.floor(Math.random() * @size)
           if @search seedX, seedY, inputList[i]
             hasPlaced = true
           else
@@ -79,6 +76,14 @@ class DFS
     temp = @solutionGrid[r1][c1]
     @solutionGrid[r1][c1] = @solutionGrid[r2][c2]
     @solutionGrid[r2][c2] = temp
+
+  @createEmptyGrid: (size) ->
+    grid = []
+    for row in [0...size]
+      grid.push []
+      for col in [0...size]
+        grid[row].push ' '
+    grid
 
   # Fisher-Yates shuffle
   @shuffle: (array) ->
