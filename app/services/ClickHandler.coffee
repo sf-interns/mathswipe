@@ -34,13 +34,13 @@ class ClickHandler
     @numClicked++
     @clicked.push cell
 
-  removeFromClicked: (cell, isFirst) ->
+  removeFromClicked: (cell) ->
     @numClicked--
-    if isFirst then @clicked.shift() else @clicked.pop()
+    @clicked.pop()
 
   resetClicked: ->
     while @numClicked > 0
-      @unclickCell @firstClicked()
+      @unclickCell @lastClicked()
 
   firstClicked: ->
     @clicked[0]
@@ -62,8 +62,11 @@ class ClickHandler
     return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col)<=1
 
   unclickCell: (cell) ->
-    return null unless cell is @firstClicked() or cell is @lastClicked()
+    last = @lastClicked()
+    return null unless cell is @lastClicked()
     cell.unSelect()
-    @removeFromClicked cell, @firstClicked()
+    console.log @numClicked
+    @removeFromClicked cell
+    console.log @numClicked
 
 module.exports = ClickHandler

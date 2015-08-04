@@ -68,20 +68,16 @@ ClickHandler = (function() {
     return this.clicked.push(cell);
   };
 
-  ClickHandler.prototype.removeFromClicked = function(cell, isFirst) {
+  ClickHandler.prototype.removeFromClicked = function(cell) {
     this.numClicked--;
-    if (isFirst) {
-      return this.clicked.shift();
-    } else {
-      return this.clicked.pop();
-    }
+    return this.clicked.pop();
   };
 
   ClickHandler.prototype.resetClicked = function() {
     var results;
     results = [];
     while (this.numClicked > 0) {
-      results.push(this.unclickCell(this.firstClicked()));
+      results.push(this.unclickCell(this.lastClicked()));
     }
     return results;
   };
@@ -113,11 +109,15 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.unclickCell = function(cell) {
-    if (!(cell === this.firstClicked() || cell === this.lastClicked())) {
+    var last;
+    last = this.lastClicked();
+    if (cell !== this.lastClicked()) {
       return null;
     }
     cell.unSelect();
-    return this.removeFromClicked(cell, this.firstClicked());
+    console.log(this.numClicked);
+    this.removeFromClicked(cell);
+    return console.log(this.numClicked);
   };
 
   return ClickHandler;
