@@ -28,11 +28,12 @@ class MathSwipeController
     game = document.getElementById('game')
     console.log game.width
     console.log game.height
+    size = Math.min(Math.max($( window ).width(), 310), 500)
     two = new Two(
       fullscreen: false
       autostart: true
-      width: game.width
-      height: game.height
+      width: size
+      height: size
     ).appendTo(game);
     return two
 
