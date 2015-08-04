@@ -1,6 +1,6 @@
 class GridCell
 
-  constructor: ->
+  constructor: (@x, @y) ->
     @value = ' '
     @isClicked = false
 

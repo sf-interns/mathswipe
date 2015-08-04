@@ -2,13 +2,12 @@ GridCell = require './GridCell'
 
 class GameGrid
 
-  constructor: (dimension) ->
+  constructor: (@dimension) ->
     @grid = []
-    @dimension = dimension
-    for i in [0...@dimension]
+    for row in [0...@dimension]
       @grid.push []
-      for j in [0...@dimension]
-        @grid[i].push (new GridCell)
+      for col in [0...@dimension]
+        @grid[row].push (new GridCell col, row)
 
   set: (x, y, element) =>
     return false unless @validIndices x, y
