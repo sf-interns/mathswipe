@@ -1,0 +1,33 @@
+.game-background {
+  background: linear-gradient(#B9B9B9,#E5E5E5);
+  margin: 0;
+}
+
+.title-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
+  padding-top: 35px;
+}
+
+.button-background {
+  background-color: Transparent;
+  border-style: solid;
+  border-color: darkgray;
+  border-radius: 100px;
+}
+
+.center-column {
+  max-width: 500px;
+  min-width: 320px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.goals {
+  color: #00007f;
+  text-align: center;
+  margin-bottom: 20px;
+}

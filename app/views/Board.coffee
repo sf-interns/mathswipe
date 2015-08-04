@@ -17,8 +17,8 @@ class Board
     @two.update()
 
   createBoard: =>
-    # Size is set to 80% of the height
-    @size = @two.height * .80
+    # Size is set to 95% of the height
+    @size = @two.height * .95
     offset = @size * .025
 
     # Cell width is the width of the cell tiles

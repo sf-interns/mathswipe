@@ -25,10 +25,14 @@ class MathSwipeController
     @tests()
 
   createTwo: ->
+    game = document.getElementById('game')
+    size = Math.min(Math.max($( window ).width(), 310), 500)
     two = new Two(
-      fullscreen: true
+      fullscreen: false
       autostart: true
-    ).appendTo(document.getElementById('game'));
+      width: size
+      height: size
+    ).appendTo(game);
     return two
 
   getSymbols: (two) ->
