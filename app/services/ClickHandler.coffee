@@ -32,14 +32,11 @@ class ClickHandler
     return if cell.isDeleted
     @clicked.push cell
 
-  removeFromClicked: (cell) ->
+  removeFromClicked: ->
     @clicked.pop()
 
   resetClicked: ->
-    @unclickCell @lastClicked() for numClicked in [@clicked.length...0]
-
-  firstClicked: ->
-    @clicked[0]
+    @unclickCell cell for cell in @clicked by -1
 
   lastClicked: ->
     @clicked[@clicked.length - 1]
@@ -47,9 +44,9 @@ class ClickHandler
   clickCell: (cell) ->
     # if cell is adjacent to lastClicked
     if @clicked.length is 0 or @areAdjacent cell, @lastClicked()
-      return if @cell in @clicked
-      cell.select()
-      @addToClicked cell
+      unless @cell in @clicked
+        cell.select()
+        @addToClicked cell
     else
       @resetClicked()
       @clickCell cell

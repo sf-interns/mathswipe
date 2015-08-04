@@ -29,7 +29,7 @@ class Cell
   getY: (row = @row) ->
     @board.y - (@board.size + @size) / 2 + (row + 1) * @board.change
 
-  setIndices: (row,col) ->
+  setIndices: (row, col) ->
     if row? and col?
       @row = row
       @col = col

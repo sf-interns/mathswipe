@@ -66,21 +66,19 @@ ClickHandler = (function() {
     return this.clicked.push(cell);
   };
 
-  ClickHandler.prototype.removeFromClicked = function(cell) {
+  ClickHandler.prototype.removeFromClicked = function() {
     return this.clicked.pop();
   };
 
   ClickHandler.prototype.resetClicked = function() {
-    var i, numClicked, ref, results;
+    var cell, i, ref, results;
+    ref = this.clicked;
     results = [];
-    for (numClicked = i = ref = this.clicked.length; ref <= 0 ? i < 0 : i > 0; numClicked = ref <= 0 ? ++i : --i) {
-      results.push(this.unclickCell(this.lastClicked()));
+    for (i = ref.length - 1; i >= 0; i += -1) {
+      cell = ref[i];
+      results.push(this.unclickCell(cell));
     }
     return results;
-  };
-
-  ClickHandler.prototype.firstClicked = function() {
-    return this.clicked[0];
   };
 
   ClickHandler.prototype.lastClicked = function() {
@@ -90,11 +88,10 @@ ClickHandler = (function() {
   ClickHandler.prototype.clickCell = function(cell) {
     var ref;
     if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
-      if (ref = this.cell, indexOf.call(this.clicked, ref) >= 0) {
-        return;
+      if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
+        cell.select();
+        return this.addToClicked(cell);
       }
-      cell.select();
-      return this.addToClicked(cell);
     } else {
       this.resetClicked();
       return this.clickCell(cell);
