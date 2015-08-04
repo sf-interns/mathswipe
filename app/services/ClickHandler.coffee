@@ -55,7 +55,7 @@ class ClickHandler
       @clickCell cell
 
   areAdjacent: (cell, otherCell) ->
-    return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col)<=1
+    return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col) <= 1
 
   unclickCell: (cell) ->
     last = @lastClicked()

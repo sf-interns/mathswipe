@@ -50,28 +50,37 @@ Cell = (function() {
     return this.board.y - (this.board.size + this.size) / 2 + (row + 1) * this.board.change;
   };
 
+  Cell.prototype.setIndices = function(row, col) {
+    if ((row != null) && (col != null)) {
+      this.row = row;
+      return this.col = col;
+    }
+  };
+
   Cell.prototype.shiftTo = function(row, col) {
     var end, goingDown, start;
     end = new Two.Vector(this.getX(col), this.getY(row));
     start = new Two.Vector(this.getX(), this.getY());
     goingDown = end.y > start.y;
-    return this.two.bind('update', (function(_this) {
+    this.two.bind('update', (function(_this) {
       return function(frameCount) {
         var delta, dist;
         dist = start.distanceTo(end);
-        if (dist < 1) {
+        if (dist < .00001) {
           _this.rect.translation.set(_this.getX(col), _this.getY(row));
           _this.two.unbind('update');
         }
         delta = new Two.Vector(0, dist * .125);
         if (goingDown) {
           _this.rect.translation.addSelf(delta);
+          return start = start.addSelf(delta);
         } else {
           _this.rect.translation.subSelf(delta);
+          return start = start.subSelf(delta);
         }
-        return start = start.addSelf(delta);
       };
     })(this)).play();
+    return this.setIndices(row, col);
   };
 
   Cell.prototype.select = function() {
