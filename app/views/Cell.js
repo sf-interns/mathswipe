@@ -75,17 +75,11 @@ Cell = (function() {
   };
 
   Cell.prototype.select = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
     this.isSelected = true;
     return this.setColor(Colors.select);
   };
 
   Cell.prototype.unSelect = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
     this.isSelected = false;
     return this.setColor(Colors.cell);
   };
@@ -103,12 +97,20 @@ Cell = (function() {
           return;
         }
         if (_this.isSelected) {
-          return _this.unSelect();
+          return _this.clickHandler.unclickCell(_this);
         } else {
-          return _this.select();
+          return _this.clickHandler.clickCell(_this);
         }
       };
     })(this));
+  };
+
+  Cell.prototype.x = function() {
+    return this.col;
+  };
+
+  Cell.prototype.y = function() {
+    return this.row;
   };
 
   Cell.prototype["delete"] = function() {

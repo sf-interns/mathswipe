@@ -76,7 +76,24 @@ ClickHandler = (function() {
     return this.clicked[this.numClicked - 1];
   };
 
-  ClickHandler.prototype.unClickCell = function(cell) {
+  ClickHandler.prototype.clickCell = function(cell) {
+    if (this.numClicked === 0) {
+      cell.select();
+      return this.addToClicked(cell);
+    } else if (this.areAdjacent(cell, this.lastClicked())) {
+      console.log('an adjacent cell');
+      cell.select();
+      return this.addToClicked(cell);
+    } else {
+      return console.log('not adjacent.. reset');
+    }
+  };
+
+  ClickHandler.prototype.areAdjacent = function(cell, otherCell) {
+    return Math.abs(cell.row - otherCell.row <= 1 && Math.abs(cell.col - otherCell.col <= 1));
+  };
+
+  ClickHandler.prototype.unclickCell = function(cell) {
     if (!(cell === this.firstClicked() || cell === this.lastClicked())) {
       return null;
     }

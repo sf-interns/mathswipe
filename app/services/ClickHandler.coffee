@@ -30,7 +30,7 @@ class ClickHandler
     @numClicked++
     @clicked.push cell
 
-  removeFromClicked: (cell, isFirst)->
+  removeFromClicked: (cell, isFirst) ->
     @numClicked--
     if isFirst then @clicked.shift() else @clicked.pop()
 
@@ -40,7 +40,24 @@ class ClickHandler
   lastClicked: ->
     @clicked[@numClicked - 1]
 
-  unClickCell: (cell) ->
+  clickCell: (cell) ->
+    # if cell is adjacent to lastClicked
+    if @numClicked is 0
+      cell.select()
+      @addToClicked cell
+    else if @areAdjacent cell, @lastClicked()
+      console.log 'an adjacent cell'
+      cell.select()
+      @addToClicked cell
+    else 
+      console.log 'not adjacent.. reset'
+
+
+  areAdjacent: (cell, otherCell) ->
+    return Math.abs cell.row - otherCell.row <= 1 and 
+      Math.abs cell.col - otherCell.col <=1
+
+  unclickCell: (cell) ->
     return null unless cell is @firstClicked() or cell is @lastClicked()
     cell.unSelect()
     @removeFromClicked cell, @firstClicked()

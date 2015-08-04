@@ -48,12 +48,10 @@ class Cell
     ).play()
 
   select: ->
-    return unless @clickHandler?
     @isSelected = true
     @setColor Colors.select
 
   unSelect: ->
-    return unless @clickHandler?
     @isSelected = false
     @setColor Colors.cell
 
@@ -65,9 +63,15 @@ class Cell
       e.preventDefault()
       return if @isDeleted
       if @isSelected
-        @unSelect()
+        @clickHandler.unclickCell this
       else
-        @select()
+        @clickHandler.clickCell this
+
+  x: ->
+    @col
+
+  y: ->
+    @row
 
   delete: ->
     @hide()
