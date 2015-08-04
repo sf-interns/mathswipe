@@ -2,7 +2,6 @@ class Board
 
   constructor: (@grid, @two, @Cell, @colors) ->
 
-    # @size = @two.height * .80
     @size = @two.height
     offset = @size * .025
     width = ( @size - offset ) / ( @grid.dimension ) - offset
