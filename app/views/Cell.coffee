@@ -1,5 +1,5 @@
 $      = require 'jquery'
-Colors = require './colors'
+Colors = require './Colors'
 
 class Cell
 
@@ -19,10 +19,9 @@ class Cell
       when '*' then 10
       when '+' then 11
       when '-' then 12
-      else parseInt val
+      else return parseInt val
 
   newSymbol: (symbols, value)->
-
     symbol = symbols[value].clone()
     symbol.translation.set @getX() - (0.4 * @size), @getY() - (0.4 * @size)
     symbol.scale = (@size / 480) *.8
@@ -56,7 +55,7 @@ class Cell
 
   shiftTo: (row, col) ->
     end = new Two.Vector @getX(col), @getY(row)
-    start = new Two.Vector @getX(), @getY() 
+    start = new Two.Vector @getX(), @getY()
     goingDown = end.y > start.y
 
     @two.bind('update', (frameCount) =>

@@ -4,8 +4,7 @@ class Board
   constructor: (@boardValues, @two, @Cell, @Colors, ClickHandler, symbols) ->
     # Unused now, but will be used for board reset
     @initialValues = @copyValues @boardValues
-    @dimension = @boardValues.length or 3
-
+    @dimension = @boardValues.length
     @clickHandler = new ClickHandler this, @two
 
     @createBoard()
@@ -95,7 +94,6 @@ class Board
     for row in [0...@dimension]
       dest.push []
       for col in [0...@dimension]
-        # Q: Will it copy the pointer to the char or the char?
         dest[row].push source[row][col]
     dest
 

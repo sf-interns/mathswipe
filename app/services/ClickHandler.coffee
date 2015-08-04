@@ -16,7 +16,7 @@ class ClickHandler
 
   bindClickTo: (cells) ->
     if cells.bindClick?
-      cells.bindClick() 
+      cells.bindClick()
       return
     for row in cells
       if row.bindClick?

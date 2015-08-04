@@ -3,7 +3,7 @@ var $, Cell, Colors;
 
 $ = require('jquery');
 
-Colors = require('./colors');
+Colors = require('./Colors');
 
 Cell = (function() {
   function Cell(col1, row1, size, two, board, clickHandler, symbols, value) {
