@@ -91,6 +91,10 @@ Cell = (function() {
   };
 
   Cell.prototype.bindClick = function() {
+    if (this.clickHandler == null) {
+      return;
+    }
+    console.log('bindClick');
     return $(this.rect._renderer.elem).click((function(_this) {
       return function(e) {
         console.log(_this.col, _this.row, 'isSelected', _this.isSelected, 'isDeleted', _this.isDeleted);

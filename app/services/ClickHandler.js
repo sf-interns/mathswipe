@@ -28,22 +28,27 @@ ClickHandler = (function() {
     console.log(this.clicked);
   }
 
-  ClickHandler.prototype.bindClickToCells = function(cells) {
-    var cell, i, len, results, row;
-    results = [];
+  ClickHandler.prototype.bindClickTo = function(cells) {
+    var cell, i, j, len, len1, row;
+    if (cells.bindClick != null) {
+      cells.bindClick();
+      return;
+    }
     for (i = 0, len = cells.length; i < len; i++) {
       row = cells[i];
-      results.push((function() {
-        var j, len1, results1;
-        results1 = [];
-        for (j = 0, len1 = row.length; j < len1; j++) {
-          cell = row[j];
-          results1.push(cell.rect);
+      if (row.bindClick != null) {
+        row.bindClick();
+        return;
+      }
+      for (j = 0, len1 = row.length; j < len1; j++) {
+        cell = row[j];
+        if (cell.bindClick != null) {
+          cell.bindClick();
+        } else {
+          console.log('binding supported for 2D arrays and simpler');
         }
-        return results1;
-      })());
+      }
     }
-    return results;
   };
 
   ClickHandler.prototype.addToClicked = function(cell) {

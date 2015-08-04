@@ -19,6 +19,7 @@ class Board
     cellWidth = ((@size - offset ) / @grid.dimension ) - offset
     @createEmptyCells cellWidth - 5
     @createCells cellWidth
+    @clickHandler.bindClickTo @cells
     @two.update()
 
   createEmptyCells: (width) =>
@@ -39,7 +40,6 @@ class Board
         cell = new @Cell col, row, width, @two, this, @clickHandler
         cell.setColor @colors.cell
         cell.setBorder @colors.cellBorder
-        cell.bindClick()
         @cells[row].push cell
 
   deleteCells: (solution) ->

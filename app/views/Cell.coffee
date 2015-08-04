@@ -58,6 +58,8 @@ class Cell
     @setColor Colors.cell
 
   bindClick: ->
+    return unless @clickHandler?
+    console.log 'bindClick'
     $(@rect._renderer.elem).click (e) =>
       console.log @col, @row, 'isSelected', @isSelected, 'isDeleted', @isDeleted
       e.preventDefault()
@@ -66,7 +68,6 @@ class Cell
         @unSelect()
       else
         @select()
-
 
   delete: ->
     @hide()

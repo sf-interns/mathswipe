@@ -11,10 +11,19 @@ class ClickHandler
         @addToClicked (cell) if cell.isSelected
     console.log @clicked
 
-  bindClickToCells: (cells) ->
+  bindClickTo: (cells) ->
+    if cells.bindClick?
+      cells.bindClick() 
+      return
     for row in cells
+      if row.bindClick?
+        row.bindClick()
+        return
       for cell in row
-        cell.rect
+        if cell.bindClick?
+          cell.bindClick()
+        else
+          console.log 'binding supported for 2D arrays and simpler'
 
   addToClicked: (cell) ->
     return if cell.isDeleted
