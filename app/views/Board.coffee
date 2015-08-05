@@ -50,7 +50,8 @@ class Board
     for row in [0...@dimension]
       @cells.push []
       for col in [0...@dimension]
-        cell = new @Cell col, row, width, @two, this, @clickHandler, symbols, @boardValues[row][col]
+        symb = symbols[@toIdx @boardValues[row][col]]
+        cell = new @Cell col, row, width, @two, this, @clickHandler, symb
         cell.setColor @Colors.cell
         cell.setBorder @Colors.cellBorder
         @cells[row].push cell
@@ -88,6 +89,14 @@ class Board
     temp = @boardValues[r1][c1]
     @boardValues[r1][c1] = @boardValues[r2][c2]
     @boardValues[r2][c2] = temp
+
+  toIdx: (val) ->
+    return null unless val.length is 1
+    switch val
+      when '+' then 10
+      when '-' then 11
+      when '*' then 12
+      else return parseInt val
 
   copyValues: (source) ->
     dest = []
