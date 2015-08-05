@@ -4,6 +4,7 @@ ExpressionGenerator     = require '../services/ExpressionGenerator'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
 SolutionService         = require '../services/SolutionService'
+RandomizedFitLength     = require '../services/RandomizedFitLength'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 Cell                    = require '../views/Cell'
@@ -23,7 +24,6 @@ class MathSwipeController
     gridModel = @generateBoard inputs, length
     console.log goals
     @board = new Board gridModel, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols
-
     @tests()
 
   createTwo: ->
@@ -58,17 +58,29 @@ class MathSwipeController
     inputs.push @randExpression(length).split('') for i in [0...length]
     inputs
 
-  calculateGoals: () ->
-
-
   generateBoard: (inputs, length) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
+    @testRandomizedFitLength()
     @testExpGen()
-    @testCellDelete()
+    # @testCellDelete()
     @testInputSolver()
     @testDFS()
+
+  testRandomizedFitLength: =>
+    size = 25
+    for i in [0...100]
+      list = RandomizedFitLength.generate size
+      sum = 0
+      for j in list
+        sum += j
+      if sum != size
+        console.log "Something went wrong with RandomizedFitLength"
+        console.log list
+        break
+    console.log list
+    console.log "Passed RandomizedFitLength"
 
   testExpGen: =>
     for length in [1..30]

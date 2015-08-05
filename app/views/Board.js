@@ -69,7 +69,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symbols, this.boardValues[row][col]);
+          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symbols[this.toIdx(this.boardValues[row][col])]);
           cell.setColor(this.Colors.cell);
           cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));
@@ -122,6 +122,22 @@ Board = (function() {
     temp = this.boardValues[r1][c1];
     this.boardValues[r1][c1] = this.boardValues[r2][c2];
     return this.boardValues[r2][c2] = temp;
+  };
+
+  Board.prototype.toIdx = function(val) {
+    if (val.length !== 1) {
+      return null;
+    }
+    switch (val) {
+      case '+':
+        return 10;
+      case '-':
+        return 11;
+      case '*':
+        return 12;
+      default:
+        return parseInt(val);
+    }
   };
 
   Board.prototype.copyValues = function(source) {
