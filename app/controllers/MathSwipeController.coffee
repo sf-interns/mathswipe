@@ -13,17 +13,9 @@ class MathSwipeController
 
   constructor: ->
     length = 3
-    gridModel = []
     two = @createTwo()
     symbols = @getSymbols two
-
-    inputs = []
-    for i in [0...length]
-      inputs.push (ExpressionGenerator.generate length)
-    console.log inputs
-
-    gridModel = DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
-
+    gridModel = @generateBoard length
     @board = new Board gridModel, two, Cell, Colors, ClickHandler, symbols
 
     @tests()
@@ -41,9 +33,9 @@ class MathSwipeController
 
   getSymbols: (two) ->
     # note symbols 0-9 are numbers 0-9.
-    # 10 -> &times
-    # 11 -> +
-    # 12 -> &divide
+    # 10 -> +
+    # 11 -> minus
+    # 12 -> &times
     svgs = $('#assets svg')
     symbols = []
     for s,i in svgs
@@ -51,6 +43,17 @@ class MathSwipeController
       symbols[i].visible = false
     two.update()
     symbols
+
+  randExpression: (length) -> 
+    ExpressionGenerator.generate length
+
+  generateBoard: (length) -> 
+    inputs = []
+    inputs.push @randExpression(length).split('') for i in [0...length]
+    for input in inputs
+      console.log input
+      console.log InputSolver.compute input.join('')
+    DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
     # @testExpGen()

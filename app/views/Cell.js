@@ -29,11 +29,11 @@ Cell = (function() {
       return null;
     }
     switch (val) {
-      case '*':
-        return 10;
       case '+':
-        return 11;
+        return 10;
       case '-':
+        return 11;
+      case '*':
         return 12;
       default:
         return parseInt(val);
@@ -46,7 +46,7 @@ Cell = (function() {
     symbol = symbols[value].clone();
     symbol.translation.set(this.getX() + offset, this.getY() + offset);
     symbol.scale = (this.size / 100) * .8;
-    symbol.noStroke().fill = 'black';
+    symbol.noStroke().fill = Colors.symbol;
     return symbol;
   };
 

@@ -16,9 +16,9 @@ class Cell
   toIdx: (val) ->
     return null unless val.length is 1
     switch val
-      when '*' then 10
-      when '+' then 11
-      when '-' then 12
+      when '+' then 10
+      when '-' then 11
+      when '*' then 12
       else return parseInt val
 
   newSymbol: (symbols, value)->
@@ -26,7 +26,7 @@ class Cell
     symbol = symbols[value].clone()
     symbol.translation.set @getX() + offset, @getY() + offset
     symbol.scale = (@size / 100) *.8
-    symbol.noStroke().fill = 'black'
+    symbol.noStroke().fill = Colors.symbol
     symbol
 
   setColor: (c) ->

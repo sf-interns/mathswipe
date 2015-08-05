@@ -29,17 +29,11 @@ MathSwipeController = (function() {
     this.testCellDelete = bind(this.testCellDelete, this);
     this.testExpGen = bind(this.testExpGen, this);
     this.tests = bind(this.tests, this);
-    var gridModel, i, inputs, k, length, ref, symbols, two;
+    var gridModel, length, symbols, two;
     length = 3;
-    gridModel = [];
     two = this.createTwo();
     symbols = this.getSymbols(two);
-    inputs = [];
-    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
-      inputs.push(ExpressionGenerator.generate(length));
-    }
-    console.log(inputs);
-    gridModel = DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
+    gridModel = this.generateBoard(length);
     this.board = new Board(gridModel, two, Cell, Colors, ClickHandler, symbols);
     this.tests();
   }
@@ -68,6 +62,24 @@ MathSwipeController = (function() {
     }
     two.update();
     return symbols;
+  };
+
+  MathSwipeController.prototype.randExpression = function(length) {
+    return ExpressionGenerator.generate(length);
+  };
+
+  MathSwipeController.prototype.generateBoard = function(length) {
+    var i, input, inputs, k, l, len, ref;
+    inputs = [];
+    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+      inputs.push(this.randExpression(length).split(''));
+    }
+    for (l = 0, len = inputs.length; l < len; l++) {
+      input = inputs[l];
+      console.log(input);
+      console.log(InputSolver.compute(input.join('')));
+    }
+    return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
   };
 
   MathSwipeController.prototype.tests = function() {};
