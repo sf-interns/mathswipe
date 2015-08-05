@@ -5,6 +5,7 @@ AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
+GoalContainer           = require '../views/GoalContainer'
 Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
 $                       = require 'jquery'
@@ -14,38 +15,50 @@ class MathSwipeController
   constructor: ->
     length = 3
     gridModel = []
-    two = @createTwo()
-    symbols = @getSymbols two
+    gameScene = @createGameScene()
+    goalsScene = @createGoalsScene()
+    solutions = []
 
     for i in [0...length]
-      gridModel.push (ExpressionGenerator.generate length).split('')
+      expression = (ExpressionGenerator.generate length)
+      gridModel.push expression.split('')
+      solutions.push (InputSolver.compute expression).toString()
 
-    @board = new Board gridModel, two, Cell, Colors, ClickHandler
+    boardSymbols = @getSymbolsFor gameScene
+    @board = new Board gridModel, gameScene, Cell, Colors, ClickHandler
+
+    goalsSymbols = @getSymbolsFor goalsScene
+    @goalContainer = new GoalContainer goalsScene, solutions, goalsSymbols, Colors
 
     @tests()
 
-  createTwo: ->
-    game = document.getElementById('game')
+  createGameScene: ->
+    gameDom = document.getElementById('game')
     size = Math.min(Math.max($( window ).width(), 310), 500)
-    two = new Two(
+    scene = new Two(
       fullscreen: false
       autostart: true
       width: size
       height: size
-    ).appendTo(game);
-    return two
+    ).appendTo(gameDom);
+    return scene
 
-  getSymbols: (two) ->
-    # note symbols 0-9 are numbers 0-9.
-    # 10 -> &times
-    # 11 -> +
-    # 12 -> &divide
+  createGoalsScene: ->
+    goalsDom = document.getElementById('goals')
+    scene = new Two(
+      fullscreen: false
+      autostart: true
+      height: goalsDom.clientWidth
+      width: goalsDom.clientWidth
+    ).appendTo(goalsDom);
+    return scene
+
+  getSymbolsFor: (scene) ->
     svgs = $('#assets svg')
     symbols = []
-    for s,i in svgs
-      symbols.push (two.interpret s)
-      symbols[i].visible = false
-    two.update()
+    for svg, index in svgs
+      symbols.push (scene.interpret svg)
+      symbols[index].visible = false
     symbols
 
   tests: =>
