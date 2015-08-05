@@ -3,7 +3,7 @@ var Board,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Board = (function() {
-  function Board(boardValues, two, Cell, Colors, ClickHandler) {
+  function Board(boardValues, two, Cell, Colors, ClickHandler, symbols) {
     this.boardValues = boardValues;
     this.two = two;
     this.Cell = Cell;
@@ -16,7 +16,7 @@ Board = (function() {
     this.clickHandler = new ClickHandler(this, this.two);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
-    this.createCells(this.cellWidth);
+    this.createCells(this.cellWidth, symbols);
     this.clickHandler.bindDefaultClick(this.board);
     this.clickHandler.bindClickTo(this.cells);
     this.two.update();
@@ -57,7 +57,7 @@ Board = (function() {
     return results;
   };
 
-  Board.prototype.createCells = function(width) {
+  Board.prototype.createCells = function(width, symbols) {
     var cell, col, i, ref, results, row;
     this.cells = [];
     results = [];
@@ -67,7 +67,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler);
+          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symbols[this.toIdx(this.boardValues[row][col])]);
           cell.setColor(this.Colors.cell);
           cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));
@@ -119,6 +119,22 @@ Board = (function() {
     temp = this.boardValues[r1][c1];
     this.boardValues[r1][c1] = this.boardValues[r2][c2];
     return this.boardValues[r2][c2] = temp;
+  };
+
+  Board.prototype.toIdx = function(val) {
+    if (val.length !== 1) {
+      return null;
+    }
+    switch (val) {
+      case '+':
+        return 10;
+      case '-':
+        return 11;
+      case '*':
+        return 12;
+      default:
+        return parseInt(val);
+    }
   };
 
   Board.prototype.copyValues = function(source) {

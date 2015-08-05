@@ -3,6 +3,7 @@ DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
+RandomizedFitLength     = require '../services/RandomizedFitLength'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 Cell                    = require '../views/Cell'
@@ -13,14 +14,10 @@ class MathSwipeController
 
   constructor: ->
     length = 3
-    gridModel = []
     two = @createTwo()
     symbols = @getSymbols two
-
-    for i in [0...length]
-      gridModel.push (ExpressionGenerator.generate length).split('')
-
-    @board = new Board gridModel, two, Cell, Colors, ClickHandler
+    gridModel = @generateBoard length
+    @board = new Board gridModel, two, Cell, Colors, ClickHandler, symbols
 
     @tests()
 
@@ -37,9 +34,9 @@ class MathSwipeController
 
   getSymbols: (two) ->
     # note symbols 0-9 are numbers 0-9.
-    # 10 -> &times
-    # 11 -> +
-    # 12 -> &divide
+    # 10 -> +
+    # 11 -> minus
+    # 12 -> &times
     svgs = $('#assets svg')
     symbols = []
     for s,i in svgs
@@ -48,11 +45,37 @@ class MathSwipeController
     two.update()
     symbols
 
+  randExpression: (length) ->
+    ExpressionGenerator.generate length
+
+  generateBoard: (length) ->
+    inputs = []
+    inputs.push @randExpression(length).split('') for i in [0...length]
+    for input in inputs
+      console.log input
+      console.log InputSolver.compute input.join('')
+    DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
+
   tests: =>
+    @testRandomizedFitLength()
     @testExpGen()
     @testCellDelete()
     @testInputSolver()
     @testDFS()
+
+  testRandomizedFitLength: =>
+    size = 25
+    for i in [0...100]
+      list = RandomizedFitLength.generate size
+      sum = 0
+      for j in list
+        sum += j
+      if sum != size
+        console.log "Something went wrong with RandomizedFitLength"
+        console.log list
+        break
+    console.log list
+    console.log "Passed RandomizedFitLength"
 
   testExpGen: =>
     for length in [1..30]

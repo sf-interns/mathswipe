@@ -5,5 +5,6 @@ Colors =
   emptyCellBorder: '#41565c'
   board: '#294248'
   select: '#c7a579'
+  symbol: 'black'
 
 module.exports = Colors
