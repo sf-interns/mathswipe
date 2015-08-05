@@ -58,7 +58,7 @@ Board = (function() {
   };
 
   Board.prototype.createCells = function(width, symbols) {
-    var cell, col, i, ref, results, row, symb;
+    var cell, col, i, ref, results, row;
     this.cells = [];
     results = [];
     for (row = i = 0, ref = this.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
@@ -67,8 +67,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          symb = symbols[this.toIdx(this.boardValues[row][col])];
-          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symb);
+          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symbols[this.toIdx(this.boardValues[row][col])]);
           cell.setColor(this.Colors.cell);
           cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));
