@@ -1,8 +1,9 @@
-InputSolver             = require '../services/InputSolver'
-DFS                     = require '../services/DFS'
-ExpressionGenerator     = require '../services/ExpressionGenerator'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
+DFS                     = require '../services/DFS'
+ExpressionGenerator     = require '../services/ExpressionGenerator'
+InputSolver             = require '../services/InputSolver'
+ResetButton             = require '../services/ResetButton'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 Cell                    = require '../views/Cell'
@@ -44,10 +45,10 @@ class MathSwipeController
     two.update()
     symbols
 
-  randExpression: (length) -> 
+  randExpression: (length) ->
     ExpressionGenerator.generate length
 
-  generateBoard: (length) -> 
+  generateBoard: (length) ->
     inputs = []
     inputs.push @randExpression(length).split('') for i in [0...length]
     for input in inputs
@@ -56,10 +57,15 @@ class MathSwipeController
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
+    @testResetButton()
     # @testExpGen()
     # @testCellDelete()
     # @testInputSolver()
     # @testDFS()
+
+  testResetButton: =>
+    reset = new ResetButton ClickHandler
+    reset.bindClick()
 
   testExpGen: =>
     for length in [1..30]
