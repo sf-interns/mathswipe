@@ -3,24 +3,35 @@ var Board,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Board = (function() {
-  function Board(boardValues, two, Cell, Colors, ClickHandler) {
+  function Board(boardValues, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols) {
     this.boardValues = boardValues;
     this.two = two;
     this.Cell = Cell;
     this.Colors = Colors;
+    this.ClickHandler = ClickHandler;
+    this.SolutionService = SolutionService;
+    this.goals = goals;
+    this.symbols = symbols;
     this.createCells = bind(this.createCells, this);
     this.createEmptyCells = bind(this.createEmptyCells, this);
     this.createBoard = bind(this.createBoard, this);
-    this.initialValues = this.copyValues(this.boardValues);
+    this.initializer = bind(this.initializer, this);
     this.dimension = this.boardValues.length;
-    this.clickHandler = new ClickHandler(this, this.two);
+    this.initialValues = this.copyValues(this.boardValues);
+    this.initializer();
+  }
+
+  Board.prototype.initializer = function() {
+    var solutionService;
+    solutionService = new this.SolutionService(this, this.goals);
+    this.clickHandler = new this.ClickHandler(this, this.two, solutionService);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth);
     this.clickHandler.bindDefaultClick(this.board);
     this.clickHandler.bindClickTo(this.cells);
-    this.two.update();
-  }
+    return this.two.update();
+  };
 
   Board.prototype.createBoard = function() {
     var offset;
@@ -67,7 +78,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler);
+          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, this.symbols[this.toIdx(this.boardValues[row][col])]);
           cell.setColor(this.Colors.cell);
           cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));
@@ -80,6 +91,7 @@ Board = (function() {
 
   Board.prototype.deleteCells = function(solution) {
     var i, len, tuple;
+    console.log('delete cells', solution);
     for (i = 0, len = solution.length; i < len; i++) {
       tuple = solution[i];
       this.deleteCellAt(tuple.x, tuple.y);
@@ -121,6 +133,22 @@ Board = (function() {
     return this.boardValues[r2][c2] = temp;
   };
 
+  Board.prototype.toIdx = function(val) {
+    if (val.length !== 1) {
+      return null;
+    }
+    switch (val) {
+      case '+':
+        return 10;
+      case '-':
+        return 11;
+      case '*':
+        return 12;
+      default:
+        return parseInt(val);
+    }
+  };
+
   Board.prototype.copyValues = function(source) {
     var col, dest, i, j, ref, ref1, row;
     dest = [];
@@ -131,6 +159,11 @@ Board = (function() {
       }
     }
     return dest;
+  };
+
+  Board.prototype.resetBoard = function() {
+    this.boardValues = this.copyValues(this.initialValues);
+    return this.initializer();
   };
 
   return Board;

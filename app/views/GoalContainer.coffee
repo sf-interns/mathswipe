@@ -9,7 +9,7 @@ class GoalContainer
     @count = 0
     for input, index in @inputs
       @inputSymbols.push []
-      for character in input
+      for character in input.toString()
         @inputSymbols[index].push @symbols[@charToIndex character].clone()
         @count++
       @count++

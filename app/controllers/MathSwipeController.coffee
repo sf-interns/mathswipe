@@ -1,8 +1,11 @@
-InputSolver             = require '../services/InputSolver'
-DFS                     = require '../services/DFS'
-ExpressionGenerator     = require '../services/ExpressionGenerator'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
+DFS                     = require '../services/DFS'
+ExpressionGenerator     = require '../services/ExpressionGenerator'
+InputSolver             = require '../services/InputSolver'
+ResetButton             = require '../services/ResetButton'
+SolutionService         = require '../services/SolutionService'
+RandomizedFitLength     = require '../services/RandomizedFitLength'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 GoalContainer           = require '../views/GoalContainer'
@@ -14,21 +17,22 @@ class MathSwipeController
 
   constructor: ->
     length = 3
-    gridModel = []
+    inputs = []
+    answers = []
     gameScene = @createGameScene()
     goalsScene = @createGoalsScene()
-    solutions = []
 
     for i in [0...length]
       expression = (ExpressionGenerator.generate length)
-      gridModel.push expression.split('')
-      solutions.push (InputSolver.compute expression).toString()
+      inputs.push expression.split('')
+      answers.push (InputSolver.compute expression)
 
     boardSymbols = @getSymbolsFor gameScene
-    @board = new Board gridModel, gameScene, Cell, Colors, ClickHandler
+    gameModel = @generateBoard inputs, length
+    @board = new Board gameModel, gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols
 
     goalsSymbols = @getSymbolsFor goalsScene
-    @goalContainer = new GoalContainer goalsScene, solutions, goalsSymbols, Colors
+    @goalContainer = new GoalContainer goalsScene, answers, goalsSymbols, Colors
 
     @tests()
 
@@ -61,11 +65,41 @@ class MathSwipeController
       symbols[index].visible = false
     symbols
 
+  randExpression: (length) ->
+    ExpressionGenerator.generate length
+
+  generateInputs: (length) ->
+    inputs = []
+    inputs.push @randExpression(length).split('') for i in [0...length]
+    inputs
+
+  generateBoard: (inputs, length) ->
+    DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
+
   tests: =>
+    @testResetButton()
+    @testRandomizedFitLength()
     @testExpGen()
-    @testCellDelete()
+    # @testCellDelete()
     @testInputSolver()
     @testDFS()
+
+  testRandomizedFitLength: =>
+    size = 25
+    for i in [0...100]
+      list = RandomizedFitLength.generate size
+      sum = 0
+      for j in list
+        sum += j
+      if sum != size
+        console.log "Something went wrong with RandomizedFitLength"
+        console.log list
+        break
+    console.log list
+    console.log "Passed RandomizedFitLength"
+
+  testResetButton: =>
+    ResetButton.bindClick @board
 
   testExpGen: =>
     for length in [1..30]

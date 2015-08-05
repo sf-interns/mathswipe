@@ -12,15 +12,16 @@ GoalContainer = (function() {
   }
 
   GoalContainer.prototype.inputsToSymbols = function() {
-    var character, i, index, input, j, len, len1, ref;
+    var character, i, index, input, j, len, len1, ref, ref1;
     this.inputSymbols = [];
     this.count = 0;
     ref = this.inputs;
     for (index = i = 0, len = ref.length; i < len; index = ++i) {
       input = ref[index];
       this.inputSymbols.push([]);
-      for (j = 0, len1 = input.length; j < len1; j++) {
-        character = input[j];
+      ref1 = input.toString();
+      for (j = 0, len1 = ref1.length; j < len1; j++) {
+        character = ref1[j];
         this.inputSymbols[index].push(this.symbols[this.charToIndex(character)].clone());
         this.count++;
       }

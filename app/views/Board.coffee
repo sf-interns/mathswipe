@@ -1,11 +1,14 @@
 class Board
 
   # @boardValues is a 2D array of characters
-  constructor: (@boardValues, @two, @Cell, @Colors, ClickHandler) ->
-    # Unused now, but will be used for board reset
-    @initialValues = @copyValues @boardValues
+  constructor: (@boardValues, @two, @Cell, @Colors, @ClickHandler, @SolutionService, @goals, @symbols) ->
     @dimension = @boardValues.length
-    @clickHandler = new ClickHandler this, @two
+    @initialValues = @copyValues @boardValues
+    @initializer()
+
+  initializer: =>
+    solutionService = new @SolutionService this, @goals
+    @clickHandler = new @ClickHandler this, @two, solutionService
 
     @createBoard()
     @createEmptyCells @cellWidth - 5
@@ -50,12 +53,13 @@ class Board
     for row in [0...@dimension]
       @cells.push []
       for col in [0...@dimension]
-        cell = new @Cell col, row, width, @two, this, @clickHandler
+        cell = new @Cell col, row, width, @two, this, @clickHandler, @symbols[@toIdx @boardValues[row][col]]
         cell.setColor @Colors.cell
         cell.setBorder @Colors.cellBorder
         @cells[row].push cell
 
   deleteCells: (solution) ->
+    console.log 'delete cells', solution
     for tuple in solution
       @deleteCellAt tuple.x, tuple.y
     @pushAllCellsToBottom()
@@ -89,6 +93,14 @@ class Board
     @boardValues[r1][c1] = @boardValues[r2][c2]
     @boardValues[r2][c2] = temp
 
+  toIdx: (val) ->
+    return null unless val.length is 1
+    switch val
+      when '+' then 10
+      when '-' then 11
+      when '*' then 12
+      else return parseInt val
+
   copyValues: (source) ->
     dest = []
     for row in [0...@dimension]
@@ -96,5 +108,9 @@ class Board
       for col in [0...@dimension]
         dest[row].push source[row][col]
     dest
+
+  resetBoard: ->
+    @boardValues = @copyValues @initialValues
+    @initializer()
 
 module.exports = Board
