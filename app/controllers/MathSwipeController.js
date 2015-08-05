@@ -34,13 +34,18 @@ MathSwipeController = (function() {
     this.testInputSolver = bind(this.testInputSolver, this);
     this.testCellDelete = bind(this.testCellDelete, this);
     this.testExpGen = bind(this.testExpGen, this);
-    this.testResetButton = bind(this.testResetButton, this);
     this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
     this.tests = bind(this.tests, this);
-    var goals, gridModel, input, inputs, k, len, length, symbols, two;
+    this.two = this.createTwo();
+    this.initialize();
+    this.createNewGame();
+    this.tests();
+  }
+
+  MathSwipeController.prototype.initialize = function() {
+    var goals, gridModel, input, inputs, k, len, length, symbols;
     length = 3;
-    two = this.createTwo();
-    symbols = this.getSymbols(two);
+    symbols = this.getSymbols(this.two);
     inputs = this.generateInputs(length);
     goals = [];
     for (k = 0, len = inputs.length; k < len; k++) {
@@ -49,9 +54,19 @@ MathSwipeController = (function() {
     }
     gridModel = this.generateBoard(inputs, length);
     console.log(goals);
-    this.board = new Board(gridModel, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols);
-    this.tests();
-  }
+    this.board = new Board(gridModel, this.two, Cell, Colors, ClickHandler, SolutionService, goals, symbols);
+    return ResetButton.bindClick(this.board);
+  };
+
+  MathSwipeController.prototype.createNewGame = function() {
+    return $('#new-game-button').click((function(_this) {
+      return function(e) {
+        _this.two.clear();
+        ResetButton.unbindClick();
+        return _this.initialize();
+      };
+    })(this));
+  };
 
   MathSwipeController.prototype.createTwo = function() {
     var game, size, two;
@@ -97,7 +112,6 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.tests = function() {
-    this.testResetButton();
     this.testRandomizedFitLength();
     this.testExpGen();
     this.testInputSolver();
@@ -105,27 +119,11 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testRandomizedFitLength = function() {
-    var i, j, k, l, len, list, size, sum;
+    var list, size;
     size = 25;
-    for (i = k = 0; k < 100; i = ++k) {
-      list = RandomizedFitLength.generate(size);
-      sum = 0;
-      for (l = 0, len = list.length; l < len; l++) {
-        j = list[l];
-        sum += j;
-      }
-      if (sum !== size) {
-        console.log("Something went wrong with RandomizedFitLength");
-        console.log(list);
-        break;
-      }
-    }
+    list = RandomizedFitLength.generate(size);
     console.log(list);
     return console.log("Passed RandomizedFitLength");
-  };
-
-  MathSwipeController.prototype.testResetButton = function() {
-    return ResetButton.bindClick(this.board);
   };
 
   MathSwipeController.prototype.testExpGen = function() {

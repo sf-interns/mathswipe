@@ -15,17 +15,28 @@ $                       = require 'jquery'
 class MathSwipeController
 
   constructor: ->
+    @two = @createTwo()
+    @initialize()
+    @createNewGame()
+    @tests()
+
+  initialize: ->
     length = 3
-    two = @createTwo()
-    symbols = @getSymbols two
+    symbols = @getSymbols @two
     inputs = @generateInputs length
     goals = []
     for input in inputs
       goals.push InputSolver.compute input.join('')
     gridModel = @generateBoard inputs, length
     console.log goals
-    @board = new Board gridModel, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols
-    @tests()
+    @board = new Board gridModel, @two, Cell, Colors, ClickHandler, SolutionService, goals, symbols
+    ResetButton.bindClick @board
+
+  createNewGame: ->
+    $('#new-game-button').click (e) =>
+      @two.clear()
+      ResetButton.unbindClick()
+      @initialize()
 
   createTwo: ->
     game = document.getElementById('game')
@@ -63,7 +74,6 @@ class MathSwipeController
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
-    @testResetButton()
     @testRandomizedFitLength()
     @testExpGen()
     # @testCellDelete()
@@ -72,20 +82,9 @@ class MathSwipeController
 
   testRandomizedFitLength: =>
     size = 25
-    for i in [0...100]
-      list = RandomizedFitLength.generate size
-      sum = 0
-      for j in list
-        sum += j
-      if sum != size
-        console.log "Something went wrong with RandomizedFitLength"
-        console.log list
-        break
+    list = RandomizedFitLength.generate size
     console.log list
     console.log "Passed RandomizedFitLength"
-
-  testResetButton: =>
-    ResetButton.bindClick @board
 
   testExpGen: =>
     for length in [1..30]
