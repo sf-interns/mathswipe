@@ -7,9 +7,9 @@ class Cell
     @isDeleted = false
     @isSelected = false
     @rect = @two.makeRectangle @getX(), @getY(), @size, @size
-    if symbols? 
+    if symbols?
       @cell = @two.makeGroup @rect, (@newSymbol symbols, @toIdx value)
-    else 
+    else
       @cell = @two.makeGroup @rect
     @two.update()
 
@@ -67,10 +67,10 @@ class Cell
         @two.unbind 'update'
 
       delta = new Two.Vector 0, (dist * .125)
-      if goingDown 
+      if goingDown
         @cell.translation.addSelf delta
         start = start.addSelf delta
-      else 
+      else
         @cell.translation.subSelf delta
         start = start.subSelf delta
     ).play()

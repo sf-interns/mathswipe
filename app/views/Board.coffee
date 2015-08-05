@@ -1,11 +1,14 @@
 class Board
 
   # @boardValues is a 2D array of characters
-  constructor: (@boardValues, @two, @Cell, @Colors, ClickHandler, symbols) ->
+  constructor: (@boardValues, @two, @Cell, @Colors, ClickHandler, SolutionService, goals, symbols) ->
     # Unused now, but will be used for board reset
     @initialValues = @copyValues @boardValues
     @dimension = @boardValues.length
-    @clickHandler = new ClickHandler this, @two
+    console.log goals
+    console.log SolutionService
+    solutionService = new SolutionService this, goals
+    @clickHandler = new ClickHandler this, @two, solutionService
 
     @createBoard()
     @createEmptyCells @cellWidth - 5
@@ -56,6 +59,7 @@ class Board
         @cells[row].push cell
 
   deleteCells: (solution) ->
+    console.log 'delete cells', solution
     for tuple in solution
       @deleteCellAt tuple.x, tuple.y
     @pushAllCellsToBottom()

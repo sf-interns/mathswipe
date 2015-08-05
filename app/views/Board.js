@@ -3,7 +3,8 @@ var Board,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Board = (function() {
-  function Board(boardValues, two, Cell, Colors, ClickHandler, symbols) {
+  function Board(boardValues, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols) {
+    var solutionService;
     this.boardValues = boardValues;
     this.two = two;
     this.Cell = Cell;
@@ -13,7 +14,10 @@ Board = (function() {
     this.createBoard = bind(this.createBoard, this);
     this.initialValues = this.copyValues(this.boardValues);
     this.dimension = this.boardValues.length;
-    this.clickHandler = new ClickHandler(this, this.two);
+    console.log(goals);
+    console.log(SolutionService);
+    solutionService = new SolutionService(this, goals);
+    this.clickHandler = new ClickHandler(this, this.two, solutionService);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth, symbols);
@@ -80,6 +84,7 @@ Board = (function() {
 
   Board.prototype.deleteCells = function(solution) {
     var i, len, tuple;
+    console.log('delete cells', solution);
     for (i = 0, len = solution.length; i < len; i++) {
       tuple = solution[i];
       this.deleteCellAt(tuple.x, tuple.y);

@@ -3,6 +3,7 @@ DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
+SolutionService         = require '../services/SolutionService'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 Cell                    = require '../views/Cell'
@@ -15,8 +16,13 @@ class MathSwipeController
     length = 3
     two = @createTwo()
     symbols = @getSymbols two
-    gridModel = @generateBoard length
-    @board = new Board gridModel, two, Cell, Colors, ClickHandler, symbols
+    inputs = @generateInputs length
+    goals = []
+    for input in inputs
+      goals.push InputSolver.compute input.join('')
+    gridModel = @generateBoard inputs, length
+    console.log goals
+    @board = new Board gridModel, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols
 
     @tests()
 
@@ -44,15 +50,18 @@ class MathSwipeController
     two.update()
     symbols
 
-  randExpression: (length) -> 
+  randExpression: (length) ->
     ExpressionGenerator.generate length
 
-  generateBoard: (length) -> 
+  generateInputs: (length) ->
     inputs = []
     inputs.push @randExpression(length).split('') for i in [0...length]
-    for input in inputs
-      console.log input
-      console.log InputSolver.compute input.join('')
+    inputs
+
+  calculateGoals: () ->
+
+
+  generateBoard: (inputs, length) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
