@@ -4,17 +4,14 @@ var $, ResetButton;
 $ = require('jquery');
 
 ResetButton = (function() {
-  function ResetButton(clickHandler) {
-    this.clickHandler = clickHandler;
+  function ResetButton(board) {
+    this.board = board;
   }
 
   ResetButton.prototype.bindClick = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
     return $('#reset-button').click((function(_this) {
       return function(e) {
-        return console.log("cliked reset button");
+        return _this.board.resetBoard();
       };
     })(this));
   };

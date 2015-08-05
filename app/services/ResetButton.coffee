@@ -2,12 +2,11 @@ $ = require 'jquery'
 
 class ResetButton
 
-  constructor: (@clickHandler) ->
+  constructor: (@board) ->
 
   bindClick: ->
-    return unless @clickHandler?
+    # return unless @clickHandler?
     $('#reset-button').click (e) =>
-      console.log "cliked reset button"
-
+      @board.resetBoard()
 
 module.exports = ResetButton

@@ -1,8 +1,9 @@
 $ = require 'jquery'
+Tuple = require '../models/Tuple'
 
 class ClickHandler
 
-  constructor: (@board, two, @clicked = []) ->
+  constructor: (@board, two, @solutionService, @clicked = []) ->
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
@@ -28,6 +29,12 @@ class ClickHandler
         else
           console.log 'WARN: object not 2D arrays or simpler or no BindClick method'
 
+  tuplesClicked: () ->
+    tuples = []
+    for cell in @clicked
+      tuples.push new Tuple cell.col, cell.row
+    tuples
+
   addToClicked: (cell) ->
     return if cell.isDeleted
     @clicked.push cell
@@ -47,6 +54,11 @@ class ClickHandler
       unless @cell in @clicked
         cell.select()
         @addToClicked cell
+        if @solutionService.isSolution @clicked
+          console.log 'isSolution!'
+          @board.deleteCells @tuplesClicked()
+        else
+         console.log 'not a solution'
     else
       @resetClicked()
       @clickCell cell

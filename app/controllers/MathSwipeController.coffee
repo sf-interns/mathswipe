@@ -4,6 +4,7 @@ DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 InputSolver             = require '../services/InputSolver'
 ResetButton             = require '../services/ResetButton'
+SolutionService         = require '../services/SolutionService'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 Cell                    = require '../views/Cell'
@@ -16,8 +17,13 @@ class MathSwipeController
     length = 3
     two = @createTwo()
     symbols = @getSymbols two
-    gridModel = @generateBoard length
-    @board = new Board gridModel, two, Cell, Colors, ClickHandler, symbols
+    inputs = @generateInputs length
+    goals = []
+    for input in inputs
+      goals.push InputSolver.compute input.join('')
+    gridModel = @generateBoard inputs, length
+    console.log goals
+    @board = new Board gridModel, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols
 
     @tests()
 
@@ -48,12 +54,15 @@ class MathSwipeController
   randExpression: (length) ->
     ExpressionGenerator.generate length
 
-  generateBoard: (length) ->
+  generateInputs: (length) ->
     inputs = []
     inputs.push @randExpression(length).split('') for i in [0...length]
-    for input in inputs
-      console.log input
-      console.log InputSolver.compute input.join('')
+    inputs
+
+  calculateGoals: () ->
+
+
+  generateBoard: (inputs, length) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
@@ -64,7 +73,7 @@ class MathSwipeController
     # @testDFS()
 
   testResetButton: =>
-    reset = new ResetButton ClickHandler
+    reset = new ResetButton @board
     reset.bindClick()
 
   testExpGen: =>

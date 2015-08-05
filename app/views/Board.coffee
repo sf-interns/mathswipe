@@ -1,15 +1,19 @@
 class Board
 
   # @boardValues is a 2D array of characters
-  constructor: (@boardValues, @two, @Cell, @Colors, ClickHandler, symbols) ->
+  constructor: (@boardValues, @two, @Cell, @Colors, @ClickHandler, @SolutionService, @goals, @symbols) ->
     # Unused now, but will be used for board reset
-    @initialValues = @copyValues @boardValues
     @dimension = @boardValues.length
-    @clickHandler = new ClickHandler this, @two
+    @initialValues = @copyValues @boardValues
+    @initializer()
+
+  initializer: =>
+    solutionService = new @SolutionService this, @goals
+    @clickHandler = new @ClickHandler this, @two, solutionService
 
     @createBoard()
     @createEmptyCells @cellWidth - 5
-    @createCells @cellWidth, symbols
+    @createCells @cellWidth
 
     @clickHandler.bindDefaultClick @board
     @clickHandler.bindClickTo @cells
@@ -45,17 +49,18 @@ class Board
         cell.setBorder @Colors.emptyCellBorder
         @empty_cells[row].push cell
 
-  createCells: (width, symbols) =>
+  createCells: (width) =>
     @cells = []
     for row in [0...@dimension]
       @cells.push []
       for col in [0...@dimension]
-        cell = new @Cell col, row, width, @two, this, @clickHandler, symbols, @boardValues[row][col]
+        cell = new @Cell col, row, width, @two, this, @clickHandler, @symbols, @boardValues[row][col]
         cell.setColor @Colors.cell
         cell.setBorder @Colors.cellBorder
         @cells[row].push cell
 
   deleteCells: (solution) ->
+    console.log 'delete cells', solution
     for tuple in solution
       @deleteCellAt tuple.x, tuple.y
     @pushAllCellsToBottom()
@@ -96,5 +101,9 @@ class Board
       for col in [0...@dimension]
         dest[row].push source[row][col]
     dest
+
+  resetBoard: ->
+    @boardValues = @copyValues @initialValues
+    @initializer()
 
 module.exports = Board
