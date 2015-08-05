@@ -1,8 +1,9 @@
-InputSolver             = require '../services/InputSolver'
-DFS                     = require '../services/DFS'
-ExpressionGenerator     = require '../services/ExpressionGenerator'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
+DFS                     = require '../services/DFS'
+ExpressionGenerator     = require '../services/ExpressionGenerator'
+InputSolver             = require '../services/InputSolver'
+ResetButton             = require '../services/ResetButton'
 SolutionService         = require '../services/SolutionService'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 Tuple                   = require '../models/Tuple'
@@ -62,6 +63,7 @@ class MathSwipeController
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
+    @testResetButton()
     @testRandomizedFitLength()
     @testExpGen()
     # @testCellDelete()
@@ -81,6 +83,9 @@ class MathSwipeController
         break
     console.log list
     console.log "Passed RandomizedFitLength"
+
+  testResetButton: =>
+    ResetButton.bindClick @board
 
   testExpGen: =>
     for length in [1..30]

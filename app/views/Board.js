@@ -4,25 +4,34 @@ var Board,
 
 Board = (function() {
   function Board(boardValues, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols) {
-    var solutionService;
     this.boardValues = boardValues;
     this.two = two;
     this.Cell = Cell;
     this.Colors = Colors;
+    this.ClickHandler = ClickHandler;
+    this.SolutionService = SolutionService;
+    this.goals = goals;
+    this.symbols = symbols;
     this.createCells = bind(this.createCells, this);
     this.createEmptyCells = bind(this.createEmptyCells, this);
     this.createBoard = bind(this.createBoard, this);
-    this.initialValues = this.copyValues(this.boardValues);
+    this.initializer = bind(this.initializer, this);
     this.dimension = this.boardValues.length;
-    solutionService = new SolutionService(this, goals);
-    this.clickHandler = new ClickHandler(this, this.two, solutionService);
+    this.initialValues = this.copyValues(this.boardValues);
+    this.initializer();
+  }
+
+  Board.prototype.initializer = function() {
+    var solutionService;
+    solutionService = new this.SolutionService(this, this.goals);
+    this.clickHandler = new this.ClickHandler(this, this.two, solutionService);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
-    this.createCells(this.cellWidth, symbols);
+    this.createCells(this.cellWidth);
     this.clickHandler.bindDefaultClick(this.board);
     this.clickHandler.bindClickTo(this.cells);
-    this.two.update();
-  }
+    return this.two.update();
+  };
 
   Board.prototype.createBoard = function() {
     var offset;
@@ -59,7 +68,7 @@ Board = (function() {
     return results;
   };
 
-  Board.prototype.createCells = function(width, symbols) {
+  Board.prototype.createCells = function(width) {
     var cell, col, i, ref, results, row;
     this.cells = [];
     results = [];
@@ -69,7 +78,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, symbols[this.toIdx(this.boardValues[row][col])]);
+          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, this.symbols[this.toIdx(this.boardValues[row][col])]);
           cell.setColor(this.Colors.cell);
           cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));
@@ -150,6 +159,11 @@ Board = (function() {
       }
     }
     return dest;
+  };
+
+  Board.prototype.resetBoard = function() {
+    this.boardValues = this.copyValues(this.initialValues);
+    return this.initializer();
   };
 
   return Board;
