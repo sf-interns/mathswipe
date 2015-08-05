@@ -9,13 +9,16 @@ class SolutionService
 
   isSolution: (clickedCells) ->
     return false unless clickedCells? and clickedCells.length > 0
-    solution = ''
-    for cell in clickedCells
-      solution += @board.boardValues[cell.row][cell.col]
-    soln = InputSolver.compute(solution)
-    console.log soln in @goals, solution.length
-    return false unless soln in @goals and solution.length >= 3
-    @goals.splice (@goals.indexOf soln), 1
+    solution = @getSolutionString clickedCells
+    value = InputSolver.compute solution
+    return false unless value in @goals and solution.length >= 3
+    @goals.splice (@goals.indexOf value), 1
     return true
+
+  getSolutionString: (cells) ->
+    solution = ''
+    for c in cells
+      solution += @board.boardValues[c.row][c.col]
+    solution
 
 module.exports = SolutionService

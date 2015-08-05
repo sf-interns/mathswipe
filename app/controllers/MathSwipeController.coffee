@@ -65,10 +65,10 @@ class MathSwipeController
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
-    # @testExpGen()
-    # @testCellDelete()
-    # @testInputSolver()
-    # @testDFS()
+    @testExpGen()
+    @testCellDelete()
+    @testInputSolver()
+    @testDFS()
 
   testExpGen: =>
     for length in [1..30]

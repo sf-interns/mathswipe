@@ -92,7 +92,12 @@ MathSwipeController = (function() {
     return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
   };
 
-  MathSwipeController.prototype.tests = function() {};
+  MathSwipeController.prototype.tests = function() {
+    this.testExpGen();
+    this.testCellDelete();
+    this.testInputSolver();
+    return this.testDFS();
+  };
 
   MathSwipeController.prototype.testExpGen = function() {
     var expression, k, length, results;

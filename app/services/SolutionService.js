@@ -16,22 +16,27 @@ SolutionService = (function() {
   }
 
   SolutionService.prototype.isSolution = function(clickedCells) {
-    var cell, i, len, soln, solution;
+    var solution, value;
     if (!((clickedCells != null) && clickedCells.length > 0)) {
       return false;
     }
-    solution = '';
-    for (i = 0, len = clickedCells.length; i < len; i++) {
-      cell = clickedCells[i];
-      solution += this.board.boardValues[cell.row][cell.col];
-    }
-    soln = InputSolver.compute(solution);
-    console.log(indexOf.call(this.goals, soln) >= 0, solution.length);
-    if (!(indexOf.call(this.goals, soln) >= 0 && solution.length >= 3)) {
+    solution = this.getSolutionString(clickedCells);
+    value = InputSolver.compute(solution);
+    if (!(indexOf.call(this.goals, value) >= 0 && solution.length >= 3)) {
       return false;
     }
-    this.goals.splice(this.goals.indexOf(soln), 1);
+    this.goals.splice(this.goals.indexOf(value), 1);
     return true;
+  };
+
+  SolutionService.prototype.getSolutionString = function(cells) {
+    var c, i, len, solution;
+    solution = '';
+    for (i = 0, len = cells.length; i < len; i++) {
+      c = cells[i];
+      solution += this.board.boardValues[c.row][c.col];
+    }
+    return solution;
   };
 
   return SolutionService;

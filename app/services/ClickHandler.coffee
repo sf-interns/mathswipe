@@ -54,11 +54,7 @@ class ClickHandler
       unless @cell in @clicked
         cell.select()
         @addToClicked cell
-        if @solutionService.isSolution @clicked
-          console.log 'isSolution!'
-          @board.deleteCells @tuplesClicked()
-        else
-         console.log 'not a solution'
+        @board.deleteCells @tuplesClicked() if @solutionService.isSolution @clicked
     else
       @resetClicked()
       @clickCell cell
