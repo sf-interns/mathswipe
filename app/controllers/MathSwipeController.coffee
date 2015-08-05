@@ -17,8 +17,12 @@ class MathSwipeController
     two = @createTwo()
     symbols = @getSymbols two
 
+    inputs = []
     for i in [0...length]
-      gridModel.push (ExpressionGenerator.generate length).split('')
+      inputs.push (ExpressionGenerator.generate length)
+    console.log inputs
+
+    gridModel = DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
     @board = new Board gridModel, two, Cell, Colors, ClickHandler, symbols
 

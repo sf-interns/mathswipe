@@ -29,14 +29,17 @@ MathSwipeController = (function() {
     this.testCellDelete = bind(this.testCellDelete, this);
     this.testExpGen = bind(this.testExpGen, this);
     this.tests = bind(this.tests, this);
-    var gridModel, i, k, length, ref, symbols, two;
+    var gridModel, i, inputs, k, length, ref, symbols, two;
     length = 3;
     gridModel = [];
     two = this.createTwo();
     symbols = this.getSymbols(two);
+    inputs = [];
     for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
-      gridModel.push((ExpressionGenerator.generate(length)).split(''));
+      inputs.push(ExpressionGenerator.generate(length));
     }
+    console.log(inputs);
+    gridModel = DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
     this.board = new Board(gridModel, two, Cell, Colors, ClickHandler, symbols);
     this.tests();
   }

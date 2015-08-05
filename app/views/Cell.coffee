@@ -22,10 +22,11 @@ class Cell
       else return parseInt val
 
   newSymbol: (symbols, value)->
+    offset = - @size * 4 / 10
     symbol = symbols[value].clone()
-    symbol.translation.set @getX() - (0.4 * @size), @getY() - (0.4 * @size)
-    symbol.scale = (@size / 480) *.8
-    symbol.fill = 'black'
+    symbol.translation.set @getX() + offset, @getY() + offset
+    symbol.scale = (@size / 100) *.8
+    symbol.noStroke().fill = 'black'
     symbol
 
   setColor: (c) ->

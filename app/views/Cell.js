@@ -41,11 +41,12 @@ Cell = (function() {
   };
 
   Cell.prototype.newSymbol = function(symbols, value) {
-    var symbol;
+    var offset, symbol;
+    offset = -this.size * 4 / 10;
     symbol = symbols[value].clone();
-    symbol.translation.set(this.getX() - (0.4 * this.size), this.getY() - (0.4 * this.size));
-    symbol.scale = (this.size / 480) * .8;
-    symbol.fill = 'black';
+    symbol.translation.set(this.getX() + offset, this.getY() + offset);
+    symbol.scale = (this.size / 100) * .8;
+    symbol.noStroke().fill = 'black';
     return symbol;
   };
 
