@@ -1,4 +1,4 @@
-Tuple    = require '../models/Tuple'
+Tuple = require '../models/Tuple'
 
 class AdjacentCellsCalculator
 

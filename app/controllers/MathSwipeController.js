@@ -100,9 +100,7 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testResetButton = function() {
-    var reset;
-    reset = new ResetButton(this.board);
-    return reset.bindClick();
+    return ResetButton.bindClick(this.board);
   };
 
   MathSwipeController.prototype.testExpGen = function() {

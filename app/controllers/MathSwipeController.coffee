@@ -73,8 +73,7 @@ class MathSwipeController
     # @testDFS()
 
   testResetButton: =>
-    reset = new ResetButton @board
-    reset.bindClick()
+    ResetButton.bindClick @board
 
   testExpGen: =>
     for length in [1..30]

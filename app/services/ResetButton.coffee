@@ -2,10 +2,8 @@ $ = require 'jquery'
 
 class ResetButton
 
-  constructor: (@board) ->
-
-  bindClick: ->
+  @bindClick: (board) ->
     $('#reset-button').click (e) =>
-      @board.resetBoard()
+      board.resetBoard()
 
 module.exports = ResetButton

@@ -2,7 +2,6 @@ class Board
 
   # @boardValues is a 2D array of characters
   constructor: (@boardValues, @two, @Cell, @Colors, @ClickHandler, @SolutionService, @goals, @symbols) ->
-
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
