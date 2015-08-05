@@ -106,7 +106,8 @@ ClickHandler = (function() {
         cell.select();
         this.addToClicked(cell);
         if (this.solutionService.isSolution(this.clicked)) {
-          return this.board.deleteCells(this.tuplesClicked());
+          this.board.deleteCells(this.tuplesClicked());
+          return this.clicked = [];
         }
       }
     } else {

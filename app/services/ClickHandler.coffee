@@ -54,7 +54,9 @@ class ClickHandler
       unless @cell in @clicked
         cell.select()
         @addToClicked cell
-        @board.deleteCells @tuplesClicked() if @solutionService.isSolution @clicked
+        if @solutionService.isSolution @clicked
+           @board.deleteCells @tuplesClicked()
+           @clicked = []
     else
       @resetClicked()
       @clickCell cell

@@ -17,12 +17,12 @@ SolutionService = (function() {
 
   SolutionService.prototype.isSolution = function(clickedCells) {
     var solution, value;
-    if (!((clickedCells != null) && clickedCells.length > 0)) {
+    if (!((clickedCells != null) && clickedCells.length >= 3)) {
       return false;
     }
     solution = this.getSolutionString(clickedCells);
     value = InputSolver.compute(solution);
-    if (!(indexOf.call(this.goals, value) >= 0 && solution.length >= 3)) {
+    if (indexOf.call(this.goals, value) < 0) {
       return false;
     }
     this.goals.splice(this.goals.indexOf(value), 1);
