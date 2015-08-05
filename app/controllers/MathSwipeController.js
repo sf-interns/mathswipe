@@ -67,7 +67,6 @@ MathSwipeController = (function() {
     return symbols;
   };
 
-<<<<<<< HEAD
   MathSwipeController.prototype.randExpression = function(length) {
     return ExpressionGenerator.generate(length);
   };
@@ -86,8 +85,6 @@ MathSwipeController = (function() {
     return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
   };
 
-  MathSwipeController.prototype.tests = function() {};
-=======
   MathSwipeController.prototype.tests = function() {
     this.testRandomizedFitLength();
     this.testExpGen();
@@ -115,7 +112,6 @@ MathSwipeController = (function() {
     console.log(list);
     return console.log("Passed RandomizedFitLength");
   };
->>>>>>> master
 
   MathSwipeController.prototype.testExpGen = function() {
     var expression, k, length, results;

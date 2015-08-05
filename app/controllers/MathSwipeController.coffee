@@ -45,10 +45,10 @@ class MathSwipeController
     two.update()
     symbols
 
-  randExpression: (length) -> 
+  randExpression: (length) ->
     ExpressionGenerator.generate length
 
-  generateBoard: (length) -> 
+  generateBoard: (length) ->
     inputs = []
     inputs.push @randExpression(length).split('') for i in [0...length]
     for input in inputs
@@ -57,18 +57,11 @@ class MathSwipeController
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
-<<<<<<< HEAD
-    # @testExpGen()
-    # @testCellDelete()
-    # @testInputSolver()
-    # @testDFS()
-=======
     @testRandomizedFitLength()
     @testExpGen()
     @testCellDelete()
     @testInputSolver()
     @testDFS()
->>>>>>> master
 
   testRandomizedFitLength: =>
     size = 25
