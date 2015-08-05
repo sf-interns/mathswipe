@@ -88,7 +88,6 @@ MathSwipeController = (function() {
   MathSwipeController.prototype.tests = function() {
     this.testRandomizedFitLength();
     this.testExpGen();
-    this.testCellDelete();
     this.testInputSolver();
     return this.testDFS();
   };

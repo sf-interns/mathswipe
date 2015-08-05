@@ -59,7 +59,7 @@ class MathSwipeController
   tests: =>
     @testRandomizedFitLength()
     @testExpGen()
-    @testCellDelete()
+    # @testCellDelete()
     @testInputSolver()
     @testDFS()
 
