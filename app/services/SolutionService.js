@@ -6,14 +6,17 @@ InputSolver = require('./InputSolver');
 
 SolutionService = (function() {
   function SolutionService(board, goals) {
+    var g, i, len;
     this.board = board;
-    this.goals = goals;
-    console.log('HELLO!!!');
-    console.log(this.goals);
+    this.goals = [];
+    for (i = 0, len = goals.length; i < len; i++) {
+      g = goals[i];
+      this.goals.push(g);
+    }
   }
 
   SolutionService.prototype.isSolution = function(clickedCells) {
-    var cell, i, len, ref, solution;
+    var cell, i, len, soln, solution;
     if (!((clickedCells != null) && clickedCells.length > 0)) {
       return false;
     }
@@ -22,8 +25,13 @@ SolutionService = (function() {
       cell = clickedCells[i];
       solution += this.board.boardValues[cell.row][cell.col];
     }
-    console.log(solution, this.goals);
-    return ref = InputSolver.compute(solution), indexOf.call(this.goals, ref) >= 0;
+    soln = InputSolver.compute(solution);
+    console.log(indexOf.call(this.goals, soln) >= 0, solution.length);
+    if (!(indexOf.call(this.goals, soln) >= 0 && solution.length >= 3)) {
+      return false;
+    }
+    this.goals.splice(this.goals.indexOf(soln), 1);
+    return true;
   };
 
   return SolutionService;

@@ -14,8 +14,6 @@ Board = (function() {
     this.createBoard = bind(this.createBoard, this);
     this.initialValues = this.copyValues(this.boardValues);
     this.dimension = this.boardValues.length;
-    console.log(goals);
-    console.log(SolutionService);
     solutionService = new SolutionService(this, goals);
     this.clickHandler = new ClickHandler(this, this.two, solutionService);
     this.createBoard();

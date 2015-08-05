@@ -5,8 +5,6 @@ class Board
     # Unused now, but will be used for board reset
     @initialValues = @copyValues @boardValues
     @dimension = @boardValues.length
-    console.log goals
-    console.log SolutionService
     solutionService = new SolutionService this, goals
     @clickHandler = new ClickHandler this, @two, solutionService
 
