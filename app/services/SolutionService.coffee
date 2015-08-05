@@ -8,7 +8,7 @@ class SolutionService
       @goals.push g
 
   isSolution: (clickedCells) ->
-    return false unless clickedCells? and clickedCells.length >=3
+    return false unless clickedCells? and clickedCells.length >= 3
     solution = @getSolutionString clickedCells
     value = InputSolver.compute solution
     return false unless value in @goals
