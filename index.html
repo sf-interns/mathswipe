@@ -1,24 +1,16 @@
 <head>
-  <link rel="StyleSheet" type="text/css" href="../assets/stylesheets/gameBackground.css">
+  <link rel="StyleSheet" type="text/css" href="./public/assets/stylesheets/gameBackground.css">
 </head>
 <body class = "game-background">
-  <div>
-      <img src = "../assets/images/title.png" class = "title-image">
+  <div class="title-column">
+      <img src = "./public/assets/images/title.png" class = "title-image">
   </div>
   <div class="center-column">
     <div id="game"></div>
   </div>
   <div class="center-column">
-    <table>
-      <tr>
-        <td>
-          <button id="reset-button" type="submit" class="button-background"><img src = "../assets/images/reset.png" width="250px" height="50px"></button>
-        </td>
-        <td>
-          <button type="submit" class="button-background"><img src = "../assets/images/new-game.png" width="250px" height="50px"></button>
-        </td>
-      </tr>
-    </table>
+    <button type="submit" class="button-background left-btn"><img src = "./public/assets/images/reset.png" width="200px" height="50px"></button>
+    <button type="submit" class="button-background right-btn"><img src = "./public/assets/images/new-game.png" width="200px" height="50px"></button>
   </div>
   <div class="center-column">
     <div id="goals"></div>
@@ -382,5 +374,5 @@
   </div>
 
   <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
-  <script src = "/bundle.js"></script>
+  <script src="public/bundle.js"></script>
 </body>
