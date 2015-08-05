@@ -1,5 +1,5 @@
 .game-background {
-  background: linear-gradient(#B9B9B9,#E5E5E5);
+  background-color: #122D34;
   margin: 0;
 }
 
@@ -9,13 +9,15 @@
   display: block;
   margin: auto;
   padding-top: 35px;
+  margin-bottom: 35px;
 }
 
 .button-background {
   background-color: Transparent;
   border-style: solid;
-  border-color: darkgray;
+  border-color: #a7acb0;
   border-radius: 100px;
+  margin-right: 10px;
 }
 
 .center-column {
@@ -24,6 +26,7 @@
   display: block;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 40px;
 }
 
 .goals {

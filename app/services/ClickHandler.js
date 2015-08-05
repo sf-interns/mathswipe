@@ -106,10 +106,8 @@ ClickHandler = (function() {
         cell.select();
         this.addToClicked(cell);
         if (this.solutionService.isSolution(this.clicked)) {
-          console.log('isSolution!');
-          return this.board.deleteCells(this.tuplesClicked());
-        } else {
-          return console.log('not a solution');
+          this.board.deleteCells(this.tuplesClicked());
+          return this.clicked = [];
         }
       }
     } else {

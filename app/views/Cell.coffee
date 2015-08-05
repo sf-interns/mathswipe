@@ -3,27 +3,19 @@ Colors = require './Colors'
 
 class Cell
 
-  constructor: (@col, @row, @size, @two, @board, @clickHandler, symbols, value) ->
+  constructor: (@col, @row, @size, @two, @board, @clickHandler, symbolBlueprint) ->
     @isDeleted = false
     @isSelected = false
     @rect = @two.makeRectangle @getX(), @getY(), @size, @size
-    if symbols?
-      @cell = @two.makeGroup @rect, (@newSymbol symbols, @toIdx value)
+    if symbolBlueprint
+      @cell = @two.makeGroup @rect, (@newSymbol symbolBlueprint)
     else
       @cell = @two.makeGroup @rect
     @two.update()
 
-  toIdx: (val) ->
-    return null unless val.length is 1
-    switch val
-      when '+' then 10
-      when '-' then 11
-      when '*' then 12
-      else return parseInt val
-
-  newSymbol: (symbols, value)->
+  newSymbol: (blueprint)->
     offset = - @size * 4 / 10
-    symbol = symbols[value].clone()
+    symbol = blueprint.clone()
     symbol.translation.set @getX() + offset, @getY() + offset
     symbol.scale = (@size / 100) *.8
     symbol.noStroke().fill = Colors.symbol

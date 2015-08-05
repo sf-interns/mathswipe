@@ -2,12 +2,12 @@
 var Colors;
 
 Colors = {
-  cell: '#FFEBCD',
-  cellBorder: '#FFE1b4',
-  emptyCell: '#B7C9E1',
-  emptyCellBorder: '#B7C9E1',
-  board: '#C2D1E6',
-  select: '#FFCC81',
+  cell: '#EFE8BE',
+  cellBorder: '#41565c',
+  emptyCell: '#41565c',
+  emptyCellBorder: '#41565c',
+  board: '#294248',
+  select: '#c7a579',
   symbol: 'black'
 };
 
