@@ -20,6 +20,10 @@
   border-radius: 100px;
 }
 
+.button-background:focus {
+  outline: none;
+}
+
 .center-column {
   max-width: 500px;
   min-width: 320px;
