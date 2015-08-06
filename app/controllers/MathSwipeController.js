@@ -36,27 +36,43 @@ MathSwipeController = (function() {
     this.testInputSolver = bind(this.testInputSolver, this);
     this.testCellDelete = bind(this.testCellDelete, this);
     this.testExpGen = bind(this.testExpGen, this);
-    this.testResetButton = bind(this.testResetButton, this);
     this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
     this.tests = bind(this.tests, this);
-    var answers, boardSymbols, expression, gameModel, gameScene, goalsScene, goalsSymbols, i, inputs, k, length, ref;
-    length = 3;
+    this.gameScene = this.createGameScene();
+    this.goalsScene = this.createGoalsScene();
+    this.initialize();
+    this.createNewGame();
+    this.tests();
+  }
+
+  MathSwipeController.prototype.initialize = function() {
+    var answers, boardSymbols, expression, gameModel, goalsSymbols, i, inputs, k, length, ref;
+    length = 4;
     inputs = [];
     answers = [];
-    gameScene = this.createGameScene();
-    goalsScene = this.createGoalsScene();
     for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
       expression = ExpressionGenerator.generate(length);
       inputs.push(expression.split(''));
       answers.push(InputSolver.compute(expression));
     }
-    boardSymbols = this.getSymbolsFor(gameScene);
+    boardSymbols = this.getSymbolsFor(this.gameScene);
     gameModel = this.generateBoard(inputs, length);
-    this.board = new Board(gameModel, gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols);
-    goalsSymbols = this.getSymbolsFor(goalsScene);
-    this.goalContainer = new GoalContainer(goalsScene, answers, goalsSymbols, Colors);
-    this.tests();
-  }
+    this.board = new Board(gameModel, this.gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols);
+    ResetButton.bindClick(this.board);
+    goalsSymbols = this.getSymbolsFor(this.goalsScene);
+    return this.goalContainer = new GoalContainer(this.goalsScene, answers, goalsSymbols, Colors);
+  };
+
+  MathSwipeController.prototype.createNewGame = function() {
+    return $('#new-game-button').click((function(_this) {
+      return function(e) {
+        _this.gameScene.clear();
+        _this.goalsScene.clear();
+        ResetButton.unbindClick();
+        return _this.initialize();
+      };
+    })(this));
+  };
 
   MathSwipeController.prototype.createGameScene = function() {
     var gameDom, scene, size;
@@ -113,7 +129,6 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.tests = function() {
-    this.testResetButton();
     this.testRandomizedFitLength();
     this.testExpGen();
     this.testInputSolver();
@@ -121,27 +136,11 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.testRandomizedFitLength = function() {
-    var i, j, k, l, len, list, size, sum;
+    var list, size;
     size = 25;
-    for (i = k = 0; k < 100; i = ++k) {
-      list = RandomizedFitLength.generate(size);
-      sum = 0;
-      for (l = 0, len = list.length; l < len; l++) {
-        j = list[l];
-        sum += j;
-      }
-      if (sum !== size) {
-        console.log("Something went wrong with RandomizedFitLength");
-        console.log(list);
-        break;
-      }
-    }
+    list = RandomizedFitLength.generate(size);
     console.log(list);
     return console.log("Passed RandomizedFitLength");
-  };
-
-  MathSwipeController.prototype.testResetButton = function() {
-    return ResetButton.bindClick(this.board);
   };
 
   MathSwipeController.prototype.testExpGen = function() {

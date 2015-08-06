@@ -16,25 +16,36 @@ $                       = require 'jquery'
 class MathSwipeController
 
   constructor: ->
-    length = 3
+    @gameScene = @createGameScene()
+    @goalsScene = @createGoalsScene()
+    @initialize()
+    @createNewGame()
+    @tests()
+
+  initialize: ->
+    length = 4
     inputs = []
     answers = []
-    gameScene = @createGameScene()
-    goalsScene = @createGoalsScene()
 
     for i in [0...length]
       expression = (ExpressionGenerator.generate length)
       inputs.push expression.split('')
       answers.push (InputSolver.compute expression)
 
-    boardSymbols = @getSymbolsFor gameScene
+    boardSymbols = @getSymbolsFor @gameScene
     gameModel = @generateBoard inputs, length
-    @board = new Board gameModel, gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols
+    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols
+    ResetButton.bindClick @board
 
-    goalsSymbols = @getSymbolsFor goalsScene
-    @goalContainer = new GoalContainer goalsScene, answers, goalsSymbols, Colors
+    goalsSymbols = @getSymbolsFor @goalsScene
+    @goalContainer = new GoalContainer @goalsScene, answers, goalsSymbols, Colors
 
-    @tests()
+  createNewGame: ->
+    $('#new-game-button').click (e) =>
+      @gameScene.clear()
+      @goalsScene.clear()
+      ResetButton.unbindClick()
+      @initialize()
 
   createGameScene: ->
     gameDom = document.getElementById('game')
@@ -77,7 +88,6 @@ class MathSwipeController
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
-    @testResetButton()
     @testRandomizedFitLength()
     @testExpGen()
     # @testCellDelete()
@@ -86,20 +96,9 @@ class MathSwipeController
 
   testRandomizedFitLength: =>
     size = 25
-    for i in [0...100]
-      list = RandomizedFitLength.generate size
-      sum = 0
-      for j in list
-        sum += j
-      if sum != size
-        console.log "Something went wrong with RandomizedFitLength"
-        console.log list
-        break
+    list = RandomizedFitLength.generate size
     console.log list
     console.log "Passed RandomizedFitLength"
-
-  testResetButton: =>
-    ResetButton.bindClick @board
 
   testExpGen: =>
     for length in [1..30]
