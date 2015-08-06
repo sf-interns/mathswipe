@@ -42,19 +42,25 @@ MathSwipeController = (function() {
     this.goalsScene = this.createGoalsScene();
     this.initialize();
     this.createNewGame();
-    this.tests();
   }
 
   MathSwipeController.prototype.initialize = function() {
-    var answers, boardSymbols, expression, gameModel, goalsSymbols, i, inputs, k, length, ref;
-    length = 4;
+    var answers, boardSymbols, expression, gameModel, goalsSymbols, i, inputLengths, inputSize, inputs, k, l, len, len1, length;
+    length = 3;
     inputs = [];
     answers = [];
-    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
-      expression = ExpressionGenerator.generate(length);
+    inputLengths = RandomizedFitLength.generate(length * length);
+    for (k = 0, len = inputLengths.length; k < len; k++) {
+      inputSize = inputLengths[k];
+      expression = ExpressionGenerator.generate(inputSize);
       inputs.push(expression.split(''));
       answers.push(InputSolver.compute(expression));
     }
+    for (l = 0, len1 = inputs.length; l < len1; l++) {
+      i = inputs[l];
+      console.log(i);
+    }
+    console.log('\n');
     boardSymbols = this.getSymbolsFor(this.gameScene);
     gameModel = this.generateBoard(inputs, length);
     this.board = new Board(gameModel, this.gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols);
@@ -93,7 +99,7 @@ MathSwipeController = (function() {
     scene = new Two({
       fullscreen: false,
       autostart: true,
-      height: goalsDom.clientWidth,
+      height: 100,
       width: goalsDom.clientWidth
     }).appendTo(goalsDom);
     return scene;

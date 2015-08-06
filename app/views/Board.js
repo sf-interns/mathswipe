@@ -91,7 +91,6 @@ Board = (function() {
 
   Board.prototype.deleteCells = function(solution) {
     var i, len, tuple;
-    console.log('delete cells', solution);
     for (i = 0, len = solution.length; i < len; i++) {
       tuple = solution[i];
       this.deleteCellAt(tuple.x, tuple.y);

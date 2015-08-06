@@ -22,7 +22,7 @@ class GoalContainer
     for inputStr in @inputSymbols
       for character in inputStr
         character.translation.set (index * symbolSize), 0
-        character.noStroke().fill = "black"
+        character.noStroke().fill = '#EFE8BE'
         character.visible = true
         character.scale = Math.min(1, (@scene.width / 100) / @count)
         index++

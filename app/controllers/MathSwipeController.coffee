@@ -20,17 +20,22 @@ class MathSwipeController
     @goalsScene = @createGoalsScene()
     @initialize()
     @createNewGame()
-    @tests()
+    # @tests()
 
   initialize: ->
-    length = 4
+    length = 3
     inputs = []
     answers = []
 
-    for i in [0...length]
-      expression = (ExpressionGenerator.generate length)
+    inputLengths = RandomizedFitLength.generate length * length
+    for inputSize in inputLengths
+      expression = (ExpressionGenerator.generate inputSize)
       inputs.push expression.split('')
       answers.push (InputSolver.compute expression)
+
+    for i in inputs
+      console.log i
+    console.log '\n'
 
     boardSymbols = @getSymbolsFor @gameScene
     gameModel = @generateBoard inputs, length
@@ -63,7 +68,7 @@ class MathSwipeController
     scene = new Two(
       fullscreen: false
       autostart: true
-      height: goalsDom.clientWidth
+      height: 100
       width: goalsDom.clientWidth
     ).appendTo(goalsDom);
     return scene

@@ -41,7 +41,7 @@ GoalContainer = (function() {
       for (j = 0, len1 = inputStr.length; j < len1; j++) {
         character = inputStr[j];
         character.translation.set(index * symbolSize, 0);
-        character.noStroke().fill = "black";
+        character.noStroke().fill = '#EFE8BE';
         character.visible = true;
         character.scale = Math.min(1, (this.scene.width / 100) / this.count);
         index++;
