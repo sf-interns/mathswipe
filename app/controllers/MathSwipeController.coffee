@@ -8,6 +8,7 @@ SolutionService         = require '../services/SolutionService'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
+GoalContainer           = require '../views/GoalContainer'
 Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
 $                       = require 'jquery'
@@ -15,40 +16,69 @@ $                       = require 'jquery'
 class MathSwipeController
 
   constructor: ->
-    length = 3
-    two = @createTwo()
-    symbols = @getSymbols two
-    inputs = @generateInputs length
-    goals = []
-    for input in inputs
-      goals.push InputSolver.compute input.join('')
-    gridModel = @generateBoard inputs, length
-    console.log goals
-    @board = new Board gridModel, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols
-    @tests()
+    @gameScene = @createGameScene()
+    @goalsScene = @createGoalsScene()
+    @initialize()
+    @createNewGame()
+    # @tests()
 
-  createTwo: ->
-    game = document.getElementById('game')
+  initialize: ->
+    length = 3
+    inputs = []
+    answers = []
+
+    inputLengths = RandomizedFitLength.generate length * length
+    for inputSize in inputLengths
+      expression = (ExpressionGenerator.generate inputSize)
+      inputs.push expression.split('')
+      answers.push (InputSolver.compute expression)
+
+    for i in inputs
+      console.log i
+    console.log '\n'
+
+    boardSymbols = @getSymbolsFor @gameScene
+    gameModel = @generateBoard inputs, length
+    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols
+    ResetButton.bindClick @board
+
+    goalsSymbols = @getSymbolsFor @goalsScene
+    @goalContainer = new GoalContainer @goalsScene, answers, goalsSymbols, Colors
+
+  createNewGame: ->
+    $('#new-game-button').click (e) =>
+      @gameScene.clear()
+      @goalsScene.clear()
+      ResetButton.unbindClick()
+      @initialize()
+
+  createGameScene: ->
+    gameDom = document.getElementById('game')
     size = Math.min(Math.max($( window ).width(), 310), 500)
-    two = new Two(
+    scene = new Two(
       fullscreen: false
       autostart: true
       width: size
       height: size
-    ).appendTo(game);
-    return two
+    ).appendTo(gameDom);
+    return scene
 
-  getSymbols: (two) ->
-    # note symbols 0-9 are numbers 0-9.
-    # 10 -> +
-    # 11 -> minus
-    # 12 -> &times
+  createGoalsScene: ->
+    goalsDom = document.getElementById('goals')
+    scene = new Two(
+      fullscreen: false
+      autostart: true
+      height: 100
+      width: goalsDom.clientWidth
+    ).appendTo(goalsDom);
+    return scene
+
+  getSymbolsFor: (scene) ->
     svgs = $('#assets svg')
     symbols = []
-    for s,i in svgs
-      symbols.push (two.interpret s)
-      symbols[i].visible = false
-    two.update()
+    for svg, index in svgs
+      symbols.push (scene.interpret svg)
+      symbols[index].visible = false
     symbols
 
   randExpression: (length) ->
@@ -63,7 +93,6 @@ class MathSwipeController
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   tests: =>
-    @testResetButton()
     @testRandomizedFitLength()
     @testExpGen()
     # @testCellDelete()
@@ -72,20 +101,9 @@ class MathSwipeController
 
   testRandomizedFitLength: =>
     size = 25
-    for i in [0...100]
-      list = RandomizedFitLength.generate size
-      sum = 0
-      for j in list
-        sum += j
-      if sum != size
-        console.log "Something went wrong with RandomizedFitLength"
-        console.log list
-        break
+    list = RandomizedFitLength.generate size
     console.log list
     console.log "Passed RandomizedFitLength"
-
-  testResetButton: =>
-    ResetButton.bindClick @board
 
   testExpGen: =>
     for length in [1..30]

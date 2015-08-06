@@ -59,7 +59,6 @@ class Board
         @cells[row].push cell
 
   deleteCells: (solution) ->
-    console.log 'delete cells', solution
     for tuple in solution
       @deleteCellAt tuple.x, tuple.y
     @pushAllCellsToBottom()
