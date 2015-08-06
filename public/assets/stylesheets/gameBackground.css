@@ -37,10 +37,9 @@
   margin-bottom: 40px;
 }
 
-.goals {
-  color: #00007f;
+#goals {
   text-align: center;
-  margin-bottom: 20px;
+  margin: 20px 0px;
 }
 
 .left-btn {
