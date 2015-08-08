@@ -63,9 +63,9 @@
 	
 	MathSwipeController = __webpack_require__(/*! ./app/controllers/MathSwipeController */ 3);
 	
-	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	game = new MathSwipeController;
 
@@ -6897,23 +6897,23 @@
 	var $, AdjacentCellsCalculator, Board, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GoalContainer, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, SolutionService, Tuple,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
-	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 5);
+	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 4);
 	
-	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 7);
+	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 6);
 	
-	DFS = __webpack_require__(/*! ../services/DFS */ 9);
+	DFS = __webpack_require__(/*! ../services/DFS */ 8);
 	
-	ExpressionGenerator = __webpack_require__(/*! ../services/ExpressionGenerator */ 11);
+	ExpressionGenerator = __webpack_require__(/*! ../services/ExpressionGenerator */ 10);
 	
-	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 12);
+	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 11);
 	
-	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 13);
+	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 12);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 14);
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 13);
 	
-	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 4);
+	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 14);
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
 	Board = __webpack_require__(/*! ../views/Board */ 15);
 	
@@ -6923,7 +6923,7 @@
 	
 	Colors = __webpack_require__(/*! ../views/Colors */ 18);
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
@@ -7099,46 +7099,6 @@
 
 /***/ },
 /* 4 */
-/*!*************************************************!*\
-  !*** ./app/services/RandomizedFitLength.coffee ***!
-  \*************************************************/
-/***/ function(module, exports) {
-
-	var RandomizedFitLength;
-	
-	RandomizedFitLength = (function() {
-	  function RandomizedFitLength() {}
-	
-	  RandomizedFitLength.randInclusive = function(min, max) {
-	    return Math.floor(Math.random() * (max - min + 1)) + min;
-	  };
-	
-	  RandomizedFitLength.generate = function(size, list) {
-	    var length;
-	    if (list == null) {
-	      list = [];
-	    }
-	    if (size === 0) {
-	      return list;
-	    }
-	    length = this.randInclusive(3, 5);
-	    if (size - length < 0 && list.length !== 0) {
-	      return this.generate(size + list.pop(), list);
-	    } else {
-	      list.push(length);
-	      return this.generate(size - length, list);
-	    }
-	  };
-	
-	  return RandomizedFitLength;
-	
-	})();
-	
-	module.exports = RandomizedFitLength;
-
-
-/***/ },
-/* 5 */
 /*!*****************************************************!*\
   !*** ./app/services/AdjacentCellsCalculator.coffee ***!
   \*****************************************************/
@@ -7146,7 +7106,7 @@
 
 	var AdjacentCellsCalculator, Tuple;
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
 	AdjacentCellsCalculator = (function() {
 	  function AdjacentCellsCalculator() {}
@@ -7196,7 +7156,7 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /*!*********************************!*\
   !*** ./app/models/Tuple.coffee ***!
   \*********************************/
@@ -7227,7 +7187,7 @@
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /*!******************************************!*\
   !*** ./app/services/ClickHandler.coffee ***!
   \******************************************/
@@ -7236,9 +7196,9 @@
 	var $, ClickHandler, Tuple,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
 	ClickHandler = (function() {
 	  function ClickHandler(board1, two, solutionService, clicked) {
@@ -7372,7 +7332,7 @@
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /*!*********************************!*\
   !*** ./~/jquery/dist/jquery.js ***!
   \*********************************/
@@ -16591,7 +16551,7 @@
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /*!*********************************!*\
   !*** ./app/services/DFS.coffee ***!
   \*********************************/
@@ -16599,9 +16559,9 @@
 
 	var DFS, GridCell, Tuple;
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
-	GridCell = __webpack_require__(/*! ../models/GridCell */ 10);
+	GridCell = __webpack_require__(/*! ../models/GridCell */ 9);
 	
 	DFS = (function() {
 	  function DFS() {}
@@ -16775,7 +16735,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /*!************************************!*\
   !*** ./app/models/GridCell.coffee ***!
   \************************************/
@@ -16805,7 +16765,7 @@
 
 
 /***/ },
-/* 11 */
+/* 10 */
 /*!*************************************************!*\
   !*** ./app/services/ExpressionGenerator.coffee ***!
   \*************************************************/
@@ -16861,7 +16821,7 @@
 
 
 /***/ },
-/* 12 */
+/* 11 */
 /*!*****************************************!*\
   !*** ./app/services/InputSolver.coffee ***!
   \*****************************************/
@@ -16922,7 +16882,7 @@
 
 
 /***/ },
-/* 13 */
+/* 12 */
 /*!*****************************************!*\
   !*** ./app/services/ResetButton.coffee ***!
   \*****************************************/
@@ -16930,7 +16890,7 @@
 
 	var $, ResetButton;
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	ResetButton = (function() {
 	  function ResetButton() {}
@@ -16955,7 +16915,7 @@
 
 
 /***/ },
-/* 14 */
+/* 13 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -16964,7 +16924,7 @@
 	var InputSolver, SolutionService,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
-	InputSolver = __webpack_require__(/*! ./InputSolver */ 12);
+	InputSolver = __webpack_require__(/*! ./InputSolver */ 11);
 	
 	SolutionService = (function() {
 	  function SolutionService(board, goals) {
@@ -17006,6 +16966,46 @@
 	})();
 	
 	module.exports = SolutionService;
+
+
+/***/ },
+/* 14 */
+/*!*************************************************!*\
+  !*** ./app/services/RandomizedFitLength.coffee ***!
+  \*************************************************/
+/***/ function(module, exports) {
+
+	var RandomizedFitLength;
+	
+	RandomizedFitLength = (function() {
+	  function RandomizedFitLength() {}
+	
+	  RandomizedFitLength.randInclusive = function(min, max) {
+	    return Math.floor(Math.random() * (max - min + 1)) + min;
+	  };
+	
+	  RandomizedFitLength.generate = function(size, list) {
+	    var length;
+	    if (list == null) {
+	      list = [];
+	    }
+	    if (size === 0) {
+	      return list;
+	    }
+	    length = this.randInclusive(3, 5);
+	    if (size - length < 0 && list.length !== 0) {
+	      return this.generate(size + list.pop(), list);
+	    } else {
+	      list.push(length);
+	      return this.generate(size - length, list);
+	    }
+	  };
+	
+	  return RandomizedFitLength;
+	
+	})();
+	
+	module.exports = RandomizedFitLength;
 
 
 /***/ },
@@ -17276,7 +17276,7 @@
 
 	var $, Cell, Colors;
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	Colors = __webpack_require__(/*! ./Colors */ 18);
 	
