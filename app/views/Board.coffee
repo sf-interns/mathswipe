@@ -1,7 +1,7 @@
 class Board
 
   # @boardValues is a 2D array of characters
-  constructor: (@boardValues, @two, @Cell, @Colors, @ClickHandler, @SolutionService, @goals, @symbols, @goalContainer, @BoardSolvedService) ->
+  constructor: (@boardValues, @scene, @goals, @symbols, @goalContainer, @Cell, @Colors, @ClickHandler, @SolutionService, @BoardSolvedService) ->
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
@@ -9,7 +9,7 @@ class Board
   initializer: =>
     solutionService = new @SolutionService this, @goals
     boardSolvedService = new @BoardSolvedService this, @board
-    @clickHandler = new @ClickHandler this, @two, solutionService, @goalContainer, boardSolvedService
+    @clickHandler = new @ClickHandler this, @scene, solutionService, @goalContainer, boardSolvedService
 
     @createBoard()
     @createEmptyCells @cellWidth - 5
@@ -18,11 +18,11 @@ class Board
     @clickHandler.bindDefaultClick @board
     @clickHandler.bindClickTo @cells
 
-    @two.update()
+    @scene.update()
 
   createBoard: =>
     # Size is set to 95% of the height
-    @size = @two.height * .95
+    @size = @scene.height * .95
     offset = @size * .025
 
     # Cell width is the width of the cell tiles
@@ -31,11 +31,11 @@ class Board
     # Change is used in Cell
     @change = offset + @cellWidth
 
-    @x = @two.width / 2
-    @y = @two.height / 2
+    @x = @scene.width / 2
+    @y = @scene.height / 2
     @y = if @y < @size / 2 then @size / 2 else @y
 
-    @board = @two.makeRectangle @x, @y, @size, @size
+    @board = @scene.makeRectangle @x, @y, @size, @size
     @board.noStroke().fill =  @Colors.board
     @board.visible = true
 
@@ -44,7 +44,7 @@ class Board
     for row in [0...@dimension]
       @empty_cells.push []
       for col in [0...@dimension]
-        cell = new @Cell col, row, width, @two, this
+        cell = new @Cell col, row, width, @scene, this
         cell.setColor @Colors.emptyCell
         cell.setBorder @Colors.emptyCellBorder
         @empty_cells[row].push cell
@@ -54,7 +54,7 @@ class Board
     for row in [0...@dimension]
       @cells.push []
       for col in [0...@dimension]
-        cell = new @Cell col, row, width, @two, this, @clickHandler, @symbols[@toIdx @boardValues[row][col]]
+        cell = new @Cell col, row, width, @scene, this, @clickHandler, @symbols[@toIdx @boardValues[row][col]]
         cell.setColor @Colors.cell
         cell.setBorder @Colors.cellBorder
         @cells[row].push cell
@@ -76,7 +76,7 @@ class Board
             unless @cells[up][col].isDeleted
               @swapCells row, col, up, col
               break
-    @two.update()
+    @scene.update()
 
   swapCells: (r1, c1, r2, c2) ->
     # Move locations
