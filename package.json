@@ -24,7 +24,6 @@
     "jquery": "^2.1.4",
     "node-libs-browser": "^0.5.2",
     "two.js": "^0.4.0",
-    "underscore": "^1.8.3",
     "webpack": "^1.10.1",
     "webpack-dev-server": "^1.10.1"
   },

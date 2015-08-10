@@ -1,11 +1,12 @@
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
+BoardSolvedService      = require '../services/BoardSolvedService'
 ClickHandler            = require '../services/ClickHandler'
 DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 InputSolver             = require '../services/InputSolver'
+RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 SolutionService         = require '../services/SolutionService'
-RandomizedFitLength     = require '../services/RandomizedFitLength'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 GoalContainer           = require '../views/GoalContainer'
@@ -18,8 +19,9 @@ class MathSwipeController
   constructor: ->
     @gameScene = @createGameScene()
     @goalsScene = @createGoalsScene()
+    @symbols = @getSymbols()
     @initialize()
-    @createNewGame()
+    @bindNewGameButton()
     # @tests()
 
   initialize: ->
@@ -33,19 +35,15 @@ class MathSwipeController
       inputs.push expression.split('')
       answers.push (InputSolver.compute expression)
 
-    for i in inputs
-      console.log i
+    console.log i for i in inputs
     console.log '\n'
 
-    boardSymbols = @getSymbolsFor @gameScene
     gameModel = @generateBoard inputs, length
-    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols
+    @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
+    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService
     ResetButton.bindClick @board
 
-    goalsSymbols = @getSymbolsFor @goalsScene
-    @goalContainer = new GoalContainer @goalsScene, answers, goalsSymbols, Colors
-
-  createNewGame: ->
+  bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       @gameScene.clear()
       @goalsScene.clear()
@@ -73,7 +71,8 @@ class MathSwipeController
     ).appendTo(goalsDom);
     return scene
 
-  getSymbolsFor: (scene) ->
+  getSymbols: ->
+    scene = new Two()
     svgs = $('#assets svg')
     symbols = []
     for svg, index in svgs

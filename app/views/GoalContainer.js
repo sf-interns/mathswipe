@@ -44,6 +44,7 @@ GoalContainer = (function() {
         character.noStroke().fill = '#EFE8BE';
         character.visible = true;
         character.scale = Math.min(1, (this.scene.width / 100) / this.count);
+        this.scene.add(character);
         index++;
       }
       index++;
@@ -62,6 +63,36 @@ GoalContainer = (function() {
       default:
         return parseInt(character);
     }
+  };
+
+  GoalContainer.prototype.deleteGoal = function(index) {
+    var character, i, len, ref, results;
+    ref = this.inputSymbols[index];
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      character = ref[i];
+      results.push(character.noStroke().fill = '#2F4F4F');
+    }
+    return results;
+  };
+
+  GoalContainer.prototype.resetGoals = function() {
+    var character, i, inputStr, len, ref, results;
+    ref = this.inputSymbols;
+    results = [];
+    for (i = 0, len = ref.length; i < len; i++) {
+      inputStr = ref[i];
+      results.push((function() {
+        var j, len1, results1;
+        results1 = [];
+        for (j = 0, len1 = inputStr.length; j < len1; j++) {
+          character = inputStr[j];
+          results1.push(character.noStroke().fill = '#EFE8BE');
+        }
+        return results1;
+      })());
+    }
+    return results;
   };
 
   return GoalContainer;
