@@ -3,7 +3,7 @@ Tuple = require '../models/Tuple'
 
 class ClickHandler
 
-  constructor: (@board, two, @solutionService, @clicked = []) ->
+  constructor: (@board, two, @solutionService, @goalContainer, @clicked = []) ->
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
@@ -55,6 +55,7 @@ class ClickHandler
         cell.select()
         @addToClicked cell
         if @solutionService.isSolution @clicked
+           @goalContainer.deleteGoal @solutionService.valueIndex
            @board.deleteCells @tuplesClicked()
            @clicked = []
     else

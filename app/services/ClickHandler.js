@@ -7,10 +7,11 @@ $ = require('jquery');
 Tuple = require('../models/Tuple');
 
 ClickHandler = (function() {
-  function ClickHandler(board1, two, solutionService, clicked) {
+  function ClickHandler(board1, two, solutionService, goalContainer, clicked) {
     var cell, i, j, len, len1, ref, row;
     this.board = board1;
     this.solutionService = solutionService;
+    this.goalContainer = goalContainer;
     this.clicked = clicked != null ? clicked : [];
     if (this.board.cells == null) {
       return;
@@ -106,6 +107,7 @@ ClickHandler = (function() {
         cell.select();
         this.addToClicked(cell);
         if (this.solutionService.isSolution(this.clicked)) {
+          this.goalContainer.deleteGoal(this.solutionService.valueIndex);
           this.board.deleteCells(this.tuplesClicked());
           return this.clicked = [];
         }
