@@ -3,15 +3,15 @@ Colors = require './Colors'
 
 class Cell
 
-  constructor: (@col, @row, @size, @two, @board, @clickHandler, symbolBlueprint) ->
+  constructor: (@col, @row, @size, @scene, @board, @clickHandler, symbolBlueprint) ->
     @isDeleted = false
     @isSelected = false
-    @rect = @two.makeRectangle @getX(), @getY(), @size, @size
+    @rect = @scene.makeRectangle @getX(), @getY(), @size, @size
     if symbolBlueprint
-      @cell = @two.makeGroup @rect, (@newSymbol symbolBlueprint)
+      @cell = @scene.makeGroup @rect, (@newSymbol symbolBlueprint)
     else
-      @cell = @two.makeGroup @rect
-    @two.update()
+      @cell = @scene.makeGroup @rect
+    @scene.update()
 
   newSymbol: (blueprint)->
     offset = - @size * 4 / 10
@@ -24,16 +24,16 @@ class Cell
   setColor: (c) ->
     @color = c
     @rect.fill = c
-    @two.update()
+    @scene.update()
 
   setBorder: (c) ->
     @rect.stroke = c
     @rect.linewidth = 6
-    @two.update()
+    @scene.update()
 
   hide: ->
     @cell.visible = false
-    @two.update()
+    @scene.update()
 
   getX: (col = @col) ->
     @board.x - (@board.size + @size) / 2 + (col + 1) * @board.change
@@ -51,12 +51,12 @@ class Cell
     start = new Two.Vector @getX(), @getY()
     goingDown = end.y > start.y
 
-    @two.bind('update', (frameCount) =>
+    @scene.bind('update', (frameCount) =>
       dist = start.distanceTo end
 
       if dist < .00001
         @cell.translation.clone end
-        @two.unbind 'update'
+        @scene.unbind 'update'
 
       delta = new Two.Vector 0, (dist * .125)
       if goingDown

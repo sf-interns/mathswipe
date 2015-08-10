@@ -40,12 +40,13 @@ MathSwipeController = (function() {
     this.tests = bind(this.tests, this);
     this.gameScene = this.createGameScene();
     this.goalsScene = this.createGoalsScene();
+    this.symbols = this.getSymbols();
     this.initialize();
-    this.createNewGame();
+    this.bindNewGameButton();
   }
 
   MathSwipeController.prototype.initialize = function() {
-    var answers, boardSymbols, expression, gameModel, goalsSymbols, i, inputLengths, inputSize, inputs, k, l, len, len1, length;
+    var answers, expression, gameModel, i, inputLengths, inputSize, inputs, k, l, len, len1, length;
     length = 3;
     inputs = [];
     answers = [];
@@ -61,15 +62,13 @@ MathSwipeController = (function() {
       console.log(i);
     }
     console.log('\n');
-    goalsSymbols = this.getSymbolsFor(this.goalsScene);
-    this.goalContainer = new GoalContainer(this.goalsScene, answers, goalsSymbols, Colors);
-    boardSymbols = this.getSymbolsFor(this.gameScene);
     gameModel = this.generateBoard(inputs, length);
-    this.board = new Board(gameModel, this.gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols, this.goalContainer);
+    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
+    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, Cell, Colors, ClickHandler, SolutionService);
     return ResetButton.bindClick(this.board);
   };
 
-  MathSwipeController.prototype.createNewGame = function() {
+  MathSwipeController.prototype.bindNewGameButton = function() {
     return $('#new-game-button').click((function(_this) {
       return function(e) {
         _this.gameScene.clear();
@@ -105,8 +104,9 @@ MathSwipeController = (function() {
     return scene;
   };
 
-  MathSwipeController.prototype.getSymbolsFor = function(scene) {
-    var index, k, len, svg, svgs, symbols;
+  MathSwipeController.prototype.getSymbols = function() {
+    var index, k, len, scene, svg, svgs, symbols;
+    scene = new Two();
     svgs = $('#assets svg');
     symbols = [];
     for (index = k = 0, len = svgs.length; k < len; index = ++k) {
