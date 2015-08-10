@@ -21,6 +21,9 @@ SolutionService = (function() {
       return false;
     }
     solution = this.getSolutionString(clickedCells);
+    if (solution[solution.length - 1] === '+' || solution[solution.length - 1] === '-' || solution[solution.length - 1] === '*') {
+      return false;
+    }
     value = InputSolver.compute(solution);
     if (indexOf.call(this.goals, value) < 0) {
       return false;
