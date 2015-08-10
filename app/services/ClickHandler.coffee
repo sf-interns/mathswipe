@@ -4,16 +4,32 @@ Tuple = require '../models/Tuple'
 class ClickHandler
 
   constructor: (@board, two, @solutionService, @goalContainer, @clicked = []) ->
+    @mouseIsDown = false
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
       for cell in row
         (@addToClicked cell) if cell.isSelected
 
-  bindDefaultClick: (board) ->
+  bindDefaultClick: ->
     $('body').click (e) =>
       e.preventDefault()
       @resetClicked()
+      console.log 'mouseClick'
+    this
+
+  bindDefaultMousedown: ->
+    $('body').mousedown (e) =>
+      e.preventDefault()
+      @mouseIsDown = true
+    this
+
+  bindDefaultMouseup: ->
+    $('body').mouseup (e) =>
+      e.preventDefault()
+      @mouseIsDown = false
+      @resetClicked()
+    this
 
   bindClickTo: (cells) ->
     if cells.bindClick?
@@ -28,6 +44,48 @@ class ClickHandler
           cell.bindClick()
         else
           console.log 'WARN: object not 2D arrays or simpler or no BindClick method'
+
+  bindMouseenterTo: (cells) ->
+    if cells.bindMouseenter?
+      cells.bindMouseenter()
+      return
+    for row in cells
+      if row.bindMouseenter?
+        row.bindMouseenter()
+        return
+      for cell in row
+        if cell.bindMouseenter?
+          cell.bindMouseenter()
+        else
+          console.log 'WARN: object not 2D arrays or simpler or no bindMouseenter method'
+
+   bindMouseupTo: (cells) ->
+    if cells.bindMouseup?
+      cells.bindMouseup()
+      return
+    for row in cells
+      if row.bindMouseup?
+        row.bindMouseup()
+        return
+      for cell in row
+        if cell.bindMouseup?
+          cell.bindMouseup()
+        else
+          console.log 'WARN: object not 2D arrays or simpler or no bindMouseup method'
+
+  bindMousedownTo: (cells) ->
+    if cells.bindMousedown?
+      cells.bindMousedown()
+      return
+    for row in cells
+      if row.bindMousedown?
+        row.bindMousedown()
+        return
+      for cell in row
+        if cell.bindMousedown?
+          cell.bindMousedown()
+        else
+          console.log 'WARN: object not 2D arrays or simpler or no bindMousedown method'
 
   tuplesClicked: () ->
     tuples = []
@@ -48,16 +106,20 @@ class ClickHandler
   lastClicked: ->
     @clicked[@clicked.length - 1]
 
+  checkSolution: () ->
+    return false unless @solutionService.isSolution @clicked
+    @goalContainer.deleteGoal @solutionService.valueIndex
+    @board.deleteCells @tuplesClicked()
+    @clicked = []
+    true
+
   clickCell: (cell) ->
     # if cell is adjacent to lastClicked
     if @clicked.length is 0 or @areAdjacent cell, @lastClicked()
       unless @cell in @clicked
         cell.select()
         @addToClicked cell
-        if @solutionService.isSolution @clicked
-           @goalContainer.deleteGoal @solutionService.valueIndex
-           @board.deleteCells @tuplesClicked()
-           @clicked = []
+        @checkSolution()
     else
       @resetClicked()
       @clickCell cell
@@ -70,5 +132,19 @@ class ClickHandler
     return null unless cell is @lastClicked()
     cell.unSelect()
     @removeFromClicked cell
+
+  onEnter: (cell) ->
+    console.log @mouseIsDown
+    if @mouseIsDown and (@clicked.length is 0 or @areAdjacent cell, @lastClicked()) and @cell not in @clicked
+      @clickCell cell
+
+  onDown: (cell) ->
+    @mouseIsDown = true
+    @clickCell cell
+
+  onUp: (cell) ->
+    @mouseIsDown = false
+    # @resetClicked() unless @checkSolution()
+
 
 module.exports = ClickHandler

@@ -29,8 +29,11 @@ Board = (function() {
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth);
-    this.clickHandler.bindDefaultClick(this.board);
+    this.clickHandler.bindDefaultClick().bindDefaultMousedown().bindDefaultMouseup();
     this.clickHandler.bindClickTo(this.cells);
+    this.clickHandler.bindMouseupTo(this.cells);
+    this.clickHandler.bindMousedownTo(this.cells);
+    this.clickHandler.bindMouseenterTo(this.cells);
     return this.two.update();
   };
 

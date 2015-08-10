@@ -82,11 +82,34 @@ class Cell
     $(@cell._renderer.elem).click (e) =>
       e.preventDefault()
       return if @isDeleted
+      e.stopPropagation()
       if @isSelected
         @clickHandler.unclickCell this
       else
         @clickHandler.clickCell this
+
+  bindMouseenter: ->
+    return unless @clickHandler?
+    $(@cell._renderer.elem).mouseenter (e) =>
+      e.preventDefault()
+      return if @isDeleted
       e.stopPropagation()
+      @clickHandler.onEnter this unless @isSelected
+
+  bindMouseup: ->
+    return unless @clickHandler?
+    $(@cell._renderer.elem).mouseup (e) =>
+      e.preventDefault()
+      @clickHandler.onUp this
+      e.stopPropagation()
+
+  bindMousedown: ->
+    return unless @clickHandler?
+    $(@cell._renderer.elem).mousedown (e) =>
+      e.preventDefault()
+      return if @isDeleted
+      e.stopPropagation()
+      @clickHandler.onDown this unless @isSelected
 
   x: -> @col
 
