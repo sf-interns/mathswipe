@@ -2,12 +2,12 @@ $ = require 'jquery'
 
 class BoardSolvedService
 
-  isBoardCleared: (boardBottomRow) ->
+  @isCleared: (boardBottomRow) ->
     for value in boardBottomRow
       return false unless value is ' '
     true
 
-  newGameBoard: ->
-    $( "#new-game-button" ).trigger( "click" );
+  @createNewBoard: ->
+    $('#new-game-button').trigger('click')
 
 module.exports = BoardSolvedService

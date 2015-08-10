@@ -4,6 +4,8 @@ var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, C
 
 AdjacentCellsCalculator = require('../services/AdjacentCellsCalculator');
 
+BoardSolvedService = require('../services/BoardSolvedService');
+
 ClickHandler = require('../services/ClickHandler');
 
 DFS = require('../services/DFS');
@@ -12,13 +14,11 @@ ExpressionGenerator = require('../services/ExpressionGenerator');
 
 InputSolver = require('../services/InputSolver');
 
+RandomizedFitLength = require('../services/RandomizedFitLength');
+
 ResetButton = require('../services/ResetButton');
 
 SolutionService = require('../services/SolutionService');
-
-RandomizedFitLength = require('../services/RandomizedFitLength');
-
-BoardSolvedService = require('../services/BoardSolvedService');
 
 Tuple = require('../models/Tuple');
 

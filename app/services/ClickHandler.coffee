@@ -55,11 +55,11 @@ class ClickHandler
         cell.select()
         @addToClicked cell
         if @solutionService.isSolution @clicked
-           @goalContainer.deleteGoal @solutionService.valueIndex
-           @board.deleteCells @tuplesClicked()
-           @clicked = []
-           if @BoardSolvedService.isBoardCleared @board.boardValues[@board.dimension - 1]
-            setTimeout (() => @BoardSolvedService.newGameBoard()), 100
+          @goalContainer.deleteGoal @solutionService.valueIndex
+          @board.deleteCells @tuplesClicked()
+          @clicked = []
+          if @BoardSolvedService.isCleared @board.boardValues[@board.dimension - 1]
+            setTimeout (() => @BoardSolvedService.createNewBoard()), 100
     else
       @resetClicked()
       @clickCell cell

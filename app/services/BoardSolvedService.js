@@ -6,7 +6,7 @@ $ = require('jquery');
 BoardSolvedService = (function() {
   function BoardSolvedService() {}
 
-  BoardSolvedService.prototype.isBoardCleared = function(boardBottomRow) {
+  BoardSolvedService.isCleared = function(boardBottomRow) {
     var i, len, value;
     for (i = 0, len = boardBottomRow.length; i < len; i++) {
       value = boardBottomRow[i];
@@ -17,8 +17,8 @@ BoardSolvedService = (function() {
     return true;
   };
 
-  BoardSolvedService.prototype.newGameBoard = function() {
-    return $("#new-game-button").trigger("click");
+  BoardSolvedService.createNewBoard = function() {
+    return $('#new-game-button').trigger('click');
   };
 
   return BoardSolvedService;
