@@ -15,7 +15,8 @@ class SolutionService
       solution[solution.length - 1] is '*'
     value = InputSolver.compute solution
     return false unless value in @goals
-    @goals.splice (@goals.indexOf value), 1
+    @valueIndex = @goals.indexOf value
+    @goals[@valueIndex] = ' '
     return true
 
   getSolutionString: (cells) ->

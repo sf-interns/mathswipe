@@ -29,12 +29,20 @@ class GoalContainer
       index++
     @scene.update()
 
-
   charToIndex: (character) ->
     switch character
       when '+' then 10
       when '-' then 11
       when '*' then 12
       else parseInt character
+
+  deleteGoal: (index) ->
+    for character in @inputSymbols[index]
+      character.noStroke().fill = '#2F4F4F'
+
+  resetGoals: ->
+    for inputStr in @inputSymbols
+      for character in inputStr
+        character.noStroke().fill = '#EFE8BE'
 
 module.exports = GoalContainer

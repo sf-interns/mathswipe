@@ -1,14 +1,14 @@
 class Board
 
   # @boardValues is a 2D array of characters
-  constructor: (@boardValues, @two, @Cell, @Colors, @ClickHandler, @SolutionService, @goals, @symbols) ->
+  constructor: (@boardValues, @two, @Cell, @Colors, @ClickHandler, @SolutionService, @goals, @symbols, @goalContainer) ->
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
 
   initializer: =>
     solutionService = new @SolutionService this, @goals
-    @clickHandler = new @ClickHandler this, @two, solutionService
+    @clickHandler = new @ClickHandler this, @two, solutionService, @goalContainer
 
     @createBoard()
     @createEmptyCells @cellWidth - 5
@@ -110,6 +110,7 @@ class Board
 
   resetBoard: ->
     @boardValues = @copyValues @initialValues
+    @goalContainer.resetGoals()
     @initializer()
 
 module.exports = Board

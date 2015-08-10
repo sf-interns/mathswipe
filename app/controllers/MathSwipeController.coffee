@@ -37,13 +37,13 @@ class MathSwipeController
       console.log i
     console.log '\n'
 
-    boardSymbols = @getSymbolsFor @gameScene
-    gameModel = @generateBoard inputs, length
-    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols
-    ResetButton.bindClick @board
-
     goalsSymbols = @getSymbolsFor @goalsScene
     @goalContainer = new GoalContainer @goalsScene, answers, goalsSymbols, Colors
+
+    boardSymbols = @getSymbolsFor @gameScene
+    gameModel = @generateBoard inputs, length
+    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols, @goalContainer
+    ResetButton.bindClick @board
 
   createNewGame: ->
     $('#new-game-button').click (e) =>

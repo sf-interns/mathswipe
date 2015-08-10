@@ -61,12 +61,12 @@ MathSwipeController = (function() {
       console.log(i);
     }
     console.log('\n');
+    goalsSymbols = this.getSymbolsFor(this.goalsScene);
+    this.goalContainer = new GoalContainer(this.goalsScene, answers, goalsSymbols, Colors);
     boardSymbols = this.getSymbolsFor(this.gameScene);
     gameModel = this.generateBoard(inputs, length);
-    this.board = new Board(gameModel, this.gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols);
-    ResetButton.bindClick(this.board);
-    goalsSymbols = this.getSymbolsFor(this.goalsScene);
-    return this.goalContainer = new GoalContainer(this.goalsScene, answers, goalsSymbols, Colors);
+    this.board = new Board(gameModel, this.gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols, this.goalContainer);
+    return ResetButton.bindClick(this.board);
   };
 
   MathSwipeController.prototype.createNewGame = function() {

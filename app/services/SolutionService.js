@@ -28,7 +28,8 @@ SolutionService = (function() {
     if (indexOf.call(this.goals, value) < 0) {
       return false;
     }
-    this.goals.splice(this.goals.indexOf(value), 1);
+    this.valueIndex = this.goals.indexOf(value);
+    this.goals[this.valueIndex] = ' ';
     return true;
   };
 
