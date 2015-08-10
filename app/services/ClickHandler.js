@@ -248,6 +248,22 @@ ClickHandler = (function() {
     return this.checkSolution();
   };
 
+  ClickHandler.prototype.bindClick = function(obj, func) {
+    return $(obj).click(func);
+  };
+
+  ClickHandler.prototype.bindEnter = function(obj, func) {
+    return $(obj).mouseenter(func);
+  };
+
+  ClickHandler.prototype.bindMousedown = function(obj, func) {
+    return $(obj).mousedown(func);
+  };
+
+  ClickHandler.prototype.bindMouseup = function(obj, func) {
+    return $(obj).mouseup(func);
+  };
+
   return ClickHandler;
 
 })();

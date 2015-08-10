@@ -248,6 +248,22 @@ TouchHandler = (function() {
     return this.checkSolution();
   };
 
+  TouchHandler.prototype.bindClick = function(obj, func) {
+    return $(obj).tap(func);
+  };
+
+  TouchHandler.prototype.bindEnter = function(obj, func) {
+    return $(obj).vmouseover(func);
+  };
+
+  TouchHandler.prototype.bindMousedown = function(obj, func) {
+    return $(obj).vmousedown(func);
+  };
+
+  TouchHandler.prototype.bindMouseup = function(obj, func) {
+    return $(obj).vmouseup(func);
+  };
+
   return TouchHandler;
 
 })();

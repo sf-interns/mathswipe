@@ -145,5 +145,17 @@ class ClickHandler
     @mouseIsDown = false
     @checkSolution()
 
+  bindClick: (obj, func) ->
+    $(obj).click func
+
+  bindEnter: (obj, func) ->
+    $(obj).mouseenter func
+
+  bindMousedown: (obj, func) ->
+    $(obj).mousedown func
+
+  bindMouseup: (obj, func) ->
+    $(obj).mouseup func
+
 
 module.exports = ClickHandler

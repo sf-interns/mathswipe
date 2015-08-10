@@ -1,5 +1,6 @@
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 ClickHandler            = require '../services/ClickHandler'
+TouchHandler            = require '../services/TouchHandler'
 DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 InputSolver             = require '../services/InputSolver'
@@ -20,6 +21,10 @@ class MathSwipeController
     @goalsScene = @createGoalsScene()
     @initialize()
     @createNewGame()
+    if $.browser.mobile
+      console.log 'MOBILE'
+    else
+      console.log 'DESKTOP'
     # @tests()
 
   initialize: ->
@@ -42,7 +47,8 @@ class MathSwipeController
 
     boardSymbols = @getSymbolsFor @gameScene
     gameModel = @generateBoard inputs, length
-    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols, @goalContainer
+    handler = if @isMobile.any() then TouchHandler else ClickHandler
+    @board = new Board gameModel, @gameScene, Cell, Colors, handler, SolutionService, answers, boardSymbols, @goalContainer
     ResetButton.bindClick @board
 
   createNewGame: ->
@@ -91,6 +97,20 @@ class MathSwipeController
 
   generateBoard: (inputs, length) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
+
+  @isMobile =
+    Android: () ->
+        return navigator.userAgent.match(/Android/i)
+    BlackBerry: () ->
+        return navigator.userAgent.match(/BlackBerry/i)
+    iOS: ()->
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+    Opera: () ->
+        return navigator.userAgent.match(/Opera Mini/i)
+    Windows: () ->
+        return navigator.userAgent.match(/IEMobile/i)
+    any: () ->
+        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows())
 
   tests: =>
     @testRandomizedFitLength()

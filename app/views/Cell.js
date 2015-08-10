@@ -132,7 +132,7 @@ Cell = (function() {
     if (this.clickHandler == null) {
       return;
     }
-    return $(this.cell._renderer.elem).mouseenter((function(_this) {
+    return this.clickHandler.bindEnter(this.cell._renderer.elem, (function(_this) {
       return function(e) {
         e.preventDefault();
         console.log(e);
@@ -151,7 +151,7 @@ Cell = (function() {
     if (this.clickHandler == null) {
       return;
     }
-    return $(this.cell._renderer.elem).mouseup((function(_this) {
+    return this.clickHandler.bindMouseup(this.cell._renderer.elem, (function(_this) {
       return function(e) {
         e.preventDefault();
         _this.clickHandler.onUp(_this);
@@ -164,7 +164,7 @@ Cell = (function() {
     if (this.clickHandler == null) {
       return;
     }
-    return $(this.cell._renderer.elem).mousedown((function(_this) {
+    return this.clickHandler.bindMousedown(this.cell._renderer.elem, (function(_this) {
       return function(e) {
         e.preventDefault();
         if (_this.isDeleted) {

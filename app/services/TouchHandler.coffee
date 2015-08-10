@@ -145,5 +145,17 @@ class TouchHandler
     @mouseIsDown = false
     @checkSolution()
 
+  bindClick: (obj, func) ->
+    $(obj).tap func
+
+  bindEnter: (obj, func) ->
+    $(obj).vmouseover func
+
+  bindMousedown: (obj, func) ->
+    $(obj).vmousedown func
+
+  bindMouseup: (obj, func) ->
+    $(obj).vmouseup func
+
 
 module.exports = ClickHandler

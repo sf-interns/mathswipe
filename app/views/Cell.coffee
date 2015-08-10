@@ -90,7 +90,7 @@ class Cell
 
   bindMouseenter: ->
     return unless @clickHandler?
-    $(@cell._renderer.elem).mouseenter (e) =>
+    @clickHandler.bindEnter @cell._renderer.elem, (e) =>
       e.preventDefault()
       # return unless contains(e.x, e.y)
       console.log e
@@ -100,14 +100,14 @@ class Cell
 
   bindMouseup: ->
     return unless @clickHandler?
-    $(@cell._renderer.elem).mouseup (e) =>
+    @clickHandler.bindMouseup @cell._renderer.elem, (e) =>
       e.preventDefault()
       @clickHandler.onUp this
       e.stopPropagation()
 
   bindMousedown: ->
     return unless @clickHandler?
-    $(@cell._renderer.elem).mousedown (e) =>
+    @clickHandler.bindMousedown @cell._renderer.elem, (e) =>
       e.preventDefault()
       return if @isDeleted
       e.stopPropagation()
