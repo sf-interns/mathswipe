@@ -39,7 +39,7 @@ class MathSwipeController
 
     gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
-    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, @symbols, @goalContainer
+    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, Cell, Colors, ClickHandler, SolutionService
     ResetButton.bindClick @board
 
   bindNewGameButton: ->
@@ -69,14 +69,6 @@ class MathSwipeController
       width: goalsDom.clientWidth
     ).appendTo(goalsDom);
     return scene
-
-  getSymbolsFor: (scene) ->
-    svgs = $('#assets svg')
-    symbols = []
-    for svg, index in svgs
-      symbols.push (scene.interpret svg)
-      symbols[index].visible = false
-    symbols
 
   getSymbols: ->
     scene = new Two()

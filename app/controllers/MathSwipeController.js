@@ -64,7 +64,7 @@ MathSwipeController = (function() {
     console.log('\n');
     gameModel = this.generateBoard(inputs, length);
     this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
-    this.board = new Board(gameModel, this.gameScene, Cell, Colors, ClickHandler, SolutionService, answers, this.symbols, this.goalContainer);
+    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, Cell, Colors, ClickHandler, SolutionService);
     return ResetButton.bindClick(this.board);
   };
 
@@ -102,18 +102,6 @@ MathSwipeController = (function() {
       width: goalsDom.clientWidth
     }).appendTo(goalsDom);
     return scene;
-  };
-
-  MathSwipeController.prototype.getSymbolsFor = function(scene) {
-    var index, k, len, svg, svgs, symbols;
-    svgs = $('#assets svg');
-    symbols = [];
-    for (index = k = 0, len = svgs.length; k < len; index = ++k) {
-      svg = svgs[index];
-      symbols.push(scene.interpret(svg));
-      symbols[index].visible = false;
-    }
-    return symbols;
   };
 
   MathSwipeController.prototype.getSymbols = function() {

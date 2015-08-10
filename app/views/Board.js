@@ -3,16 +3,16 @@ var Board,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Board = (function() {
-  function Board(boardValues, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols, goalContainer) {
+  function Board(boardValues, scene, goals, symbols, goalContainer, Cell, Colors, ClickHandler, SolutionService) {
     this.boardValues = boardValues;
-    this.two = two;
+    this.scene = scene;
+    this.goals = goals;
+    this.symbols = symbols;
+    this.goalContainer = goalContainer;
     this.Cell = Cell;
     this.Colors = Colors;
     this.ClickHandler = ClickHandler;
     this.SolutionService = SolutionService;
-    this.goals = goals;
-    this.symbols = symbols;
-    this.goalContainer = goalContainer;
     this.createCells = bind(this.createCells, this);
     this.createEmptyCells = bind(this.createEmptyCells, this);
     this.createBoard = bind(this.createBoard, this);
@@ -25,25 +25,25 @@ Board = (function() {
   Board.prototype.initializer = function() {
     var solutionService;
     solutionService = new this.SolutionService(this, this.goals);
-    this.clickHandler = new this.ClickHandler(this, this.two, solutionService, this.goalContainer);
+    this.clickHandler = new this.ClickHandler(this, this.scene, solutionService, this.goalContainer);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth);
     this.clickHandler.bindDefaultClick(this.board);
     this.clickHandler.bindClickTo(this.cells);
-    return this.two.update();
+    return this.scene.update();
   };
 
   Board.prototype.createBoard = function() {
     var offset;
-    this.size = this.two.height * .95;
+    this.size = this.scene.height * .95;
     offset = this.size * .025;
     this.cellWidth = ((this.size - offset) / this.dimension) - offset;
     this.change = offset + this.cellWidth;
-    this.x = this.two.width / 2;
-    this.y = this.two.height / 2;
+    this.x = this.scene.width / 2;
+    this.y = this.scene.height / 2;
     this.y = this.y < this.size / 2 ? this.size / 2 : this.y;
-    this.board = this.two.makeRectangle(this.x, this.y, this.size, this.size);
+    this.board = this.scene.makeRectangle(this.x, this.y, this.size, this.size);
     this.board.noStroke().fill = this.Colors.board;
     return this.board.visible = true;
   };
@@ -58,7 +58,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = new this.Cell(col, row, width, this.two, this);
+          cell = new this.Cell(col, row, width, this.scene, this);
           cell.setColor(this.Colors.emptyCell);
           cell.setBorder(this.Colors.emptyCellBorder);
           results1.push(this.empty_cells[row].push(cell));
@@ -79,7 +79,7 @@ Board = (function() {
         var j, ref1, results1;
         results1 = [];
         for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, this.symbols[this.toIdx(this.boardValues[row][col])]);
+          cell = new this.Cell(col, row, width, this.scene, this, this.clickHandler, this.symbols[this.toIdx(this.boardValues[row][col])]);
           cell.setColor(this.Colors.cell);
           cell.setBorder(this.Colors.cellBorder);
           results1.push(this.cells[row].push(cell));
@@ -118,7 +118,7 @@ Board = (function() {
         }
       }
     }
-    return this.two.update();
+    return this.scene.update();
   };
 
   Board.prototype.swapCells = function(r1, c1, r2, c2) {
