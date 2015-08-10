@@ -58,7 +58,7 @@ class ClickHandler
            @goalContainer.deleteGoal @solutionService.valueIndex
            @board.deleteCells @tuplesClicked()
            @clicked = []
-           if @BoardSolvedService.isBoardCleared @board.boardValues[2] then @BoardSolvedService.newGameBoard()
+           if @BoardSolvedService.isBoardCleared @board.boardValues[@board.dimension - 1] then @BoardSolvedService.newGameBoard()
     else
       @resetClicked()
       @clickCell cell
