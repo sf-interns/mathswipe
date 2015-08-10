@@ -25,6 +25,7 @@ class GoalContainer
         character.noStroke().fill = '#EFE8BE'
         character.visible = true
         character.scale = Math.min(1, (@scene.width / 100) / @count)
+        @scene.add character
         index++
       index++
     @scene.update()

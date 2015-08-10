@@ -18,8 +18,9 @@ class MathSwipeController
   constructor: ->
     @gameScene = @createGameScene()
     @goalsScene = @createGoalsScene()
+    @symbols = @getSymbols()
     @initialize()
-    @createNewGame()
+    @bindNewGameButton()
     # @tests()
 
   initialize: ->
@@ -33,19 +34,15 @@ class MathSwipeController
       inputs.push expression.split('')
       answers.push (InputSolver.compute expression)
 
-    for i in inputs
-      console.log i
+    console.log i for i in inputs
     console.log '\n'
 
-    goalsSymbols = @getSymbolsFor @goalsScene
-    @goalContainer = new GoalContainer @goalsScene, answers, goalsSymbols, Colors
-
-    boardSymbols = @getSymbolsFor @gameScene
     gameModel = @generateBoard inputs, length
-    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols, @goalContainer
+    @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
+    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, @symbols, @goalContainer
     ResetButton.bindClick @board
 
-  createNewGame: ->
+  bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       @gameScene.clear()
       @goalsScene.clear()
@@ -74,6 +71,15 @@ class MathSwipeController
     return scene
 
   getSymbolsFor: (scene) ->
+    svgs = $('#assets svg')
+    symbols = []
+    for svg, index in svgs
+      symbols.push (scene.interpret svg)
+      symbols[index].visible = false
+    symbols
+
+  getSymbols: ->
+    scene = new Two()
     svgs = $('#assets svg')
     symbols = []
     for svg, index in svgs
