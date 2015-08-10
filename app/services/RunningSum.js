@@ -8,21 +8,37 @@ RunningSum = (function() {
     if (isNaN(value)) {
       return console.log('invalid');
     } else if (this.isCompleteExpression(solution)) {
-      return console.log(solution, '=', value);
+      return console.log(this.format(solution), '=', value);
     } else {
       return console.log(solution);
     }
   };
 
   RunningSum.isCompleteExpression = function(solution) {
-    var i, index, j, len;
-    for (index = j = 0, len = solution.length; j < len; index = ++j) {
-      i = solution[index];
-      if (i === '+' || i === '-' || i === '*') {
-        return index < solution.length - 1 && solution[index + 1] >= '0' && solution[index + 1] <= '9';
+    var char, i, index, len;
+    for (index = i = 0, len = solution.length; i < len; index = ++i) {
+      char = solution[index];
+      if (char === '+' || char === '-' || char === '*') {
+        return index < solution.length - 1 && '0' <= solution[index + 1] && solution[index + 1] <= '9';
       }
     }
     return false;
+  };
+
+  RunningSum.format = function(solution) {
+    var char, first, index, lastOpIndex;
+    lastOpIndex = -1;
+    index = 0;
+    while (index < solution.length) {
+      char = solution[index];
+      if (3 <= index && lastOpIndex < index && (char === '+' || char === '-' || char === '*')) {
+        first = '(' + (solution.substring(0, index)) + ')';
+        lastOpIndex = first.length;
+        solution = first + (solution.substring(index));
+      }
+      index++;
+    }
+    return solution;
   };
 
   return RunningSum;
