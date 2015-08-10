@@ -1,11 +1,12 @@
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
+BoardSolvedService      = require '../services/BoardSolvedService'
 ClickHandler            = require '../services/ClickHandler'
 DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 InputSolver             = require '../services/InputSolver'
+RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 SolutionService         = require '../services/SolutionService'
-RandomizedFitLength     = require '../services/RandomizedFitLength'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 GoalContainer           = require '../views/GoalContainer'
@@ -39,7 +40,7 @@ class MathSwipeController
 
     gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
-    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, Cell, Colors, ClickHandler, SolutionService
+    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService
     ResetButton.bindClick @board
 
   bindNewGameButton: ->
