@@ -15,32 +15,39 @@ SolutionService = (function() {
     }
   }
 
-  SolutionService.prototype.isSolution = function(clickedCells) {
-    var solution, value;
-    if (!((clickedCells != null) && clickedCells.length >= 3)) {
+  SolutionService.prototype.initialize = function(clickedCells) {
+    if (clickedCells == null) {
       return false;
     }
-    solution = this.getSolutionString(clickedCells);
-    if (solution[solution.length - 1] === '+' || solution[solution.length - 1] === '-' || solution[solution.length - 1] === '*') {
+    this.setSolutionString(clickedCells);
+    return this.value = InputSolver.compute(this.solution);
+  };
+
+  SolutionService.prototype.isSolution = function() {
+    var ref;
+    if (!(this.solution.length >= 3)) {
       return false;
     }
-    value = InputSolver.compute(solution);
-    if (indexOf.call(this.goals, value) < 0) {
+    if (this.solution[this.solution.length - 1] === '+' || this.solution[this.solution.length - 1] === '-' || this.solution[this.solution.length - 1] === '*') {
       return false;
     }
-    this.valueIndex = this.goals.indexOf(value);
+    if (ref = this.value, indexOf.call(this.goals, ref) < 0) {
+      return false;
+    }
+    this.valueIndex = this.goals.indexOf(this.value);
     this.goals[this.valueIndex] = ' ';
     return true;
   };
 
-  SolutionService.prototype.getSolutionString = function(cells) {
-    var c, i, len, solution;
-    solution = '';
+  SolutionService.prototype.setSolutionString = function(cells) {
+    var c, i, len, results;
+    this.solution = '';
+    results = [];
     for (i = 0, len = cells.length; i < len; i++) {
       c = cells[i];
-      solution += this.board.boardValues[c.row][c.col];
+      results.push(this.solution += this.board.boardValues[c.row][c.col]);
     }
-    return solution;
+    return results;
   };
 
   return SolutionService;

@@ -1,5 +1,6 @@
 $ = require 'jquery'
 Tuple = require '../models/Tuple'
+RunningSum = require './RunningSum'
 
 class ClickHandler
 
@@ -54,7 +55,9 @@ class ClickHandler
       unless @cell in @clicked
         cell.select()
         @addToClicked cell
-        if @solutionService.isSolution @clicked
+        @solutionService.initialize @clicked
+        RunningSum.display @solutionService.solution, @solutionService.value
+        if @solutionService.isSolution()
            @goalContainer.deleteGoal @solutionService.valueIndex
            @board.deleteCells @tuplesClicked()
            @clicked = []

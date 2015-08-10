@@ -7,22 +7,24 @@ class SolutionService
     for g in goals
       @goals.push g
 
-  isSolution: (clickedCells) ->
-    return false unless clickedCells? and clickedCells.length >= 3
-    solution = @getSolutionString clickedCells
-    return false if solution[solution.length - 1] is '+' or
-      solution[solution.length - 1] is '-' or
-      solution[solution.length - 1] is '*'
-    value = InputSolver.compute solution
-    return false unless value in @goals
-    @valueIndex = @goals.indexOf value
+  initialize: (clickedCells) ->
+    return false unless clickedCells?
+    @setSolutionString clickedCells
+    @value = InputSolver.compute @solution
+
+  isSolution: ->
+    return false unless @solution.length >= 3
+    return false if @solution[@solution.length - 1] is '+' or
+      @solution[@solution.length - 1] is '-' or
+      @solution[@solution.length - 1] is '*'
+    return false unless @value in @goals
+    @valueIndex = @goals.indexOf @value
     @goals[@valueIndex] = ' '
     return true
 
-  getSolutionString: (cells) ->
-    solution = ''
+  setSolutionString: (cells) ->
+    @solution = ''
     for c in cells
-      solution += @board.boardValues[c.row][c.col]
-    solution
+      @solution += @board.boardValues[c.row][c.col]
 
 module.exports = SolutionService
