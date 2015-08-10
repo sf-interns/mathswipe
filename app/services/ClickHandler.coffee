@@ -3,7 +3,7 @@ Tuple = require '../models/Tuple'
 
 class ClickHandler
 
-  constructor: (@board, two, @solutionService, @goalContainer, @clicked = []) ->
+  constructor: (@board, two, @solutionService, @goalContainer, @BoardSolvedService, @clicked = []) ->
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
@@ -58,6 +58,8 @@ class ClickHandler
            @goalContainer.deleteGoal @solutionService.valueIndex
            @board.deleteCells @tuplesClicked()
            @clicked = []
+           # console.log @board.boardValues[2]
+           console.log @BoardSolvedService.isBoardCleared @board.boardValues[2]
     else
       @resetClicked()
       @clickCell cell

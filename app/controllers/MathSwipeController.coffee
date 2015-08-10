@@ -6,6 +6,7 @@ InputSolver             = require '../services/InputSolver'
 ResetButton             = require '../services/ResetButton'
 SolutionService         = require '../services/SolutionService'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
+BoardSolvedServce       = require '../services/BoardSolvedService'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 GoalContainer           = require '../views/GoalContainer'
@@ -42,7 +43,7 @@ class MathSwipeController
 
     boardSymbols = @getSymbolsFor @gameScene
     gameModel = @generateBoard inputs, length
-    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols, @goalContainer
+    @board = new Board gameModel, @gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols, @goalContainer, BoardSolvedServce
     ResetButton.bindClick @board
 
   createNewGame: ->
