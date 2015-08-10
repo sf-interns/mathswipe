@@ -135,6 +135,7 @@ Cell = (function() {
     return $(this.cell._renderer.elem).mouseenter((function(_this) {
       return function(e) {
         e.preventDefault();
+        console.log(e);
         if (_this.isDeleted) {
           return;
         }

@@ -119,7 +119,6 @@ class ClickHandler
       unless @cell in @clicked
         cell.select()
         @addToClicked cell
-        @checkSolution()
     else
       @resetClicked()
       @clickCell cell
@@ -144,7 +143,7 @@ class ClickHandler
 
   onUp: (cell) ->
     @mouseIsDown = false
-    # @resetClicked() unless @checkSolution()
+    @checkSolution()
 
 
 module.exports = ClickHandler

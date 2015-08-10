@@ -92,6 +92,8 @@ class Cell
     return unless @clickHandler?
     $(@cell._renderer.elem).mouseenter (e) =>
       e.preventDefault()
+      # return unless contains(e.x, e.y)
+      console.log e
       return if @isDeleted
       e.stopPropagation()
       @clickHandler.onEnter this unless @isSelected

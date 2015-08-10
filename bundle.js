@@ -7241,12 +7241,13 @@
 	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
 	
 	ClickHandler = (function() {
-	  function ClickHandler(board1, two, solutionService, goalContainer, clicked) {
+	  function ClickHandler(board, two, solutionService, goalContainer, clicked) {
 	    var cell, i, j, len, len1, ref, row;
-	    this.board = board1;
+	    this.board = board;
 	    this.solutionService = solutionService;
 	    this.goalContainer = goalContainer;
 	    this.clicked = clicked != null ? clicked : [];
+	    this.mouseIsDown = false;
 	    if (this.board.cells == null) {
 	      return;
 	    }
@@ -7265,13 +7266,36 @@
 	    }
 	  }
 	
-	  ClickHandler.prototype.bindDefaultClick = function(board) {
-	    return $('body').click((function(_this) {
+	  ClickHandler.prototype.bindDefaultClick = function() {
+	    $('body').click((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
+	        _this.resetClicked();
+	        return console.log('mouseClick');
+	      };
+	    })(this));
+	    return this;
+	  };
+	
+	  ClickHandler.prototype.bindDefaultMousedown = function() {
+	    $('body').mousedown((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        return _this.mouseIsDown = true;
+	      };
+	    })(this));
+	    return this;
+	  };
+	
+	  ClickHandler.prototype.bindDefaultMouseup = function() {
+	    $('body').mouseup((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        _this.mouseIsDown = false;
 	        return _this.resetClicked();
 	      };
 	    })(this));
+	    return this;
 	  };
 	
 	  ClickHandler.prototype.bindClickTo = function(cells) {
@@ -7292,6 +7316,75 @@
 	          cell.bindClick();
 	        } else {
 	          console.log('WARN: object not 2D arrays or simpler or no BindClick method');
+	        }
+	      }
+	    }
+	  };
+	
+	  ClickHandler.prototype.bindMouseenterTo = function(cells) {
+	    var cell, i, j, len, len1, row;
+	    if (cells.bindMouseenter != null) {
+	      cells.bindMouseenter();
+	      return;
+	    }
+	    for (i = 0, len = cells.length; i < len; i++) {
+	      row = cells[i];
+	      if (row.bindMouseenter != null) {
+	        row.bindMouseenter();
+	        return;
+	      }
+	      for (j = 0, len1 = row.length; j < len1; j++) {
+	        cell = row[j];
+	        if (cell.bindMouseenter != null) {
+	          cell.bindMouseenter();
+	        } else {
+	          console.log('WARN: object not 2D arrays or simpler or no bindMouseenter method');
+	        }
+	      }
+	    }
+	  };
+	
+	  ClickHandler.prototype.bindMouseupTo = function(cells) {
+	    var cell, i, j, len, len1, row;
+	    if (cells.bindMouseup != null) {
+	      cells.bindMouseup();
+	      return;
+	    }
+	    for (i = 0, len = cells.length; i < len; i++) {
+	      row = cells[i];
+	      if (row.bindMouseup != null) {
+	        row.bindMouseup();
+	        return;
+	      }
+	      for (j = 0, len1 = row.length; j < len1; j++) {
+	        cell = row[j];
+	        if (cell.bindMouseup != null) {
+	          cell.bindMouseup();
+	        } else {
+	          console.log('WARN: object not 2D arrays or simpler or no bindMouseup method');
+	        }
+	      }
+	    }
+	  };
+	
+	  ClickHandler.prototype.bindMousedownTo = function(cells) {
+	    var cell, i, j, len, len1, row;
+	    if (cells.bindMousedown != null) {
+	      cells.bindMousedown();
+	      return;
+	    }
+	    for (i = 0, len = cells.length; i < len; i++) {
+	      row = cells[i];
+	      if (row.bindMousedown != null) {
+	        row.bindMousedown();
+	        return;
+	      }
+	      for (j = 0, len1 = row.length; j < len1; j++) {
+	        cell = row[j];
+	        if (cell.bindMousedown != null) {
+	          cell.bindMousedown();
+	        } else {
+	          console.log('WARN: object not 2D arrays or simpler or no bindMousedown method');
 	        }
 	      }
 	    }
@@ -7334,17 +7427,22 @@
 	    return this.clicked[this.clicked.length - 1];
 	  };
 	
+	  ClickHandler.prototype.checkSolution = function() {
+	    if (!this.solutionService.isSolution(this.clicked)) {
+	      return false;
+	    }
+	    this.goalContainer.deleteGoal(this.solutionService.valueIndex);
+	    this.board.deleteCells(this.tuplesClicked());
+	    this.clicked = [];
+	    return true;
+	  };
+	
 	  ClickHandler.prototype.clickCell = function(cell) {
 	    var ref;
 	    if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
 	      if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
 	        cell.select();
-	        this.addToClicked(cell);
-	        if (this.solutionService.isSolution(this.clicked)) {
-	          this.goalContainer.deleteGoal(this.solutionService.valueIndex);
-	          this.board.deleteCells(this.tuplesClicked());
-	          return this.clicked = [];
-	        }
+	        return this.addToClicked(cell);
 	      }
 	    } else {
 	      this.resetClicked();
@@ -7364,6 +7462,24 @@
 	    }
 	    cell.unSelect();
 	    return this.removeFromClicked(cell);
+	  };
+	
+	  ClickHandler.prototype.onEnter = function(cell) {
+	    var ref;
+	    console.log(this.mouseIsDown);
+	    if (this.mouseIsDown && (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) && (ref = this.cell, indexOf.call(this.clicked, ref) < 0)) {
+	      return this.clickCell(cell);
+	    }
+	  };
+	
+	  ClickHandler.prototype.onDown = function(cell) {
+	    this.mouseIsDown = true;
+	    return this.clickCell(cell);
+	  };
+	
+	  ClickHandler.prototype.onUp = function(cell) {
+	    this.mouseIsDown = false;
+	    return this.checkSolution();
 	  };
 	
 	  return ClickHandler;
@@ -17051,8 +17167,11 @@
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);
-	    this.clickHandler.bindDefaultClick(this.board);
+	    this.clickHandler.bindDefaultClick().bindDefaultMousedown().bindDefaultMouseup();
 	    this.clickHandler.bindClickTo(this.cells);
+	    this.clickHandler.bindMouseupTo(this.cells);
+	    this.clickHandler.bindMousedownTo(this.cells);
+	    this.clickHandler.bindMouseenterTo(this.cells);
 	    return this.two.update();
 	  };
 	
@@ -17431,12 +17550,62 @@
 	        if (_this.isDeleted) {
 	          return;
 	        }
+	        e.stopPropagation();
 	        if (_this.isSelected) {
-	          _this.clickHandler.unclickCell(_this);
+	          return _this.clickHandler.unclickCell(_this);
 	        } else {
-	          _this.clickHandler.clickCell(_this);
+	          return _this.clickHandler.clickCell(_this);
 	        }
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMouseenter = function() {
+	    if (this.clickHandler == null) {
+	      return;
+	    }
+	    return $(this.cell._renderer.elem).mouseenter((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        console.log(e);
+	        if (_this.isDeleted) {
+	          return;
+	        }
+	        e.stopPropagation();
+	        if (!_this.isSelected) {
+	          return _this.clickHandler.onEnter(_this);
+	        }
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMouseup = function() {
+	    if (this.clickHandler == null) {
+	      return;
+	    }
+	    return $(this.cell._renderer.elem).mouseup((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        _this.clickHandler.onUp(_this);
 	        return e.stopPropagation();
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMousedown = function() {
+	    if (this.clickHandler == null) {
+	      return;
+	    }
+	    return $(this.cell._renderer.elem).mousedown((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        if (_this.isDeleted) {
+	          return;
+	        }
+	        e.stopPropagation();
+	        if (!_this.isSelected) {
+	          return _this.clickHandler.onDown(_this);
+	        }
 	      };
 	    })(this));
 	  };
