@@ -2,15 +2,12 @@ $ = require 'jquery'
 
 class BoardSolvedService
 
-  constructor: (@board) ->
-
   isBoardCleared: (boardBottomRow) ->
-    console.log boardBottomRow
     for value in boardBottomRow
       return false unless value is ' '
     return true
 
-  newGameBoard: (@board) ->
-
+  newGameBoard: ->
+    $( "#new-game-button" ).trigger( "click" );
 
 module.exports = BoardSolvedService

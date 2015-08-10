@@ -4,13 +4,10 @@ var $, BoardSolvedService;
 $ = require('jquery');
 
 BoardSolvedService = (function() {
-  function BoardSolvedService(board) {
-    this.board = board;
-  }
+  function BoardSolvedService() {}
 
   BoardSolvedService.prototype.isBoardCleared = function(boardBottomRow) {
     var i, len, value;
-    console.log(boardBottomRow);
     for (i = 0, len = boardBottomRow.length; i < len; i++) {
       value = boardBottomRow[i];
       if (value !== ' ') {
@@ -20,8 +17,8 @@ BoardSolvedService = (function() {
     return true;
   };
 
-  BoardSolvedService.prototype.newGameBoard = function(board) {
-    this.board = board;
+  BoardSolvedService.prototype.newGameBoard = function() {
+    return $("#new-game-button").trigger("click");
   };
 
   return BoardSolvedService;

@@ -111,7 +111,9 @@ ClickHandler = (function() {
           this.goalContainer.deleteGoal(this.solutionService.valueIndex);
           this.board.deleteCells(this.tuplesClicked());
           this.clicked = [];
-          return console.log(this.BoardSolvedService.isBoardCleared(this.board.boardValues[2]));
+          if (this.BoardSolvedService.isBoardCleared(this.board.boardValues[2])) {
+            return this.BoardSolvedService.newGameBoard();
+          }
         }
       }
     } else {
