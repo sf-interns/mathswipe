@@ -208,8 +208,7 @@ ClickHandler = (function() {
     if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
       if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
         cell.select();
-        this.addToClicked(cell);
-        return this.checkSolution();
+        return this.addToClicked(cell);
       }
     } else {
       this.resetClicked();
@@ -245,7 +244,8 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.onUp = function(cell) {
-    return this.mouseIsDown = false;
+    this.mouseIsDown = false;
+    return this.checkSolution();
   };
 
   return ClickHandler;
