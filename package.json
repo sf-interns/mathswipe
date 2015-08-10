@@ -22,6 +22,7 @@
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.3",
     "jquery": "^2.1.4",
+    "jquery-mobile": "^1.4.1",
     "node-libs-browser": "^0.5.2",
     "two.js": "^0.4.0",
     "webpack": "^1.10.1",
