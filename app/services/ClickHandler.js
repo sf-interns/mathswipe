@@ -32,36 +32,31 @@ ClickHandler = (function() {
     }
   }
 
-  ClickHandler.prototype.bindDefaultClick = function() {
-    $('body').click((function(_this) {
+  ClickHandler.prototype.bindDefaultMouseEvents = function() {
+    var body;
+    body = $('body');
+    body.click((function(_this) {
       return function(e) {
         e.preventDefault();
         _this.resetClicked();
         return console.log('mouseClick');
       };
     })(this));
-    return this;
-  };
-
-  ClickHandler.prototype.bindDefaultMousedown = function() {
-    $('body').mousedown((function(_this) {
+    body.mousedown((function(_this) {
       return function(e) {
         e.preventDefault();
-        return _this.mouseIsDown = true;
+        _this.mouseIsDown = true;
+        return console.log('mouseDown');
       };
     })(this));
-    return this;
-  };
-
-  ClickHandler.prototype.bindDefaultMouseup = function() {
-    $('body').mouseup((function(_this) {
+    return body.mouseup((function(_this) {
       return function(e) {
         e.preventDefault();
         _this.mouseIsDown = false;
-        return _this.resetClicked();
+        _this.resetClicked();
+        return console.log('mouseUp');
       };
     })(this));
-    return this;
   };
 
   ClickHandler.prototype.bindClickTo = function(cells) {

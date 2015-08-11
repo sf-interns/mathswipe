@@ -14,7 +14,7 @@ class Board
     @createEmptyCells @cellWidth - 5
     @createCells @cellWidth
 
-    @clickHandler.bindDefaultClick().bindDefaultMousedown().bindDefaultMouseup()
+    @clickHandler.bindDefaultMouseEvents()
     @clickHandler.bindClickTo @cells
     @clickHandler.bindMouseupTo @cells
     @clickHandler.bindMousedownTo @cells

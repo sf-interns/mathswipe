@@ -13,6 +13,12 @@ class Cell
       @cell = @two.makeGroup @rect
     @two.update()
 
+    if @clickHandler?
+      @bindClick()
+      @bindMouseEnter()
+      @bindMouseUp()
+      @bindMouseDown()
+
   newSymbol: (blueprint)->
     offset = - @size * 4 / 10
     symbol = blueprint.clone()
@@ -78,39 +84,41 @@ class Cell
     @setColor Colors.cell
 
   bindClick: ->
-    return unless @clickHandler?
     $(@cell._renderer.elem).click (e) =>
       e.preventDefault()
       return if @isDeleted
       e.stopPropagation()
       if @isSelected
+        # TODO @unselect()
         @clickHandler.unclickCell this
       else
+        # TODO @select()
         @clickHandler.clickCell this
 
-  bindMouseenter: ->
-    return unless @clickHandler?
+  bindMouseEnter: ->
     $(@cell._renderer.elem).mouseenter (e) =>
       e.preventDefault()
       # return unless contains(e.x, e.y)
-      console.log e
+      # console.log e
       return if @isDeleted
       e.stopPropagation()
+      # TODO @select()
+
       @clickHandler.onEnter this unless @isSelected
 
-  bindMouseup: ->
-    return unless @clickHandler?
+  bindMouseUp: ->
     $(@cell._renderer.elem).mouseup (e) =>
       e.preventDefault()
       @clickHandler.onUp this
       e.stopPropagation()
+      # TODO have clickhandler check solution
 
-  bindMousedown: ->
-    return unless @clickHandler?
+  bindMouseDown: ->
     $(@cell._renderer.elem).mousedown (e) =>
       e.preventDefault()
       return if @isDeleted
       e.stopPropagation()
+      # TODO @select
       @clickHandler.onDown this unless @isSelected
 
   x: -> @col

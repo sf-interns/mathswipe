@@ -22,6 +22,12 @@ Cell = (function() {
       this.cell = this.two.makeGroup(this.rect);
     }
     this.two.update();
+    if (this.clickHandler != null) {
+      this.bindClick();
+      this.bindMouseEnter();
+      this.bindMouseUp();
+      this.bindMouseDown();
+    }
   }
 
   Cell.prototype.newSymbol = function(blueprint) {
@@ -109,9 +115,6 @@ Cell = (function() {
   };
 
   Cell.prototype.bindClick = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
     return $(this.cell._renderer.elem).click((function(_this) {
       return function(e) {
         e.preventDefault();
@@ -128,14 +131,10 @@ Cell = (function() {
     })(this));
   };
 
-  Cell.prototype.bindMouseenter = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
+  Cell.prototype.bindMouseEnter = function() {
     return $(this.cell._renderer.elem).mouseenter((function(_this) {
       return function(e) {
         e.preventDefault();
-        console.log(e);
         if (_this.isDeleted) {
           return;
         }
@@ -147,10 +146,7 @@ Cell = (function() {
     })(this));
   };
 
-  Cell.prototype.bindMouseup = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
+  Cell.prototype.bindMouseUp = function() {
     return $(this.cell._renderer.elem).mouseup((function(_this) {
       return function(e) {
         e.preventDefault();
@@ -160,10 +156,7 @@ Cell = (function() {
     })(this));
   };
 
-  Cell.prototype.bindMousedown = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
+  Cell.prototype.bindMouseDown = function() {
     return $(this.cell._renderer.elem).mousedown((function(_this) {
       return function(e) {
         e.preventDefault();

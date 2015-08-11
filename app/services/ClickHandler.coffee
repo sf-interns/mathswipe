@@ -11,25 +11,21 @@ class ClickHandler
       for cell in row
         (@addToClicked cell) if cell.isSelected
 
-  bindDefaultClick: ->
-    $('body').click (e) =>
+  bindDefaultMouseEvents: ->
+    body = $('body')
+    body.click (e) =>
       e.preventDefault()
       @resetClicked()
       console.log 'mouseClick'
-    this
-
-  bindDefaultMousedown: ->
-    $('body').mousedown (e) =>
+    body.mousedown (e) =>
       e.preventDefault()
       @mouseIsDown = true
-    this
-
-  bindDefaultMouseup: ->
-    $('body').mouseup (e) =>
+      console.log 'mouseDown'
+    body.mouseup (e) =>
       e.preventDefault()
       @mouseIsDown = false
       @resetClicked()
-    this
+      console.log 'mouseUp'
 
   bindClickTo: (cells) ->
     if cells.bindClick?
@@ -45,6 +41,7 @@ class ClickHandler
         else
           console.log 'WARN: object not 2D arrays or simpler or no BindClick method'
 
+  # Reconsider using
   bindMouseenterTo: (cells) ->
     if cells.bindMouseenter?
       cells.bindMouseenter()
