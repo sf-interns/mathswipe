@@ -1,10 +1,9 @@
 $ = require 'jquery'
 Tuple = require '../models/Tuple'
-RunningSum = require './RunningSum'
 
 class ClickHandler
 
-  constructor: (@board, two, @solutionService, @goalContainer, @BoardSolvedService, @clicked = []) ->
+  constructor: (@board, two, @solutionService, @goalContainer, @BoardSolvedService, @RunningSum, @clicked = []) ->
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
@@ -56,9 +55,9 @@ class ClickHandler
         cell.select()
         @addToClicked cell
         @solutionService.initialize @clicked
-        RunningSum.display @solutionService.solution, @solutionService.value
+        @RunningSum.display @solutionService.solution, @solutionService.value
         if @solutionService.isSolution()
-          RunningSum.display ''
+          @RunningSum.display ''
           @goalContainer.deleteGoal @solutionService.valueIndex
           @board.deleteCells @tuplesClicked()
           @clicked = []
@@ -72,7 +71,7 @@ class ClickHandler
     return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col) <= 1
 
   unclickCell: (cell) ->
-    RunningSum.display ''
+    @RunningSum.display ''
     last = @lastClicked()
     return null unless cell is @lastClicked()
     cell.unSelect()
