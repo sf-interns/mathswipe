@@ -6,30 +6,14 @@ $ = require('jquery');
 Tuple = require('../models/Tuple');
 
 ClickHandler = (function() {
-  function ClickHandler(board, two, solutionService, goalContainer, BoardSolvedService, clicked) {
-    var cell, j, k, len, len1, ref, row;
+  function ClickHandler(board, solutionService, goalContainer, BoardSolvedService) {
     this.board = board;
     this.solutionService = solutionService;
     this.goalContainer = goalContainer;
     this.BoardSolvedService = BoardSolvedService;
-    this.clicked = clicked != null ? clicked : [];
+    this.clicked = [];
     this.mouseDown = false;
-    if (this.board.cells == null) {
-      return;
-    }
-    ref = this.board.cells;
-    for (j = 0, len = ref.length; j < len; j++) {
-      row = ref[j];
-      if (row.length === 0) {
-        break;
-      }
-      for (k = 0, len1 = row.length; k < len1; k++) {
-        cell = row[k];
-        if (cell.isSelected) {
-          this.addToClicked(cell);
-        }
-      }
-    }
+    this.onMobile = false;
   }
 
   ClickHandler.prototype.setMouseDown = function(val) {
@@ -41,6 +25,10 @@ ClickHandler = (function() {
 
   ClickHandler.prototype.isMouseDown = function() {
     return this.mouseDown;
+  };
+
+  ClickHandler.prototype.isOnMobile = function() {
+    return this.onMobile;
   };
 
   ClickHandler.prototype.bindDefaultMouseEvents = function() {

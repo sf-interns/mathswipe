@@ -21,17 +21,16 @@ Cell = (function() {
     } else {
       this.cell = this.scene.makeGroup(this.rect);
     }
-<<<<<<< HEAD
-    this.two.update();
-    if (this.clickHandler != null) {
-      this.bindClick();
-      this.bindMouseMove();
-      this.bindMouseUp();
-      this.bindMouseDown();
-    }
-=======
     this.scene.update();
->>>>>>> master
+    if (this.clickHandler != null) {
+      if (!this.clickHandler.isOnMobile()) {
+        this.bindMouseMove();
+        this.bindMouseUp();
+        this.bindMouseDown();
+      } else {
+        this.bindClick();
+      }
+    }
   }
 
   Cell.prototype.newSymbol = function(blueprint) {
@@ -109,7 +108,20 @@ Cell = (function() {
   };
 
   Cell.prototype.bindClick = function() {
-    return {};
+    return $('#' + this.cell.id).click((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected) {
+          return _this.clickHandler.onSelect(_this);
+        } else {
+          return _this.clickHandler.onUnselect(_this);
+        }
+      };
+    })(this));
   };
 
   Cell.prototype.bindMouseMove = function() {

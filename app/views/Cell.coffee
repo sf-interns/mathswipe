@@ -14,10 +14,13 @@ class Cell
     @scene.update()
 
     if @clickHandler?
-      @bindClick()
-      @bindMouseMove()
-      @bindMouseUp()
-      @bindMouseDown()
+      unless @clickHandler.isOnMobile()
+        @bindMouseMove()
+        @bindMouseUp()
+        @bindMouseDown()
+      else
+        @bindClick()
+
 
   newSymbol: (blueprint)->
     offset = - @size * 4 / 10
@@ -76,18 +79,14 @@ class Cell
     @setIndices row, col
 
   bindClick: ->
-    {}
-    # TODO can be split so that click is used for mobile
-    # $('#' + @cell.id).click (e) =>
-    #   e.preventDefault()
-    #   e.stopPropagation()
-    #   return if @isDeleted
-    #   if @isSelected
-    #     @unselect()
-    #     @clickHandler.onSelect this
-    #   else
-    #     @select()
-    #     @clickHandler.onUnselect this
+    $('#' + @cell.id).click (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      return if @isDeleted
+      unless @isSelected
+        @clickHandler.onSelect this
+      else
+        @clickHandler.onUnselect this
 
   bindMouseMove: ->
     $('#' + @cell.id).mousemove (e) =>

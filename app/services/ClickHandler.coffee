@@ -3,13 +3,10 @@ Tuple = require '../models/Tuple'
 
 class ClickHandler
 
-  constructor: (@board, two, @solutionService, @goalContainer, @BoardSolvedService, @clicked = []) ->
+  constructor: (@board, @solutionService, @goalContainer, @BoardSolvedService) ->
+    @clicked = []
     @mouseDown = false
-    return unless @board.cells?
-    for row in @board.cells
-      break if row.length is 0
-      for cell in row
-        (@addToClicked cell) if cell.isSelected
+    @onMobile = false
 
   setMouseDown: (val) ->
     @checkForSolution() unless val
@@ -17,6 +14,9 @@ class ClickHandler
 
   isMouseDown: ->
     @mouseDown
+
+  isOnMobile: ->
+    @onMobile
 
   bindDefaultMouseEvents: ->
     body = $('body')

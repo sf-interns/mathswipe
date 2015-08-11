@@ -8,7 +8,7 @@ class Board
 
   initializer: =>
     solutionService = new @SolutionService this, @goals
-    @clickHandler = new @ClickHandler this, @two, solutionService, @goalContainer, @BoardSolvedService
+    @clickHandler = new @ClickHandler this, solutionService, @goalContainer, @BoardSolvedService
 
     @createBoard()
     @createEmptyCells @cellWidth - 5
