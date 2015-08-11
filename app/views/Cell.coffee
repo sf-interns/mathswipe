@@ -15,7 +15,7 @@ class Cell
 
     if @clickHandler?
       @bindClick()
-      @bindMouseEnter()
+      @bindMouseMove()
       @bindMouseUp()
       @bindMouseDown()
 
@@ -75,18 +75,10 @@ class Cell
 
     @setIndices row, col
 
-  select: ->
-    @isSelected = true
-    @setColor Colors.select
-
-  unselect: ->
-    @isSelected = false
-    @setColor Colors.cell
-
   bindClick: ->
     {}
     # TODO can be split so that click is used for mobile
-    # $(@cell._renderer.elem).click (e) =>
+    # $('#' + @cell.id).click (e) =>
     #   e.preventDefault()
     #   e.stopPropagation()
     #   return if @isDeleted
@@ -97,46 +89,49 @@ class Cell
     #     @select()
     #     @clickHandler.onUnselect this
 
-  bindMouseEnter: ->
-    $(@cell._renderer.elem).mouseenter (e) =>
+  bindMouseMove: ->
+    $('#' + @cell.id).mousemove (e) =>
       e.preventDefault()
       e.stopPropagation()
-      # return unless contains(e.x, e.y)
-      # console.log e
       return if @isDeleted
-      if not @isSelected and @clickHandler.isMouseDown()
-        @select()
+      if not @isSelected and @clickHandler.isMouseDown() and
+      @inHitBox(e.offsetX, e.offsetY)
         @clickHandler.onSelect this
 
-      # @clickHandler.onEnter this unless @isSelected
-
   bindMouseUp: ->
-    $(@cell._renderer.elem).mouseup (e) =>
+    $('#' + @cell.id).mouseup (e) =>
       e.preventDefault()
       e.stopPropagation()
-      # TODO have clickhandler check solution
-      console.log "Checking solution"
       @clickHandler.setMouseDown false
 
-      # @clickHandler.onUp this
-
   bindMouseDown: ->
-    $(@cell._renderer.elem).mousedown (e) =>
+    $('#' + @cell.id).mousedown (e) =>
       e.preventDefault()
       e.stopPropagation()
       return if @isDeleted
       unless @isSelected
-        @select()
-        @clickHandler.setMouseDown true
         @clickHandler.onSelect this
-        # @clickHandler.onDown this unless @isSelected
 
-  x: -> @col
+  inHitBox: (mouseX, mouseY) ->
+    # Within a box 70% of the actual
+    shrinkSize = (0.70 * @size) / 2.0
+    Math.abs(mouseX - @getX()) < shrinkSize and
+    Math.abs(mouseY - @getY()) < shrinkSize
 
-  y: -> @row
+  select: ->
+    @isSelected = true
+    @setColor Colors.select
+
+  unselect: ->
+    @isSelected = false
+    @setColor Colors.cell
 
   delete: ->
     @hide()
     @isDeleted = true
+
+  x: -> @col
+
+  y: -> @row
 
 module.exports = Cell

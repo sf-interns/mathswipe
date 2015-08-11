@@ -24,7 +24,7 @@ Cell = (function() {
     this.two.update();
     if (this.clickHandler != null) {
       this.bindClick();
-      this.bindMouseEnter();
+      this.bindMouseMove();
       this.bindMouseUp();
       this.bindMouseDown();
     }
@@ -104,6 +104,56 @@ Cell = (function() {
     return this.setIndices(row, col);
   };
 
+  Cell.prototype.bindClick = function() {
+    return {};
+  };
+
+  Cell.prototype.bindMouseMove = function() {
+    return $('#' + this.cell.id).mousemove((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected && _this.clickHandler.isMouseDown() && _this.inHitBox(e.offsetX, e.offsetY)) {
+          return _this.clickHandler.onSelect(_this);
+        }
+      };
+    })(this));
+  };
+
+  Cell.prototype.bindMouseUp = function() {
+    return $('#' + this.cell.id).mouseup((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return _this.clickHandler.setMouseDown(false);
+      };
+    })(this));
+  };
+
+  Cell.prototype.bindMouseDown = function() {
+    return $('#' + this.cell.id).mousedown((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected) {
+          return _this.clickHandler.onSelect(_this);
+        }
+      };
+    })(this));
+  };
+
+  Cell.prototype.inHitBox = function(mouseX, mouseY) {
+    var shrinkSize;
+    shrinkSize = (0.70 * this.size) / 2.0;
+    return Math.abs(mouseX - this.getX()) < shrinkSize && Math.abs(mouseY - this.getY()) < shrinkSize;
+  };
+
   Cell.prototype.select = function() {
     this.isSelected = true;
     return this.setColor(Colors.select);
@@ -114,52 +164,9 @@ Cell = (function() {
     return this.setColor(Colors.cell);
   };
 
-  Cell.prototype.bindClick = function() {
-    return {};
-  };
-
-  Cell.prototype.bindMouseEnter = function() {
-    return $(this.cell._renderer.elem).mouseenter((function(_this) {
-      return function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (_this.isDeleted) {
-          return;
-        }
-        if (!_this.isSelected && _this.clickHandler.isMouseDown()) {
-          _this.select();
-          return _this.clickHandler.onSelect(_this);
-        }
-      };
-    })(this));
-  };
-
-  Cell.prototype.bindMouseUp = function() {
-    return $(this.cell._renderer.elem).mouseup((function(_this) {
-      return function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log("Checking solution");
-        return _this.clickHandler.setMouseDown(false);
-      };
-    })(this));
-  };
-
-  Cell.prototype.bindMouseDown = function() {
-    return $(this.cell._renderer.elem).mousedown((function(_this) {
-      return function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (_this.isDeleted) {
-          return;
-        }
-        if (!_this.isSelected) {
-          _this.select();
-          _this.clickHandler.setMouseDown(true);
-          return _this.clickHandler.onSelect(_this);
-        }
-      };
-    })(this));
+  Cell.prototype["delete"] = function() {
+    this.hide();
+    return this.isDeleted = true;
   };
 
   Cell.prototype.x = function() {
@@ -168,11 +175,6 @@ Cell = (function() {
 
   Cell.prototype.y = function() {
     return this.row;
-  };
-
-  Cell.prototype["delete"] = function() {
-    this.hide();
-    return this.isDeleted = true;
   };
 
   return Cell;
