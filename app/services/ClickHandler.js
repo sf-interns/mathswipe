@@ -112,6 +112,7 @@ ClickHandler = (function() {
         this.solutionService.initialize(this.clicked);
         RunningSum.display(this.solutionService.solution, this.solutionService.value);
         if (this.solutionService.isSolution()) {
+          RunningSum.display('');
           this.goalContainer.deleteGoal(this.solutionService.valueIndex);
           this.board.deleteCells(this.tuplesClicked());
           this.clicked = [];
@@ -136,6 +137,7 @@ ClickHandler = (function() {
 
   ClickHandler.prototype.unclickCell = function(cell) {
     var last;
+    RunningSum.display('');
     last = this.lastClicked();
     if (cell !== this.lastClicked()) {
       return null;

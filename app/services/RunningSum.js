@@ -8,7 +8,9 @@ RunningSum = (function() {
 
   RunningSum.display = function(solution, value) {
     var expression;
-    if (isNaN(value)) {
+    if (solution === '') {
+      expression = '';
+    } else if (isNaN(value)) {
       expression = 'Invalid Expression';
     } else if (this.isCompleteExpression(solution)) {
       expression = (this.addParens(solution)) + '=' + value;

@@ -58,6 +58,7 @@ class ClickHandler
         @solutionService.initialize @clicked
         RunningSum.display @solutionService.solution, @solutionService.value
         if @solutionService.isSolution()
+          RunningSum.display ''
           @goalContainer.deleteGoal @solutionService.valueIndex
           @board.deleteCells @tuplesClicked()
           @clicked = []
@@ -71,6 +72,7 @@ class ClickHandler
     return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col) <= 1
 
   unclickCell: (cell) ->
+    RunningSum.display ''
     last = @lastClicked()
     return null unless cell is @lastClicked()
     cell.unSelect()

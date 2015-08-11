@@ -3,7 +3,9 @@ $ = require 'jquery'
 class RunningSum
 
   @display: (solution, value) ->
-    if isNaN value
+    if solution is ''
+      expression = ''
+    else if isNaN value
       expression = 'Invalid Expression'
     else if @isCompleteExpression solution
       expression = (@addParens solution) + '=' + value
