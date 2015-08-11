@@ -44,7 +44,7 @@ MathSwipeController = (function() {
     this.goalsScene = this.createGoalsScene();
     this.initialize();
     this.createNewGame();
-    if ($.browser.mobile) {
+    if (this.isMobile().any()) {
       console.log('MOBILE');
     } else {
       console.log('DESKTOP');
@@ -72,7 +72,7 @@ MathSwipeController = (function() {
     this.goalContainer = new GoalContainer(this.goalsScene, answers, goalsSymbols, Colors);
     boardSymbols = this.getSymbolsFor(this.gameScene);
     gameModel = this.generateBoard(inputs, length);
-    handler = this.isMobile.any() ? TouchHandler : ClickHandler;
+    handler = this.isMobile().any() ? TouchHandler : ClickHandler;
     this.board = new Board(gameModel, this.gameScene, Cell, Colors, handler, SolutionService, answers, boardSymbols, this.goalContainer);
     return ResetButton.bindClick(this.board);
   };
@@ -142,25 +142,27 @@ MathSwipeController = (function() {
     return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
   };
 
-  MathSwipeController.isMobile = {
-    Android: function() {
-      return navigator.userAgent.match(/Android/i);
-    },
-    BlackBerry: function() {
-      return navigator.userAgent.match(/BlackBerry/i);
-    },
-    iOS: function() {
-      return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-    },
-    Opera: function() {
-      return navigator.userAgent.match(/Opera Mini/i);
-    },
-    Windows: function() {
-      return navigator.userAgent.match(/IEMobile/i);
-    },
-    any: function() {
-      return isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows();
-    }
+  MathSwipeController.prototype.isMobile = function() {
+    return {
+      Android: function() {
+        return navigator.userAgent.match(/Android/i);
+      },
+      BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+      },
+      iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+      },
+      Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+      },
+      Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+      },
+      any: function() {
+        return this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows();
+      }
+    };
   };
 
   MathSwipeController.prototype.tests = function() {

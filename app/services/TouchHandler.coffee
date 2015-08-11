@@ -12,6 +12,7 @@ class TouchHandler
         (@addToClicked cell) if cell.isSelected
 
   bindDefaultClick: ->
+    console.log $
     $('body').tap (e) =>
       e.preventDefault()
       @resetClicked()
@@ -158,4 +159,4 @@ class TouchHandler
     $(obj).vmouseup func
 
 
-module.exports = ClickHandler
+module.exports = TouchHandler

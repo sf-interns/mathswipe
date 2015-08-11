@@ -21,7 +21,7 @@ class MathSwipeController
     @goalsScene = @createGoalsScene()
     @initialize()
     @createNewGame()
-    if $.browser.mobile
+    if @isMobile().any()
       console.log 'MOBILE'
     else
       console.log 'DESKTOP'
@@ -47,7 +47,7 @@ class MathSwipeController
 
     boardSymbols = @getSymbolsFor @gameScene
     gameModel = @generateBoard inputs, length
-    handler = if @isMobile.any() then TouchHandler else ClickHandler
+    handler = if @isMobile().any() then TouchHandler else ClickHandler
     @board = new Board gameModel, @gameScene, Cell, Colors, handler, SolutionService, answers, boardSymbols, @goalContainer
     ResetButton.bindClick @board
 
@@ -98,19 +98,21 @@ class MathSwipeController
   generateBoard: (inputs, length) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
-  @isMobile =
-    Android: () ->
+  isMobile: ()->
+    {
+      Android: () ->
         return navigator.userAgent.match(/Android/i)
-    BlackBerry: () ->
+      BlackBerry: () ->
         return navigator.userAgent.match(/BlackBerry/i)
-    iOS: ()->
+      iOS: ()->
         return navigator.userAgent.match(/iPhone|iPad|iPod/i)
-    Opera: () ->
+      Opera: () ->
         return navigator.userAgent.match(/Opera Mini/i)
-    Windows: () ->
+      Windows: () ->
         return navigator.userAgent.match(/IEMobile/i)
-    any: () ->
-        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows())
+      any: () ->
+        return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
+    }
 
   tests: =>
     @testRandomizedFitLength()

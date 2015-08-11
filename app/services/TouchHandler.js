@@ -33,6 +33,7 @@ TouchHandler = (function() {
   }
 
   TouchHandler.prototype.bindDefaultClick = function() {
+    console.log($);
     $('body').tap((function(_this) {
       return function(e) {
         e.preventDefault();
@@ -268,4 +269,4 @@ TouchHandler = (function() {
 
 })();
 
-module.exports = ClickHandler;
+module.exports = TouchHandler;
