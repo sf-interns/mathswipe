@@ -59,7 +59,8 @@ class ClickHandler
           @board.deleteCells @tuplesClicked()
           @clicked = []
           if @BoardSolvedService.isCleared @board.boardValues[@board.dimension - 1]
-            setTimeout (() => @BoardSolvedService.createNewBoard()), 100
+            @board.successAnimation()
+            setTimeout (() => @BoardSolvedService.createNewBoard()), 500
     else
       @resetClicked()
       @clickCell cell

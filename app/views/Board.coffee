@@ -5,6 +5,7 @@ class Board
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
+    @getSuccessSVG()
 
   initializer: =>
     solutionService = new @SolutionService this, @goals
@@ -112,5 +113,13 @@ class Board
     @boardValues = @copyValues @initialValues
     @goalContainer.resetGoals()
     @initializer()
+
+  getSuccessSVG: ->
+    @successSVG = @symbols[@symbols.length - 1].clone()
+    @successSVG.noStroke().fill = '#D1857F'
+
+  successAnimation: ->
+    @scene.add @successSVG
+    @scene.update()
 
 module.exports = Board

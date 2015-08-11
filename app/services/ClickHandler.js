@@ -112,11 +112,12 @@ ClickHandler = (function() {
           this.board.deleteCells(this.tuplesClicked());
           this.clicked = [];
           if (this.BoardSolvedService.isCleared(this.board.boardValues[this.board.dimension - 1])) {
+            this.board.successAnimation();
             return setTimeout(((function(_this) {
               return function() {
                 return _this.BoardSolvedService.createNewBoard();
               };
-            })(this)), 100);
+            })(this)), 500);
           }
         }
       }

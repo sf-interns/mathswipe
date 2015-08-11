@@ -21,6 +21,7 @@ Board = (function() {
     this.dimension = this.boardValues.length;
     this.initialValues = this.copyValues(this.boardValues);
     this.initializer();
+    this.getSuccessSVG();
   }
 
   Board.prototype.initializer = function() {
@@ -166,6 +167,16 @@ Board = (function() {
     this.boardValues = this.copyValues(this.initialValues);
     this.goalContainer.resetGoals();
     return this.initializer();
+  };
+
+  Board.prototype.getSuccessSVG = function() {
+    this.successSVG = this.symbols[this.symbols.length - 1].clone();
+    return this.successSVG.noStroke().fill = '#D1857F';
+  };
+
+  Board.prototype.successAnimation = function() {
+    this.scene.add(this.successSVG);
+    return this.scene.update();
   };
 
   return Board;
