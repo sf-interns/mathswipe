@@ -4,7 +4,7 @@ class RunningSum
 
   @display: (solution, value) ->
     if isNaN value
-      expression = 'invalid'
+      expression = 'Invalid Expression'
     else if @isCompleteExpression solution
       expression = (@addParens solution) + '=' + value
     else
@@ -32,6 +32,6 @@ class RunningSum
     solution
 
   @format: (input) ->
-    input.replace(/\*/g, " &times; ").replace(/\+/g, " + ").replace(/\-/g, " - ").replace(/\=/g, " = ")
+    input.replace(/\*/g, " x ").replace(/\+/g, " + ").replace(/\-/g, " - ").replace(/\=/g, " = ")
 
 module.exports = RunningSum

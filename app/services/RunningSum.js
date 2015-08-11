@@ -9,7 +9,7 @@ RunningSum = (function() {
   RunningSum.display = function(solution, value) {
     var expression;
     if (isNaN(value)) {
-      expression = 'invalid';
+      expression = 'Invalid Expression';
     } else if (this.isCompleteExpression(solution)) {
       expression = (this.addParens(solution)) + '=' + value;
     } else {
@@ -49,7 +49,7 @@ RunningSum = (function() {
   };
 
   RunningSum.format = function(input) {
-    return input.replace(/\*/g, " &times; ").replace(/\+/g, " + ").replace(/\-/g, " - ").replace(/\=/g, " = ");
+    return input.replace(/\*/g, " x ").replace(/\+/g, " + ").replace(/\-/g, " - ").replace(/\=/g, " = ");
   };
 
   return RunningSum;
