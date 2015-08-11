@@ -6,21 +6,22 @@ $ = require('jquery');
 Colors = require('./Colors');
 
 Cell = (function() {
-  function Cell(col1, row1, size, two, board, clickHandler, symbolBlueprint) {
+  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
     this.col = col1;
     this.row = row1;
     this.size = size;
-    this.two = two;
+    this.scene = scene;
     this.board = board;
     this.clickHandler = clickHandler;
     this.isDeleted = false;
     this.isSelected = false;
-    this.rect = this.two.makeRectangle(this.getX(), this.getY(), this.size, this.size);
+    this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
     if (symbolBlueprint) {
-      this.cell = this.two.makeGroup(this.rect, this.newSymbol(symbolBlueprint));
+      this.cell = this.scene.makeGroup(this.rect, this.newSymbol(symbolBlueprint));
     } else {
-      this.cell = this.two.makeGroup(this.rect);
+      this.cell = this.scene.makeGroup(this.rect);
     }
+<<<<<<< HEAD
     this.two.update();
     if (this.clickHandler != null) {
       this.bindClick();
@@ -28,6 +29,9 @@ Cell = (function() {
       this.bindMouseUp();
       this.bindMouseDown();
     }
+=======
+    this.scene.update();
+>>>>>>> master
   }
 
   Cell.prototype.newSymbol = function(blueprint) {
@@ -43,18 +47,18 @@ Cell = (function() {
   Cell.prototype.setColor = function(c) {
     this.color = c;
     this.rect.fill = c;
-    return this.two.update();
+    return this.scene.update();
   };
 
   Cell.prototype.setBorder = function(c) {
     this.rect.stroke = c;
     this.rect.linewidth = 6;
-    return this.two.update();
+    return this.scene.update();
   };
 
   Cell.prototype.hide = function() {
     this.cell.visible = false;
-    return this.two.update();
+    return this.scene.update();
   };
 
   Cell.prototype.getX = function(col) {
@@ -83,13 +87,13 @@ Cell = (function() {
     end = new Two.Vector(this.getX(col), this.getY(row));
     start = new Two.Vector(this.getX(), this.getY());
     goingDown = end.y > start.y;
-    this.two.bind('update', (function(_this) {
+    this.scene.bind('update', (function(_this) {
       return function(frameCount) {
         var delta, dist;
         dist = start.distanceTo(end);
         if (dist < .00001) {
           _this.cell.translation.clone(end);
-          _this.two.unbind('update');
+          _this.scene.unbind('update');
         }
         delta = new Two.Vector(0, dist * .125);
         if (goingDown) {

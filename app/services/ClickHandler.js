@@ -6,11 +6,12 @@ $ = require('jquery');
 Tuple = require('../models/Tuple');
 
 ClickHandler = (function() {
-  function ClickHandler(board, two, solutionService, goalContainer, clicked) {
+  function ClickHandler(board, two, solutionService, goalContainer, BoardSolvedService, clicked) {
     var cell, j, k, len, len1, ref, row;
     this.board = board;
     this.solutionService = solutionService;
     this.goalContainer = goalContainer;
+    this.BoardSolvedService = BoardSolvedService;
     this.clicked = clicked != null ? clicked : [];
     this.mouseDown = false;
     if (this.board.cells == null) {
@@ -114,7 +115,14 @@ ClickHandler = (function() {
   ClickHandler.prototype.checkForSolution = function() {
     if (this.solutionService.isSolution(this.clicked)) {
       this.goalContainer.deleteGoal(this.solutionService.valueIndex);
-      this.board.deleteCells(this.tuplesClicked());
+      this.board.deleteCells(this.clickedToTuples());
+      if (this.BoardSolvedService.isCleared(this.board)) {
+        setTimeout(((function(_this) {
+          return function() {
+            return _this.BoardSolvedService.createNewBoard();
+          };
+        })(this)), 100);
+      }
     }
     return this.unselectAll();
   };
@@ -126,6 +134,17 @@ ClickHandler = (function() {
     }
     last = this.clicked[this.clicked.length - 1];
     return Math.abs(cell.row - last.row) <= 1 && Math.abs(cell.col - last.col) <= 1;
+  };
+
+  ClickHandler.prototype.clickedToTuples = function() {
+    var cell, j, len, ref, tuples;
+    tuples = [];
+    ref = this.clicked;
+    for (j = 0, len = ref.length; j < len; j++) {
+      cell = ref[j];
+      tuples.push(new Tuple(cell.col, cell.row));
+    }
+    return tuples;
   };
 
   return ClickHandler;

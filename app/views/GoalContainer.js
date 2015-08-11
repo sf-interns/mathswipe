@@ -44,6 +44,7 @@ GoalContainer = (function() {
         character.noStroke().fill = '#EFE8BE';
         character.visible = true;
         character.scale = Math.min(1, (this.scene.width / 100) / this.count);
+        this.scene.add(character);
         index++;
       }
       index++;
