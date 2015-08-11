@@ -21,14 +21,7 @@ RunningSum = (function() {
   };
 
   RunningSum.isCompleteExpression = function(solution) {
-    var char, i, index, len;
-    for (index = i = 0, len = solution.length; i < len; index = ++i) {
-      char = solution[index];
-      if (char === '+' || char === '-' || char === '*') {
-        return index < solution.length - 1 && '0' <= solution[index + 1] && solution[index + 1] <= '9';
-      }
-    }
-    return false;
+    return solution.search(/-?\d+[-+\*]\d+/g) === 0;
   };
 
   RunningSum.addParens = function(solution) {
@@ -36,8 +29,8 @@ RunningSum = (function() {
     if (solution.length < 3) {
       return solution;
     }
-    lastOpIndex = -1;
-    index = 2;
+    lastOpIndex = solution.search(/\d[-+\*]/g) + 1;
+    index = solution.search(/\d[-+\*]/g) + 1;
     while (index < solution.length) {
       char = solution[index];
       if (lastOpIndex < index && (char === '+' || char === '-' || char === '*')) {
@@ -51,7 +44,7 @@ RunningSum = (function() {
   };
 
   RunningSum.format = function(input) {
-    return input.replace(/\*/g, " x ").replace(/\+/g, " + ").replace(/\-/g, " - ").replace(/\=/g, " = ");
+    return input.replace(/\*/g, ' x ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
   };
 
   return RunningSum;

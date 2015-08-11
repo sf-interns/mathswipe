@@ -14,16 +14,13 @@ class RunningSum
     $('#running-sum').html(@format expression)
 
   @isCompleteExpression: (solution) ->
-    for char, index in solution
-      if char is '+' or char is '-' or char is '*'
-        return index < solution.length - 1 and
-          '0' <= solution[index + 1] and solution[index + 1] <= '9'
-    false
+    return solution.search(/-?\d+[-+\*]\d+/g) is 0
 
   @addParens: (solution) ->
     return solution if solution.length < 3
-    lastOpIndex = -1
-    index = 2
+    lastOpIndex = solution.search(/\d[-+\*]/g) + 1
+    index = solution.search(/\d[-+\*]/g) + 1
+
     while index < solution.length
       char = solution[index]
       if lastOpIndex < index and (char is '+' or char is '-' or char is '*')
@@ -34,6 +31,6 @@ class RunningSum
     solution
 
   @format: (input) ->
-    input.replace(/\*/g, " x ").replace(/\+/g, " + ").replace(/\-/g, " - ").replace(/\=/g, " = ")
+    input.replace(/\*/g, ' x ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ')
 
 module.exports = RunningSum
