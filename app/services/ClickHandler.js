@@ -112,12 +112,13 @@ ClickHandler = (function() {
           this.board.deleteCells(this.tuplesClicked());
           this.clicked = [];
           if (this.BoardSolvedService.isCleared(this.board.boardValues[this.board.dimension - 1])) {
+            document.getElementById('new-game-button').disabled = true;
             this.board.successAnimation();
             return setTimeout(((function(_this) {
               return function() {
                 return _this.BoardSolvedService.createNewBoard();
               };
-            })(this)), 500);
+            })(this)), 1100);
           }
         }
       }

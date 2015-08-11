@@ -119,7 +119,18 @@ class Board
     @successSVG.noStroke().fill = '#D1857F'
 
   successAnimation: ->
-    @scene.add @successSVG
-    @scene.update()
+    @success = @scene.makeGroup @successSVG
+    @success.scale = 0.001
+    @success.opacity = 0
+    @scene.bind('update', (frameCount) =>
+      if @success.scale > 0.7
+        @success.opacity = 1
+      if @success.scale > 0.9999
+        @success.scale = @success.rotation = 0
+        @success.opacity = 0
+      delta = (1 - @success.scale) * 0.10
+      @success.scale += delta
+      @success.rotation += delta * Math.PI * 2
+    ).play()
 
 module.exports = Board

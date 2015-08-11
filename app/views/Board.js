@@ -175,8 +175,24 @@ Board = (function() {
   };
 
   Board.prototype.successAnimation = function() {
-    this.scene.add(this.successSVG);
-    return this.scene.update();
+    this.success = this.scene.makeGroup(this.successSVG);
+    this.success.scale = 0.001;
+    this.success.opacity = 0;
+    return this.scene.bind('update', (function(_this) {
+      return function(frameCount) {
+        var delta;
+        if (_this.success.scale > 0.7) {
+          _this.success.opacity = 1;
+        }
+        if (_this.success.scale > 0.9999) {
+          _this.success.scale = _this.success.rotation = 0;
+          _this.success.opacity = 0;
+        }
+        delta = (1 - _this.success.scale) * 0.10;
+        _this.success.scale += delta;
+        return _this.success.rotation += delta * Math.PI * 2;
+      };
+    })(this)).play();
   };
 
   return Board;

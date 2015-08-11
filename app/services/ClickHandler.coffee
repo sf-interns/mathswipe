@@ -59,8 +59,9 @@ class ClickHandler
           @board.deleteCells @tuplesClicked()
           @clicked = []
           if @BoardSolvedService.isCleared @board.boardValues[@board.dimension - 1]
+            document.getElementById('new-game-button').disabled = true
             @board.successAnimation()
-            setTimeout (() => @BoardSolvedService.createNewBoard()), 500
+            setTimeout (() => @BoardSolvedService.createNewBoard()), 1100
     else
       @resetClicked()
       @clickCell cell
