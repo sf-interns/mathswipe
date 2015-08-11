@@ -19,7 +19,7 @@ class RunningSum
   @addParens: (solution) ->
     return solution if solution.length < 3
     lastOpIndex = solution.search(/\d[-+\*]/g) + 1
-    index = solution.search(/\d[-+\*]/g) + 1
+    index = lastOpIndex
 
     while index < solution.length
       char = solution[index]

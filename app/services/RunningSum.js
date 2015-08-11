@@ -30,7 +30,7 @@ RunningSum = (function() {
       return solution;
     }
     lastOpIndex = solution.search(/\d[-+\*]/g) + 1;
-    index = solution.search(/\d[-+\*]/g) + 1;
+    index = lastOpIndex;
     while (index < solution.length) {
       char = solution[index];
       if (lastOpIndex < index && (char === '+' || char === '-' || char === '*')) {
