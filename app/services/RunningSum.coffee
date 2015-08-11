@@ -1,12 +1,15 @@
+$ = require 'jquery'
+
 class RunningSum
 
   @display: (solution, value) ->
     if isNaN value
-      console.log 'invalid'
+      expression = 'invalid'
     else if @isCompleteExpression solution
-      console.log (@format solution), '=', value
+      expression = (@addParens solution) + '=' + value
     else
-      console.log solution
+      expression = solution
+    $('#running-sum').html(@format expression)
 
   @isCompleteExpression: (solution) ->
     for char, index in solution
@@ -15,16 +18,20 @@ class RunningSum
           '0' <= solution[index + 1] and solution[index + 1] <= '9'
     false
 
-  @format: (solution) ->
+  @addParens: (solution) ->
+    return solution if solution.length < 3
     lastOpIndex = -1
-    index = 0
+    index = 2
     while index < solution.length
       char = solution[index]
-      if 3 <= index and lastOpIndex < index and (char is '+' or char is '-' or char is '*')
+      if lastOpIndex < index and (char is '+' or char is '-' or char is '*')
         first = '(' + (solution.substring 0, index) + ')'
         lastOpIndex = first.length
         solution = first + (solution.substring index)
       index++
     solution
+
+  @format: (input) ->
+    input.replace(/\*/g, " &times; ").replace(/\+/g, " + ").replace(/\-/g, " - ").replace(/\=/g, " = ")
 
 module.exports = RunningSum
