@@ -4,7 +4,7 @@ RunningSum = require './RunningSum'
 
 class ClickHandler
 
-  constructor: (@board, two, @solutionService, @goalContainer, @clicked = []) ->
+  constructor: (@board, two, @solutionService, @goalContainer, @BoardSolvedService, @clicked = []) ->
     return unless @board.cells?
     for row in @board.cells
       break if row.length is 0
@@ -58,9 +58,11 @@ class ClickHandler
         @solutionService.initialize @clicked
         RunningSum.display @solutionService.solution, @solutionService.value
         if @solutionService.isSolution()
-           @goalContainer.deleteGoal @solutionService.valueIndex
-           @board.deleteCells @tuplesClicked()
-           @clicked = []
+          @goalContainer.deleteGoal @solutionService.valueIndex
+          @board.deleteCells @tuplesClicked()
+          @clicked = []
+          if @BoardSolvedService.isCleared @board.boardValues[@board.dimension - 1]
+            setTimeout (() => @BoardSolvedService.createNewBoard()), 100
     else
       @resetClicked()
       @clickCell cell

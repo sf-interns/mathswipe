@@ -63,9 +63,9 @@
 	
 	MathSwipeController = __webpack_require__(/*! ./app/controllers/MathSwipeController */ 3);
 	
-	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	game = new MathSwipeController;
 
@@ -6894,12 +6894,14 @@
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, AdjacentCellsCalculator, Board, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GoalContainer, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, SolutionService, Tuple,
+	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GoalContainer, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, SolutionService, Tuple,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
-	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 5);
+	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 4);
 	
-	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 7);
+	BoardSolvedService = __webpack_require__(/*! ../services/BoardSolvedService */ 6);
+	
+	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 8);
 	
 	DFS = __webpack_require__(/*! ../services/DFS */ 9);
 	
@@ -6907,23 +6909,23 @@
 	
 	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 12);
 	
-	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 13);
+	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 13);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 14);
+	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 14);
 	
-	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 4);
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 15);
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 15);
+	Board = __webpack_require__(/*! ../views/Board */ 16);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 16);
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 17);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 17);
+	Cell = __webpack_require__(/*! ../views/Cell */ 18);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 18);
+	Colors = __webpack_require__(/*! ../views/Colors */ 19);
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
@@ -6935,12 +6937,13 @@
 	    this.tests = bind(this.tests, this);
 	    this.gameScene = this.createGameScene();
 	    this.goalsScene = this.createGoalsScene();
+	    this.symbols = this.getSymbols();
 	    this.initialize();
-	    this.createNewGame();
+	    this.bindNewGameButton();
 	  }
 	
 	  MathSwipeController.prototype.initialize = function() {
-	    var answers, boardSymbols, expression, gameModel, goalsSymbols, i, inputLengths, inputSize, inputs, k, l, len, len1, length;
+	    var answers, expression, gameModel, i, inputLengths, inputSize, inputs, k, l, len, len1, length;
 	    length = 3;
 	    inputs = [];
 	    answers = [];
@@ -6956,15 +6959,13 @@
 	      console.log(i);
 	    }
 	    console.log('\n');
-	    goalsSymbols = this.getSymbolsFor(this.goalsScene);
-	    this.goalContainer = new GoalContainer(this.goalsScene, answers, goalsSymbols, Colors);
-	    boardSymbols = this.getSymbolsFor(this.gameScene);
 	    gameModel = this.generateBoard(inputs, length);
-	    this.board = new Board(gameModel, this.gameScene, Cell, Colors, ClickHandler, SolutionService, answers, boardSymbols, this.goalContainer);
+	    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
+	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService);
 	    return ResetButton.bindClick(this.board);
 	  };
 	
-	  MathSwipeController.prototype.createNewGame = function() {
+	  MathSwipeController.prototype.bindNewGameButton = function() {
 	    return $('#new-game-button').click((function(_this) {
 	      return function(e) {
 	        _this.gameScene.clear();
@@ -7000,8 +7001,9 @@
 	    return scene;
 	  };
 	
-	  MathSwipeController.prototype.getSymbolsFor = function(scene) {
-	    var index, k, len, svg, svgs, symbols;
+	  MathSwipeController.prototype.getSymbols = function() {
+	    var index, k, len, scene, svg, svgs, symbols;
+	    scene = new Two();
 	    svgs = $('#assets svg');
 	    symbols = [];
 	    for (index = k = 0, len = svgs.length; k < len; index = ++k) {
@@ -7099,46 +7101,6 @@
 
 /***/ },
 /* 4 */
-/*!*************************************************!*\
-  !*** ./app/services/RandomizedFitLength.coffee ***!
-  \*************************************************/
-/***/ function(module, exports) {
-
-	var RandomizedFitLength;
-	
-	RandomizedFitLength = (function() {
-	  function RandomizedFitLength() {}
-	
-	  RandomizedFitLength.randInclusive = function(min, max) {
-	    return Math.floor(Math.random() * (max - min + 1)) + min;
-	  };
-	
-	  RandomizedFitLength.generate = function(size, list) {
-	    var length;
-	    if (list == null) {
-	      list = [];
-	    }
-	    if (size === 0) {
-	      return list;
-	    }
-	    length = this.randInclusive(3, 5);
-	    if (size - length < 0 && list.length !== 0) {
-	      return this.generate(size + list.pop(), list);
-	    } else {
-	      list.push(length);
-	      return this.generate(size - length, list);
-	    }
-	  };
-	
-	  return RandomizedFitLength;
-	
-	})();
-	
-	module.exports = RandomizedFitLength;
-
-
-/***/ },
-/* 5 */
 /*!*****************************************************!*\
   !*** ./app/services/AdjacentCellsCalculator.coffee ***!
   \*****************************************************/
@@ -7146,7 +7108,7 @@
 
 	var AdjacentCellsCalculator, Tuple;
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
 	AdjacentCellsCalculator = (function() {
 	  function AdjacentCellsCalculator() {}
@@ -7196,7 +7158,7 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /*!*********************************!*\
   !*** ./app/models/Tuple.coffee ***!
   \*********************************/
@@ -7227,154 +7189,43 @@
 
 
 /***/ },
-/* 7 */
-/*!******************************************!*\
-  !*** ./app/services/ClickHandler.coffee ***!
-  \******************************************/
+/* 6 */
+/*!************************************************!*\
+  !*** ./app/services/BoardSolvedService.coffee ***!
+  \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, ClickHandler, Tuple,
-	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+	var $, BoardSolvedService;
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
+	BoardSolvedService = (function() {
+	  function BoardSolvedService() {}
 	
-	ClickHandler = (function() {
-	  function ClickHandler(board1, two, solutionService, goalContainer, clicked) {
-	    var cell, i, j, len, len1, ref, row;
-	    this.board = board1;
-	    this.solutionService = solutionService;
-	    this.goalContainer = goalContainer;
-	    this.clicked = clicked != null ? clicked : [];
-	    if (this.board.cells == null) {
-	      return;
-	    }
-	    ref = this.board.cells;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      row = ref[i];
-	      if (row.length === 0) {
-	        break;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.isSelected) {
-	          this.addToClicked(cell);
-	        }
+	  BoardSolvedService.isCleared = function(boardBottomRow) {
+	    var i, len, value;
+	    for (i = 0, len = boardBottomRow.length; i < len; i++) {
+	      value = boardBottomRow[i];
+	      if (value !== ' ') {
+	        return false;
 	      }
 	    }
-	  }
-	
-	  ClickHandler.prototype.bindDefaultClick = function(board) {
-	    return $('body').click((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        return _this.resetClicked();
-	      };
-	    })(this));
+	    return true;
 	  };
 	
-	  ClickHandler.prototype.bindClickTo = function(cells) {
-	    var cell, i, j, len, len1, row;
-	    if (cells.bindClick != null) {
-	      cells.bindClick();
-	      return;
-	    }
-	    for (i = 0, len = cells.length; i < len; i++) {
-	      row = cells[i];
-	      if (row.bindClick != null) {
-	        row.bindClick();
-	        return;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.bindClick != null) {
-	          cell.bindClick();
-	        } else {
-	          console.log('WARN: object not 2D arrays or simpler or no BindClick method');
-	        }
-	      }
-	    }
+	  BoardSolvedService.createNewBoard = function() {
+	    return $('#new-game-button').trigger('click');
 	  };
 	
-	  ClickHandler.prototype.tuplesClicked = function() {
-	    var cell, i, len, ref, tuples;
-	    tuples = [];
-	    ref = this.clicked;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      cell = ref[i];
-	      tuples.push(new Tuple(cell.col, cell.row));
-	    }
-	    return tuples;
-	  };
-	
-	  ClickHandler.prototype.addToClicked = function(cell) {
-	    if (cell.isDeleted) {
-	      return;
-	    }
-	    return this.clicked.push(cell);
-	  };
-	
-	  ClickHandler.prototype.removeFromClicked = function() {
-	    return this.clicked.pop();
-	  };
-	
-	  ClickHandler.prototype.resetClicked = function() {
-	    var cell, i, ref, results;
-	    ref = this.clicked;
-	    results = [];
-	    for (i = ref.length - 1; i >= 0; i += -1) {
-	      cell = ref[i];
-	      results.push(this.unclickCell(cell));
-	    }
-	    return results;
-	  };
-	
-	  ClickHandler.prototype.lastClicked = function() {
-	    return this.clicked[this.clicked.length - 1];
-	  };
-	
-	  ClickHandler.prototype.clickCell = function(cell) {
-	    var ref;
-	    if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
-	      if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
-	        cell.select();
-	        this.addToClicked(cell);
-	        if (this.solutionService.isSolution(this.clicked)) {
-	          this.goalContainer.deleteGoal(this.solutionService.valueIndex);
-	          this.board.deleteCells(this.tuplesClicked());
-	          return this.clicked = [];
-	        }
-	      }
-	    } else {
-	      this.resetClicked();
-	      return this.clickCell(cell);
-	    }
-	  };
-	
-	  ClickHandler.prototype.areAdjacent = function(cell, otherCell) {
-	    return Math.abs(cell.row - otherCell.row) <= 1 && Math.abs(cell.col - otherCell.col) <= 1;
-	  };
-	
-	  ClickHandler.prototype.unclickCell = function(cell) {
-	    var last;
-	    last = this.lastClicked();
-	    if (cell !== this.lastClicked()) {
-	      return null;
-	    }
-	    cell.unSelect();
-	    return this.removeFromClicked(cell);
-	  };
-	
-	  return ClickHandler;
+	  return BoardSolvedService;
 	
 	})();
 	
-	module.exports = ClickHandler;
+	module.exports = BoardSolvedService;
 
 
 /***/ },
-/* 8 */
+/* 7 */
 /*!*********************************!*\
   !*** ./~/jquery/dist/jquery.js ***!
   \*********************************/
@@ -16593,6 +16444,161 @@
 
 
 /***/ },
+/* 8 */
+/*!******************************************!*\
+  !*** ./app/services/ClickHandler.coffee ***!
+  \******************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var $, ClickHandler, Tuple,
+	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+	
+	$ = __webpack_require__(/*! jquery */ 7);
+	
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
+	
+	ClickHandler = (function() {
+	  function ClickHandler(board1, two, solutionService, goalContainer, BoardSolvedService, clicked) {
+	    var cell, i, j, len, len1, ref, row;
+	    this.board = board1;
+	    this.solutionService = solutionService;
+	    this.goalContainer = goalContainer;
+	    this.BoardSolvedService = BoardSolvedService;
+	    this.clicked = clicked != null ? clicked : [];
+	    if (this.board.cells == null) {
+	      return;
+	    }
+	    ref = this.board.cells;
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      row = ref[i];
+	      if (row.length === 0) {
+	        break;
+	      }
+	      for (j = 0, len1 = row.length; j < len1; j++) {
+	        cell = row[j];
+	        if (cell.isSelected) {
+	          this.addToClicked(cell);
+	        }
+	      }
+	    }
+	  }
+	
+	  ClickHandler.prototype.bindDefaultClick = function(board) {
+	    return $('body').click((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        return _this.resetClicked();
+	      };
+	    })(this));
+	  };
+	
+	  ClickHandler.prototype.bindClickTo = function(cells) {
+	    var cell, i, j, len, len1, row;
+	    if (cells.bindClick != null) {
+	      cells.bindClick();
+	      return;
+	    }
+	    for (i = 0, len = cells.length; i < len; i++) {
+	      row = cells[i];
+	      if (row.bindClick != null) {
+	        row.bindClick();
+	        return;
+	      }
+	      for (j = 0, len1 = row.length; j < len1; j++) {
+	        cell = row[j];
+	        if (cell.bindClick != null) {
+	          cell.bindClick();
+	        } else {
+	          console.log('WARN: object not 2D arrays or simpler or no BindClick method');
+	        }
+	      }
+	    }
+	  };
+	
+	  ClickHandler.prototype.tuplesClicked = function() {
+	    var cell, i, len, ref, tuples;
+	    tuples = [];
+	    ref = this.clicked;
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      cell = ref[i];
+	      tuples.push(new Tuple(cell.col, cell.row));
+	    }
+	    return tuples;
+	  };
+	
+	  ClickHandler.prototype.addToClicked = function(cell) {
+	    if (cell.isDeleted) {
+	      return;
+	    }
+	    return this.clicked.push(cell);
+	  };
+	
+	  ClickHandler.prototype.removeFromClicked = function() {
+	    return this.clicked.pop();
+	  };
+	
+	  ClickHandler.prototype.resetClicked = function() {
+	    var cell, i, ref, results;
+	    ref = this.clicked;
+	    results = [];
+	    for (i = ref.length - 1; i >= 0; i += -1) {
+	      cell = ref[i];
+	      results.push(this.unclickCell(cell));
+	    }
+	    return results;
+	  };
+	
+	  ClickHandler.prototype.lastClicked = function() {
+	    return this.clicked[this.clicked.length - 1];
+	  };
+	
+	  ClickHandler.prototype.clickCell = function(cell) {
+	    var ref;
+	    if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
+	      if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
+	        cell.select();
+	        this.addToClicked(cell);
+	        if (this.solutionService.isSolution(this.clicked)) {
+	          this.goalContainer.deleteGoal(this.solutionService.valueIndex);
+	          this.board.deleteCells(this.tuplesClicked());
+	          this.clicked = [];
+	          if (this.BoardSolvedService.isCleared(this.board.boardValues[this.board.dimension - 1])) {
+	            return setTimeout(((function(_this) {
+	              return function() {
+	                return _this.BoardSolvedService.createNewBoard();
+	              };
+	            })(this)), 100);
+	          }
+	        }
+	      }
+	    } else {
+	      this.resetClicked();
+	      return this.clickCell(cell);
+	    }
+	  };
+	
+	  ClickHandler.prototype.areAdjacent = function(cell, otherCell) {
+	    return Math.abs(cell.row - otherCell.row) <= 1 && Math.abs(cell.col - otherCell.col) <= 1;
+	  };
+	
+	  ClickHandler.prototype.unclickCell = function(cell) {
+	    var last;
+	    last = this.lastClicked();
+	    if (cell !== this.lastClicked()) {
+	      return null;
+	    }
+	    cell.unSelect();
+	    return this.removeFromClicked(cell);
+	  };
+	
+	  return ClickHandler;
+	
+	})();
+	
+	module.exports = ClickHandler;
+
+
+/***/ },
 /* 9 */
 /*!*********************************!*\
   !*** ./app/services/DFS.coffee ***!
@@ -16601,7 +16607,7 @@
 
 	var DFS, GridCell, Tuple;
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
 	GridCell = __webpack_require__(/*! ../models/GridCell */ 10);
 	
@@ -16925,6 +16931,46 @@
 
 /***/ },
 /* 13 */
+/*!*************************************************!*\
+  !*** ./app/services/RandomizedFitLength.coffee ***!
+  \*************************************************/
+/***/ function(module, exports) {
+
+	var RandomizedFitLength;
+	
+	RandomizedFitLength = (function() {
+	  function RandomizedFitLength() {}
+	
+	  RandomizedFitLength.randInclusive = function(min, max) {
+	    return Math.floor(Math.random() * (max - min + 1)) + min;
+	  };
+	
+	  RandomizedFitLength.generate = function(size, list) {
+	    var length;
+	    if (list == null) {
+	      list = [];
+	    }
+	    if (size === 0) {
+	      return list;
+	    }
+	    length = this.randInclusive(3, 5);
+	    if (size - length < 0 && list.length !== 0) {
+	      return this.generate(size + list.pop(), list);
+	    } else {
+	      list.push(length);
+	      return this.generate(size - length, list);
+	    }
+	  };
+	
+	  return RandomizedFitLength;
+	
+	})();
+	
+	module.exports = RandomizedFitLength;
+
+
+/***/ },
+/* 14 */
 /*!*****************************************!*\
   !*** ./app/services/ResetButton.coffee ***!
   \*****************************************/
@@ -16932,7 +16978,7 @@
 
 	var $, ResetButton;
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	ResetButton = (function() {
 	  function ResetButton() {}
@@ -16957,7 +17003,7 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -17015,7 +17061,7 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -17025,16 +17071,17 @@
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
 	Board = (function() {
-	  function Board(boardValues, two, Cell, Colors, ClickHandler, SolutionService, goals, symbols, goalContainer) {
+	  function Board(boardValues, scene, goals, symbols, goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService) {
 	    this.boardValues = boardValues;
-	    this.two = two;
+	    this.scene = scene;
+	    this.goals = goals;
+	    this.symbols = symbols;
+	    this.goalContainer = goalContainer;
 	    this.Cell = Cell;
 	    this.Colors = Colors;
 	    this.ClickHandler = ClickHandler;
 	    this.SolutionService = SolutionService;
-	    this.goals = goals;
-	    this.symbols = symbols;
-	    this.goalContainer = goalContainer;
+	    this.BoardSolvedService = BoardSolvedService;
 	    this.createCells = bind(this.createCells, this);
 	    this.createEmptyCells = bind(this.createEmptyCells, this);
 	    this.createBoard = bind(this.createBoard, this);
@@ -17047,25 +17094,25 @@
 	  Board.prototype.initializer = function() {
 	    var solutionService;
 	    solutionService = new this.SolutionService(this, this.goals);
-	    this.clickHandler = new this.ClickHandler(this, this.two, solutionService, this.goalContainer);
+	    this.clickHandler = new this.ClickHandler(this, this.two, solutionService, this.goalContainer, this.BoardSolvedService);
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);
 	    this.clickHandler.bindDefaultClick(this.board);
 	    this.clickHandler.bindClickTo(this.cells);
-	    return this.two.update();
+	    return this.scene.update();
 	  };
 	
 	  Board.prototype.createBoard = function() {
 	    var offset;
-	    this.size = this.two.height * .95;
+	    this.size = this.scene.height * .95;
 	    offset = this.size * .025;
 	    this.cellWidth = ((this.size - offset) / this.dimension) - offset;
 	    this.change = offset + this.cellWidth;
-	    this.x = this.two.width / 2;
-	    this.y = this.two.height / 2;
+	    this.x = this.scene.width / 2;
+	    this.y = this.scene.height / 2;
 	    this.y = this.y < this.size / 2 ? this.size / 2 : this.y;
-	    this.board = this.two.makeRectangle(this.x, this.y, this.size, this.size);
+	    this.board = this.scene.makeRectangle(this.x, this.y, this.size, this.size);
 	    this.board.noStroke().fill = this.Colors.board;
 	    return this.board.visible = true;
 	  };
@@ -17080,7 +17127,7 @@
 	        var j, ref1, results1;
 	        results1 = [];
 	        for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-	          cell = new this.Cell(col, row, width, this.two, this);
+	          cell = new this.Cell(col, row, width, this.scene, this);
 	          cell.setColor(this.Colors.emptyCell);
 	          cell.setBorder(this.Colors.emptyCellBorder);
 	          results1.push(this.empty_cells[row].push(cell));
@@ -17101,7 +17148,7 @@
 	        var j, ref1, results1;
 	        results1 = [];
 	        for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-	          cell = new this.Cell(col, row, width, this.two, this, this.clickHandler, this.symbols[this.toIdx(this.boardValues[row][col])]);
+	          cell = new this.Cell(col, row, width, this.scene, this, this.clickHandler, this.symbols[this.toIdx(this.boardValues[row][col])]);
 	          cell.setColor(this.Colors.cell);
 	          cell.setBorder(this.Colors.cellBorder);
 	          results1.push(this.cells[row].push(cell));
@@ -17140,7 +17187,7 @@
 	        }
 	      }
 	    }
-	    return this.two.update();
+	    return this.scene.update();
 	  };
 	
 	  Board.prototype.swapCells = function(r1, c1, r2, c2) {
@@ -17197,7 +17244,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
@@ -17248,6 +17295,7 @@
 	        character.noStroke().fill = '#EFE8BE';
 	        character.visible = true;
 	        character.scale = Math.min(1, (this.scene.width / 100) / this.count);
+	        this.scene.add(character);
 	        index++;
 	      }
 	      index++;
@@ -17306,7 +17354,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -17314,27 +17362,27 @@
 
 	var $, Cell, Colors;
 	
-	$ = __webpack_require__(/*! jquery */ 8);
+	$ = __webpack_require__(/*! jquery */ 7);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 18);
+	Colors = __webpack_require__(/*! ./Colors */ 19);
 	
 	Cell = (function() {
-	  function Cell(col1, row1, size, two, board, clickHandler, symbolBlueprint) {
+	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
 	    this.col = col1;
 	    this.row = row1;
 	    this.size = size;
-	    this.two = two;
+	    this.scene = scene;
 	    this.board = board;
 	    this.clickHandler = clickHandler;
 	    this.isDeleted = false;
 	    this.isSelected = false;
-	    this.rect = this.two.makeRectangle(this.getX(), this.getY(), this.size, this.size);
+	    this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
 	    if (symbolBlueprint) {
-	      this.cell = this.two.makeGroup(this.rect, this.newSymbol(symbolBlueprint));
+	      this.cell = this.scene.makeGroup(this.rect, this.newSymbol(symbolBlueprint));
 	    } else {
-	      this.cell = this.two.makeGroup(this.rect);
+	      this.cell = this.scene.makeGroup(this.rect);
 	    }
-	    this.two.update();
+	    this.scene.update();
 	  }
 	
 	  Cell.prototype.newSymbol = function(blueprint) {
@@ -17350,18 +17398,18 @@
 	  Cell.prototype.setColor = function(c) {
 	    this.color = c;
 	    this.rect.fill = c;
-	    return this.two.update();
+	    return this.scene.update();
 	  };
 	
 	  Cell.prototype.setBorder = function(c) {
 	    this.rect.stroke = c;
 	    this.rect.linewidth = 6;
-	    return this.two.update();
+	    return this.scene.update();
 	  };
 	
 	  Cell.prototype.hide = function() {
 	    this.cell.visible = false;
-	    return this.two.update();
+	    return this.scene.update();
 	  };
 	
 	  Cell.prototype.getX = function(col) {
@@ -17390,13 +17438,13 @@
 	    end = new Two.Vector(this.getX(col), this.getY(row));
 	    start = new Two.Vector(this.getX(), this.getY());
 	    goingDown = end.y > start.y;
-	    this.two.bind('update', (function(_this) {
+	    this.scene.bind('update', (function(_this) {
 	      return function(frameCount) {
 	        var delta, dist;
 	        dist = start.distanceTo(end);
 	        if (dist < .00001) {
 	          _this.cell.translation.clone(end);
-	          _this.two.unbind('update');
+	          _this.scene.unbind('update');
 	        }
 	        delta = new Two.Vector(0, dist * .125);
 	        if (goingDown) {
@@ -17462,7 +17510,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
