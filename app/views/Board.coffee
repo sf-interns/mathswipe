@@ -15,10 +15,10 @@ class Board
     @createCells @cellWidth
 
     @clickHandler.bindDefaultMouseEvents()
-    @clickHandler.bindClickTo @cells
-    @clickHandler.bindMouseupTo @cells
-    @clickHandler.bindMousedownTo @cells
-    @clickHandler.bindMouseenterTo @cells
+    # @clickHandler.bindClickTo @cells
+    # @clickHandler.bindMouseupTo @cells
+    # @clickHandler.bindMousedownTo @cells
+    # @clickHandler.bindMouseenterTo @cells
 
     @two.update()
 

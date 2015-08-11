@@ -30,10 +30,6 @@ Board = (function() {
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth);
     this.clickHandler.bindDefaultMouseEvents();
-    this.clickHandler.bindClickTo(this.cells);
-    this.clickHandler.bindMouseupTo(this.cells);
-    this.clickHandler.bindMousedownTo(this.cells);
-    this.clickHandler.bindMouseenterTo(this.cells);
     return this.two.update();
   };
 

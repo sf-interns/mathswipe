@@ -79,47 +79,57 @@ class Cell
     @isSelected = true
     @setColor Colors.select
 
-  unSelect: ->
+  unselect: ->
     @isSelected = false
     @setColor Colors.cell
 
   bindClick: ->
-    $(@cell._renderer.elem).click (e) =>
-      e.preventDefault()
-      return if @isDeleted
-      e.stopPropagation()
-      if @isSelected
-        # TODO @unselect()
-        @clickHandler.unclickCell this
-      else
-        # TODO @select()
-        @clickHandler.clickCell this
+    {}
+    # TODO can be split so that click is used for mobile
+    # $(@cell._renderer.elem).click (e) =>
+    #   e.preventDefault()
+    #   e.stopPropagation()
+    #   return if @isDeleted
+    #   if @isSelected
+    #     @unselect()
+    #     @clickHandler.onSelect this
+    #   else
+    #     @select()
+    #     @clickHandler.onUnselect this
 
   bindMouseEnter: ->
     $(@cell._renderer.elem).mouseenter (e) =>
       e.preventDefault()
+      e.stopPropagation()
       # return unless contains(e.x, e.y)
       # console.log e
       return if @isDeleted
-      e.stopPropagation()
-      # TODO @select()
+      if not @isSelected and @clickHandler.isMouseDown()
+        @select()
+        @clickHandler.onSelect this
 
-      @clickHandler.onEnter this unless @isSelected
+      # @clickHandler.onEnter this unless @isSelected
 
   bindMouseUp: ->
     $(@cell._renderer.elem).mouseup (e) =>
       e.preventDefault()
-      @clickHandler.onUp this
       e.stopPropagation()
       # TODO have clickhandler check solution
+      console.log "Checking solution"
+      @clickHandler.setMouseDown false
+
+      # @clickHandler.onUp this
 
   bindMouseDown: ->
     $(@cell._renderer.elem).mousedown (e) =>
       e.preventDefault()
-      return if @isDeleted
       e.stopPropagation()
-      # TODO @select
-      @clickHandler.onDown this unless @isSelected
+      return if @isDeleted
+      unless @isSelected
+        @select()
+        @clickHandler.setMouseDown true
+        @clickHandler.onSelect this
+        # @clickHandler.onDown this unless @isSelected
 
   x: -> @col
 

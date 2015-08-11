@@ -109,38 +109,26 @@ Cell = (function() {
     return this.setColor(Colors.select);
   };
 
-  Cell.prototype.unSelect = function() {
+  Cell.prototype.unselect = function() {
     this.isSelected = false;
     return this.setColor(Colors.cell);
   };
 
   Cell.prototype.bindClick = function() {
-    return $(this.cell._renderer.elem).click((function(_this) {
-      return function(e) {
-        e.preventDefault();
-        if (_this.isDeleted) {
-          return;
-        }
-        e.stopPropagation();
-        if (_this.isSelected) {
-          return _this.clickHandler.unclickCell(_this);
-        } else {
-          return _this.clickHandler.clickCell(_this);
-        }
-      };
-    })(this));
+    return {};
   };
 
   Cell.prototype.bindMouseEnter = function() {
     return $(this.cell._renderer.elem).mouseenter((function(_this) {
       return function(e) {
         e.preventDefault();
+        e.stopPropagation();
         if (_this.isDeleted) {
           return;
         }
-        e.stopPropagation();
-        if (!_this.isSelected) {
-          return _this.clickHandler.onEnter(_this);
+        if (!_this.isSelected && _this.clickHandler.isMouseDown()) {
+          _this.select();
+          return _this.clickHandler.onSelect(_this);
         }
       };
     })(this));
@@ -150,8 +138,9 @@ Cell = (function() {
     return $(this.cell._renderer.elem).mouseup((function(_this) {
       return function(e) {
         e.preventDefault();
-        _this.clickHandler.onUp(_this);
-        return e.stopPropagation();
+        e.stopPropagation();
+        console.log("Checking solution");
+        return _this.clickHandler.setMouseDown(false);
       };
     })(this));
   };
@@ -160,12 +149,14 @@ Cell = (function() {
     return $(this.cell._renderer.elem).mousedown((function(_this) {
       return function(e) {
         e.preventDefault();
+        e.stopPropagation();
         if (_this.isDeleted) {
           return;
         }
-        e.stopPropagation();
         if (!_this.isSelected) {
-          return _this.clickHandler.onDown(_this);
+          _this.select();
+          _this.clickHandler.setMouseDown(true);
+          return _this.clickHandler.onSelect(_this);
         }
       };
     })(this));

@@ -8,23 +8,23 @@ Tuple = require('../models/Tuple');
 
 ClickHandler = (function() {
   function ClickHandler(board, two, solutionService, goalContainer, clicked) {
-    var cell, i, j, len, len1, ref, row;
+    var cell, j, k, len, len1, ref, row;
     this.board = board;
     this.solutionService = solutionService;
     this.goalContainer = goalContainer;
     this.clicked = clicked != null ? clicked : [];
-    this.mouseIsDown = false;
+    this.mouseDown = false;
     if (this.board.cells == null) {
       return;
     }
     ref = this.board.cells;
-    for (i = 0, len = ref.length; i < len; i++) {
-      row = ref[i];
+    for (j = 0, len = ref.length; j < len; j++) {
+      row = ref[j];
       if (row.length === 0) {
         break;
       }
-      for (j = 0, len1 = row.length; j < len1; j++) {
-        cell = row[j];
+      for (k = 0, len1 = row.length; k < len1; k++) {
+        cell = row[k];
         if (cell.isSelected) {
           this.addToClicked(cell);
         }
@@ -38,125 +38,29 @@ ClickHandler = (function() {
     body.click((function(_this) {
       return function(e) {
         e.preventDefault();
-        _this.resetClicked();
-        return console.log('mouseClick');
+        return _this.unselectAll();
       };
     })(this));
     body.mousedown((function(_this) {
       return function(e) {
-        e.preventDefault();
-        _this.mouseIsDown = true;
-        return console.log('mouseDown');
+        return e.preventDefault();
       };
     })(this));
     return body.mouseup((function(_this) {
       return function(e) {
         e.preventDefault();
-        _this.mouseIsDown = false;
-        _this.resetClicked();
-        return console.log('mouseUp');
+        _this.setMouseDown(false);
+        return _this.unselectAll();
       };
     })(this));
   };
 
-  ClickHandler.prototype.bindClickTo = function(cells) {
-    var cell, i, j, len, len1, row;
-    if (cells.bindClick != null) {
-      cells.bindClick();
-      return;
-    }
-    for (i = 0, len = cells.length; i < len; i++) {
-      row = cells[i];
-      if (row.bindClick != null) {
-        row.bindClick();
-        return;
-      }
-      for (j = 0, len1 = row.length; j < len1; j++) {
-        cell = row[j];
-        if (cell.bindClick != null) {
-          cell.bindClick();
-        } else {
-          console.log('WARN: object not 2D arrays or simpler or no BindClick method');
-        }
-      }
-    }
-  };
-
-  ClickHandler.prototype.bindMouseenterTo = function(cells) {
-    var cell, i, j, len, len1, row;
-    if (cells.bindMouseenter != null) {
-      cells.bindMouseenter();
-      return;
-    }
-    for (i = 0, len = cells.length; i < len; i++) {
-      row = cells[i];
-      if (row.bindMouseenter != null) {
-        row.bindMouseenter();
-        return;
-      }
-      for (j = 0, len1 = row.length; j < len1; j++) {
-        cell = row[j];
-        if (cell.bindMouseenter != null) {
-          cell.bindMouseenter();
-        } else {
-          console.log('WARN: object not 2D arrays or simpler or no bindMouseenter method');
-        }
-      }
-    }
-  };
-
-  ClickHandler.prototype.bindMouseupTo = function(cells) {
-    var cell, i, j, len, len1, row;
-    if (cells.bindMouseup != null) {
-      cells.bindMouseup();
-      return;
-    }
-    for (i = 0, len = cells.length; i < len; i++) {
-      row = cells[i];
-      if (row.bindMouseup != null) {
-        row.bindMouseup();
-        return;
-      }
-      for (j = 0, len1 = row.length; j < len1; j++) {
-        cell = row[j];
-        if (cell.bindMouseup != null) {
-          cell.bindMouseup();
-        } else {
-          console.log('WARN: object not 2D arrays or simpler or no bindMouseup method');
-        }
-      }
-    }
-  };
-
-  ClickHandler.prototype.bindMousedownTo = function(cells) {
-    var cell, i, j, len, len1, row;
-    if (cells.bindMousedown != null) {
-      cells.bindMousedown();
-      return;
-    }
-    for (i = 0, len = cells.length; i < len; i++) {
-      row = cells[i];
-      if (row.bindMousedown != null) {
-        row.bindMousedown();
-        return;
-      }
-      for (j = 0, len1 = row.length; j < len1; j++) {
-        cell = row[j];
-        if (cell.bindMousedown != null) {
-          cell.bindMousedown();
-        } else {
-          console.log('WARN: object not 2D arrays or simpler or no bindMousedown method');
-        }
-      }
-    }
-  };
-
   ClickHandler.prototype.tuplesClicked = function() {
-    var cell, i, len, ref, tuples;
+    var cell, j, len, ref, tuples;
     tuples = [];
     ref = this.clicked;
-    for (i = 0, len = ref.length; i < len; i++) {
-      cell = ref[i];
+    for (j = 0, len = ref.length; j < len; j++) {
+      cell = ref[j];
       tuples.push(new Tuple(cell.col, cell.row));
     }
     return tuples;
@@ -174,11 +78,11 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.resetClicked = function() {
-    var cell, i, ref, results;
+    var cell, j, ref, results;
     ref = this.clicked;
     results = [];
-    for (i = ref.length - 1; i >= 0; i += -1) {
-      cell = ref[i];
+    for (j = ref.length - 1; j >= 0; j += -1) {
+      cell = ref[j];
       results.push(this.unclickCell(cell));
     }
     return results;
@@ -221,26 +125,85 @@ ClickHandler = (function() {
     if (cell !== this.lastClicked()) {
       return null;
     }
-    cell.unSelect();
+    cell.unselect();
     return this.removeFromClicked(cell);
   };
 
   ClickHandler.prototype.onEnter = function(cell) {
     var ref;
-    console.log(this.mouseIsDown);
-    if (this.mouseIsDown && (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) && (ref = this.cell, indexOf.call(this.clicked, ref) < 0)) {
+    console.log(this.mouseDown);
+    if (this.mouseDown && (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) && (ref = this.cell, indexOf.call(this.clicked, ref) < 0)) {
       return this.clickCell(cell);
     }
   };
 
   ClickHandler.prototype.onDown = function(cell) {
-    this.mouseIsDown = true;
+    this.mouseDown = true;
     return this.clickCell(cell);
   };
 
   ClickHandler.prototype.onUp = function(cell) {
-    this.mouseIsDown = false;
+    this.mouseDown = false;
     return this.checkSolution();
+  };
+
+  ClickHandler.prototype.setMouseDown = function(val) {
+    if (!val) {
+      this.checkForSolution();
+    }
+    return this.mouseDown = val;
+  };
+
+  ClickHandler.prototype.isMouseDown = function() {
+    return this.mouseDown;
+  };
+
+  ClickHandler.prototype.onSelect = function(cell) {
+    if (!this.isSelected(cell)) {
+      return this.clicked.push(cell);
+    }
+  };
+
+  ClickHandler.prototype.onUnselect = function(cell) {
+    if (this.isSelected(cell)) {
+      if (this.clicked[this.clicked.length - 1] === cell) {
+        cell.unselect();
+        return this.clicked.pop();
+      } else {
+        throw "Last item in 'clicked' was not the given cell";
+      }
+    }
+  };
+
+  ClickHandler.prototype.unselectAll = function() {
+    var i, j, ref;
+    if (this.clicked.length < 1) {
+      return;
+    }
+    for (i = j = ref = this.clicked.length - 1; ref <= 0 ? j <= 0 : j >= 0; i = ref <= 0 ? ++j : --j) {
+      this.clicked[i].unselect();
+    }
+    return this.clicked = [];
+  };
+
+  ClickHandler.prototype.isSelected = function(cell) {
+    var iterCell, j, len, ref;
+    ref = this.clicked;
+    for (j = 0, len = ref.length; j < len; j++) {
+      iterCell = ref[j];
+      if (cell === iterCell) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  ClickHandler.prototype.checkForSolution = function() {
+    if (this.solutionService.isSolution(this.clicked)) {
+      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
+      this.board.deleteCells(this.tuplesClicked());
+    }
+    return this.unselectAll();
   };
 
   return ClickHandler;
