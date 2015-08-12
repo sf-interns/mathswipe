@@ -124,7 +124,7 @@ ClickHandler = (function() {
           return function() {
             return _this.BoardSolvedService.createNewBoard();
           };
-        })(this)), 800);
+        })(this)), 2800);
       }
       return true;
     }
