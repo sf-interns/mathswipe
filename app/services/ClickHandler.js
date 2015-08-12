@@ -6,14 +6,14 @@ $ = require('jquery');
 Tuple = require('../models/Tuple');
 
 ClickHandler = (function() {
-  function ClickHandler(board, solutionService, goalContainer, BoardSolvedService) {
+  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService) {
     this.board = board;
     this.solutionService = solutionService;
     this.goalContainer = goalContainer;
+    this.isMobile = isMobile;
     this.BoardSolvedService = BoardSolvedService;
     this.clicked = [];
     this.mouseDown = false;
-    this.onMobile = false;
   }
 
   ClickHandler.prototype.setMouseAsDown = function() {
@@ -21,7 +21,7 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.setMouseAsUp = function() {
-    if (!this.onMobile) {
+    if (!this.isMobile) {
       this.checkForSolution();
       this.unselectAll();
     }
@@ -33,7 +33,7 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.isOnMobile = function() {
-    return this.onMobile;
+    return this.isMobile;
   };
 
   ClickHandler.prototype.bindDefaultMouseEvents = function() {
@@ -66,7 +66,7 @@ ClickHandler = (function() {
       this.setMouseAsDown();
       this.clicked.push(cell);
       cell.select();
-      if (this.onMobile && this.checkForSolution()) {
+      if (this.isMobile && this.checkForSolution()) {
         this.unselectAll();
       }
     }

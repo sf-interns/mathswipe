@@ -3,19 +3,16 @@ Tuple = require '../models/Tuple'
 
 class ClickHandler
 
-  constructor: (@board, @solutionService, @goalContainer, @BoardSolvedService) ->
+  # @isMobile: False is DESKTOP, True is MOBILE
+  constructor: (@board, @solutionService, @goalContainer, @isMobile, @BoardSolvedService) ->
     @clicked = []
     @mouseDown = false
-    # Set variable according to user agent
-    # False is DESKTOP
-    # True is MOBILE
-    @onMobile = false
 
   setMouseAsDown: ->
     @mouseDown = true
 
   setMouseAsUp: ->
-    unless @onMobile
+    unless @isMobile
       @checkForSolution()
       @unselectAll()
     @mouseDown = false
@@ -24,7 +21,7 @@ class ClickHandler
     @mouseDown
 
   isOnMobile: ->
-    @onMobile
+    @isMobile
 
   bindDefaultMouseEvents: ->
     body = $('body')
@@ -45,7 +42,7 @@ class ClickHandler
       @clicked.push cell
       cell.select()
 
-      if @onMobile and @checkForSolution()
+      if @isMobile and @checkForSolution()
         @unselectAll()
     false
 

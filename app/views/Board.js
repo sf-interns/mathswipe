@@ -3,12 +3,13 @@ var Board,
   bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 Board = (function() {
-  function Board(boardValues, scene, goals, symbols, goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService) {
+  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService) {
     this.boardValues = boardValues;
     this.scene = scene;
     this.goals = goals;
     this.symbols = symbols;
     this.goalContainer = goalContainer;
+    this.isMobile = isMobile;
     this.Cell = Cell;
     this.Colors = Colors;
     this.ClickHandler = ClickHandler;
@@ -26,7 +27,7 @@ Board = (function() {
   Board.prototype.initializer = function() {
     var solutionService;
     solutionService = new this.SolutionService(this, this.goals);
-    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.BoardSolvedService);
+    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth);
