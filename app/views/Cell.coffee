@@ -101,7 +101,7 @@ class Cell
     $('#' + @cell.id).mouseup (e) =>
       e.preventDefault()
       e.stopPropagation()
-      @clickHandler.setMouseDown false
+      @clickHandler.setMouseAsUp()
 
   bindMouseDown: ->
     $('#' + @cell.id).mousedown (e) =>

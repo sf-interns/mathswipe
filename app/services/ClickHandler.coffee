@@ -6,11 +6,19 @@ class ClickHandler
   constructor: (@board, @solutionService, @goalContainer, @BoardSolvedService) ->
     @clicked = []
     @mouseDown = false
+    # Set variable according to user agent
+    # False is DESKTOP
+    # True is MOBILE
     @onMobile = false
 
-  setMouseDown: (val) ->
-    @checkForSolution() unless val
-    @mouseDown = val
+  setMouseAsDown: ->
+    @mouseDown = true
+
+  setMouseAsUp: ->
+    unless @onMobile
+      @checkForSolution()
+      @unselectAll()
+    @mouseDown = false
 
   isMouseDown: ->
     @mouseDown
@@ -27,16 +35,18 @@ class ClickHandler
       e.preventDefault()
     body.mouseup (e) =>
       e.preventDefault()
-      @setMouseDown false
-      @unselectAll()
+      @setMouseAsUp()
 
   onSelect: (cell) ->
     unless @isSelected cell
       unless @isAdjacentToLast cell
         @unselectAll()
-      @setMouseDown true
+      @setMouseAsDown()
       @clicked.push cell
       cell.select()
+
+      if @onMobile and @checkForSolution()
+        @unselectAll()
     false
 
   onUnselect: (cell) ->
@@ -45,6 +55,7 @@ class ClickHandler
         cell.unselect()
         @clicked.pop()
       else
+        unselectAll()
         throw "Last item in 'clicked' was not the given cell"
 
   isSelected: (cell) ->
@@ -64,7 +75,8 @@ class ClickHandler
       @board.deleteCells @clickedToTuples()
       if @BoardSolvedService.isCleared @board
         setTimeout (() => @BoardSolvedService.createNewBoard()), 100
-    @unselectAll()
+      true
+    false
 
   isAdjacentToLast: (cell) ->
     return true if @clicked.length < 1

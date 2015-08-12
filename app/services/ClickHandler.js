@@ -16,11 +16,16 @@ ClickHandler = (function() {
     this.onMobile = false;
   }
 
-  ClickHandler.prototype.setMouseDown = function(val) {
-    if (!val) {
+  ClickHandler.prototype.setMouseAsDown = function() {
+    return this.mouseDown = true;
+  };
+
+  ClickHandler.prototype.setMouseAsUp = function() {
+    if (!this.onMobile) {
       this.checkForSolution();
+      this.unselectAll();
     }
-    return this.mouseDown = val;
+    return this.mouseDown = false;
   };
 
   ClickHandler.prototype.isMouseDown = function() {
@@ -48,8 +53,7 @@ ClickHandler = (function() {
     return body.mouseup((function(_this) {
       return function(e) {
         e.preventDefault();
-        _this.setMouseDown(false);
-        return _this.unselectAll();
+        return _this.setMouseAsUp();
       };
     })(this));
   };
@@ -59,9 +63,12 @@ ClickHandler = (function() {
       if (!this.isAdjacentToLast(cell)) {
         this.unselectAll();
       }
-      this.setMouseDown(true);
+      this.setMouseAsDown();
       this.clicked.push(cell);
       cell.select();
+      if (this.onMobile && this.checkForSolution()) {
+        this.unselectAll();
+      }
     }
     return false;
   };
@@ -72,6 +79,7 @@ ClickHandler = (function() {
         cell.unselect();
         return this.clicked.pop();
       } else {
+        unselectAll();
         throw "Last item in 'clicked' was not the given cell";
       }
     }
@@ -111,8 +119,9 @@ ClickHandler = (function() {
           };
         })(this)), 100);
       }
+      true;
     }
-    return this.unselectAll();
+    return false;
   };
 
   ClickHandler.prototype.isAdjacentToLast = function(cell) {

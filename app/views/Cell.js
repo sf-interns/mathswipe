@@ -144,7 +144,7 @@ Cell = (function() {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();
-        return _this.clickHandler.setMouseDown(false);
+        return _this.clickHandler.setMouseAsUp();
       };
     })(this));
   };

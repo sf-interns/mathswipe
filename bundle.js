@@ -7195,208 +7195,21 @@
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-<<<<<<< HEAD
-	var $, ClickHandler, Tuple,
-	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
-	
-	$ = __webpack_require__(/*! jquery */ 8);
-	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
-	
-	ClickHandler = (function() {
-	  function ClickHandler(board, two, solutionService, goalContainer, clicked) {
-	    var cell, i, j, len, len1, ref, row;
-	    this.board = board;
-	    this.solutionService = solutionService;
-	    this.goalContainer = goalContainer;
-	    this.clicked = clicked != null ? clicked : [];
-	    this.mouseIsDown = false;
-	    if (this.board.cells == null) {
-	      return;
-	    }
-	    ref = this.board.cells;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      row = ref[i];
-	      if (row.length === 0) {
-	        break;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.isSelected) {
-	          this.addToClicked(cell);
-	        }
-	      }
-	    }
-	  }
-	
-	  ClickHandler.prototype.bindDefaultClick = function() {
-	    $('body').click((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        _this.resetClicked();
-	        return console.log('mouseClick');
-	      };
-	    })(this));
-	    return this;
-	  };
-	
-	  ClickHandler.prototype.bindDefaultMousedown = function() {
-	    $('body').mousedown((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        return _this.mouseIsDown = true;
-	      };
-	    })(this));
-	    return this;
-	  };
-	
-	  ClickHandler.prototype.bindDefaultMouseup = function() {
-	    $('body').mouseup((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        _this.mouseIsDown = false;
-	        return _this.resetClicked();
-	      };
-	    })(this));
-	    return this;
-	  };
-	
-	  ClickHandler.prototype.bindClickTo = function(cells) {
-	    var cell, i, j, len, len1, row;
-	    if (cells.bindClick != null) {
-	      cells.bindClick();
-	      return;
-	    }
-	    for (i = 0, len = cells.length; i < len; i++) {
-	      row = cells[i];
-	      if (row.bindClick != null) {
-	        row.bindClick();
-	        return;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.bindClick != null) {
-	          cell.bindClick();
-	        } else {
-	          console.log('WARN: object not 2D arrays or simpler or no BindClick method');
-	        }
-	      }
-	    }
-	  };
-	
-	  ClickHandler.prototype.bindMouseenterTo = function(cells) {
-	    var cell, i, j, len, len1, row;
-	    if (cells.bindMouseenter != null) {
-	      cells.bindMouseenter();
-	      return;
-	    }
-	    for (i = 0, len = cells.length; i < len; i++) {
-	      row = cells[i];
-	      if (row.bindMouseenter != null) {
-	        row.bindMouseenter();
-	        return;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.bindMouseenter != null) {
-	          cell.bindMouseenter();
-	        } else {
-	          console.log('WARN: object not 2D arrays or simpler or no bindMouseenter method');
-	        }
-	      }
-	    }
-	  };
-	
-	  ClickHandler.prototype.bindMouseupTo = function(cells) {
-	    var cell, i, j, len, len1, row;
-	    if (cells.bindMouseup != null) {
-	      cells.bindMouseup();
-	      return;
-	    }
-	    for (i = 0, len = cells.length; i < len; i++) {
-	      row = cells[i];
-	      if (row.bindMouseup != null) {
-	        row.bindMouseup();
-	        return;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.bindMouseup != null) {
-	          cell.bindMouseup();
-	        } else {
-	          console.log('WARN: object not 2D arrays or simpler or no bindMouseup method');
-	        }
-	      }
-	    }
-	  };
-	
-	  ClickHandler.prototype.bindMousedownTo = function(cells) {
-	    var cell, i, j, len, len1, row;
-	    if (cells.bindMousedown != null) {
-	      cells.bindMousedown();
-	      return;
-	    }
-	    for (i = 0, len = cells.length; i < len; i++) {
-	      row = cells[i];
-	      if (row.bindMousedown != null) {
-	        row.bindMousedown();
-	        return;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.bindMousedown != null) {
-	          cell.bindMousedown();
-	        } else {
-	          console.log('WARN: object not 2D arrays or simpler or no bindMousedown method');
-	        }
-	      }
-	    }
-	  };
-	
-	  ClickHandler.prototype.tuplesClicked = function() {
-	    var cell, i, len, ref, tuples;
-	    tuples = [];
-	    ref = this.clicked;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      cell = ref[i];
-	      tuples.push(new Tuple(cell.col, cell.row));
-	    }
-	    return tuples;
-	  };
-=======
 	var $, BoardSolvedService;
->>>>>>> master
 	
 	$ = __webpack_require__(/*! jquery */ 7);
 	
 	BoardSolvedService = (function() {
 	  function BoardSolvedService() {}
 	
-<<<<<<< HEAD
-	  ClickHandler.prototype.checkSolution = function() {
-	    if (!this.solutionService.isSolution(this.clicked)) {
-	      return false;
-	    }
-	    this.goalContainer.deleteGoal(this.solutionService.valueIndex);
-	    this.board.deleteCells(this.tuplesClicked());
-	    this.clicked = [];
-	    return true;
-	  };
-	
-	  ClickHandler.prototype.clickCell = function(cell) {
-	    var ref;
-	    if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
-	      if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
-	        cell.select();
-	        return this.addToClicked(cell);
-=======
-	  BoardSolvedService.isCleared = function(boardBottomRow) {
-	    var i, len, value;
-	    for (i = 0, len = boardBottomRow.length; i < len; i++) {
-	      value = boardBottomRow[i];
+	  BoardSolvedService.isCleared = function(board) {
+	    var dim, i, len, ref, value;
+	    dim = board.dimension;
+	    ref = board.boardValues[dim - 1];
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      value = ref[i];
 	      if (value !== ' ') {
 	        return false;
->>>>>>> master
 	      }
 	    }
 	    return true;
@@ -7406,39 +7219,7 @@
 	    return $('#new-game-button').trigger('click');
 	  };
 	
-<<<<<<< HEAD
-	  ClickHandler.prototype.unclickCell = function(cell) {
-	    var last;
-	    last = this.lastClicked();
-	    if (cell !== this.lastClicked()) {
-	      return null;
-	    }
-	    cell.unSelect();
-	    return this.removeFromClicked(cell);
-	  };
-	
-	  ClickHandler.prototype.onEnter = function(cell) {
-	    var ref;
-	    console.log(this.mouseIsDown);
-	    if (this.mouseIsDown && (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) && (ref = this.cell, indexOf.call(this.clicked, ref) < 0)) {
-	      return this.clickCell(cell);
-	    }
-	  };
-	
-	  ClickHandler.prototype.onDown = function(cell) {
-	    this.mouseIsDown = true;
-	    return this.clickCell(cell);
-	  };
-	
-	  ClickHandler.prototype.onUp = function(cell) {
-	    this.mouseIsDown = false;
-	    return this.checkSolution();
-	  };
-	
-	  return ClickHandler;
-=======
 	  return BoardSolvedService;
->>>>>>> master
 	
 	})();
 	
@@ -16671,145 +16452,149 @@
   \******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, ClickHandler, Tuple,
-	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+	var $, ClickHandler, Tuple;
 	
 	$ = __webpack_require__(/*! jquery */ 7);
 	
 	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
 	ClickHandler = (function() {
-	  function ClickHandler(board1, two, solutionService, goalContainer, BoardSolvedService, clicked) {
-	    var cell, i, j, len, len1, ref, row;
-	    this.board = board1;
+	  function ClickHandler(board, solutionService, goalContainer, BoardSolvedService) {
+	    this.board = board;
 	    this.solutionService = solutionService;
 	    this.goalContainer = goalContainer;
 	    this.BoardSolvedService = BoardSolvedService;
-	    this.clicked = clicked != null ? clicked : [];
-	    if (this.board.cells == null) {
-	      return;
-	    }
-	    ref = this.board.cells;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      row = ref[i];
-	      if (row.length === 0) {
-	        break;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.isSelected) {
-	          this.addToClicked(cell);
-	        }
-	      }
-	    }
+	    this.clicked = [];
+	    this.mouseDown = false;
+	    this.onMobile = false;
 	  }
 	
-	  ClickHandler.prototype.bindDefaultClick = function(board) {
-	    return $('body').click((function(_this) {
+	  ClickHandler.prototype.setMouseAsDown = function() {
+	    return this.mouseDown = true;
+	  };
+	
+	  ClickHandler.prototype.setMouseAsUp = function() {
+	    if (!this.onMobile) {
+	      this.checkForSolution();
+	      this.unselectAll();
+	    }
+	    return this.mouseDown = false;
+	  };
+	
+	  ClickHandler.prototype.isMouseDown = function() {
+	    return this.mouseDown;
+	  };
+	
+	  ClickHandler.prototype.isOnMobile = function() {
+	    return this.onMobile;
+	  };
+	
+	  ClickHandler.prototype.bindDefaultMouseEvents = function() {
+	    var body;
+	    body = $('body');
+	    body.click((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
-	        return _this.resetClicked();
+	        return _this.unselectAll();
+	      };
+	    })(this));
+	    body.mousedown((function(_this) {
+	      return function(e) {
+	        return e.preventDefault();
+	      };
+	    })(this));
+	    return body.mouseup((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        return _this.setMouseAsUp();
 	      };
 	    })(this));
 	  };
 	
-	  ClickHandler.prototype.bindClickTo = function(cells) {
-	    var cell, i, j, len, len1, row;
-	    if (cells.bindClick != null) {
-	      cells.bindClick();
-	      return;
-	    }
-	    for (i = 0, len = cells.length; i < len; i++) {
-	      row = cells[i];
-	      if (row.bindClick != null) {
-	        row.bindClick();
-	        return;
+	  ClickHandler.prototype.onSelect = function(cell) {
+	    if (!this.isSelected(cell)) {
+	      if (!this.isAdjacentToLast(cell)) {
+	        this.unselectAll();
 	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.bindClick != null) {
-	          cell.bindClick();
-	        } else {
-	          console.log('WARN: object not 2D arrays or simpler or no BindClick method');
-	        }
+	      this.setMouseAsDown();
+	      this.clicked.push(cell);
+	      cell.select();
+	      if (this.onMobile && this.checkForSolution()) {
+	        this.unselectAll();
+	      }
+	    }
+	    return false;
+	  };
+	
+	  ClickHandler.prototype.onUnselect = function(cell) {
+	    if (this.isSelected(cell)) {
+	      if (this.clicked[this.clicked.length - 1] === cell) {
+	        cell.unselect();
+	        return this.clicked.pop();
+	      } else {
+	        unselectAll();
+	        throw "Last item in 'clicked' was not the given cell";
 	      }
 	    }
 	  };
 	
-	  ClickHandler.prototype.tuplesClicked = function() {
-	    var cell, i, len, ref, tuples;
+	  ClickHandler.prototype.isSelected = function(cell) {
+	    var iterCell, j, len, ref;
+	    ref = this.clicked;
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      iterCell = ref[j];
+	      if (cell === iterCell) {
+	        return true;
+	      }
+	    }
+	    return false;
+	  };
+	
+	  ClickHandler.prototype.unselectAll = function() {
+	    var i, j, ref;
+	    if (this.clicked.length < 1) {
+	      return;
+	    }
+	    for (i = j = ref = this.clicked.length - 1; ref <= 0 ? j <= 0 : j >= 0; i = ref <= 0 ? ++j : --j) {
+	      this.clicked[i].unselect();
+	    }
+	    return this.clicked = [];
+	  };
+	
+	  ClickHandler.prototype.checkForSolution = function() {
+	    if (this.solutionService.isSolution(this.clicked)) {
+	      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
+	      this.board.deleteCells(this.clickedToTuples());
+	      if (this.BoardSolvedService.isCleared(this.board)) {
+	        setTimeout(((function(_this) {
+	          return function() {
+	            return _this.BoardSolvedService.createNewBoard();
+	          };
+	        })(this)), 100);
+	      }
+	      true;
+	    }
+	    return false;
+	  };
+	
+	  ClickHandler.prototype.isAdjacentToLast = function(cell) {
+	    var last;
+	    if (this.clicked.length < 1) {
+	      return true;
+	    }
+	    last = this.clicked[this.clicked.length - 1];
+	    return Math.abs(cell.row - last.row) <= 1 && Math.abs(cell.col - last.col) <= 1;
+	  };
+	
+	  ClickHandler.prototype.clickedToTuples = function() {
+	    var cell, j, len, ref, tuples;
 	    tuples = [];
 	    ref = this.clicked;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      cell = ref[i];
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      cell = ref[j];
 	      tuples.push(new Tuple(cell.col, cell.row));
 	    }
 	    return tuples;
-	  };
-	
-	  ClickHandler.prototype.addToClicked = function(cell) {
-	    if (cell.isDeleted) {
-	      return;
-	    }
-	    return this.clicked.push(cell);
-	  };
-	
-	  ClickHandler.prototype.removeFromClicked = function() {
-	    return this.clicked.pop();
-	  };
-	
-	  ClickHandler.prototype.resetClicked = function() {
-	    var cell, i, ref, results;
-	    ref = this.clicked;
-	    results = [];
-	    for (i = ref.length - 1; i >= 0; i += -1) {
-	      cell = ref[i];
-	      results.push(this.unclickCell(cell));
-	    }
-	    return results;
-	  };
-	
-	  ClickHandler.prototype.lastClicked = function() {
-	    return this.clicked[this.clicked.length - 1];
-	  };
-	
-	  ClickHandler.prototype.clickCell = function(cell) {
-	    var ref;
-	    if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
-	      if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
-	        cell.select();
-	        this.addToClicked(cell);
-	        if (this.solutionService.isSolution(this.clicked)) {
-	          this.goalContainer.deleteGoal(this.solutionService.valueIndex);
-	          this.board.deleteCells(this.tuplesClicked());
-	          this.clicked = [];
-	          if (this.BoardSolvedService.isCleared(this.board.boardValues[this.board.dimension - 1])) {
-	            return setTimeout(((function(_this) {
-	              return function() {
-	                return _this.BoardSolvedService.createNewBoard();
-	              };
-	            })(this)), 100);
-	          }
-	        }
-	      }
-	    } else {
-	      this.resetClicked();
-	      return this.clickCell(cell);
-	    }
-	  };
-	
-	  ClickHandler.prototype.areAdjacent = function(cell, otherCell) {
-	    return Math.abs(cell.row - otherCell.row) <= 1 && Math.abs(cell.col - otherCell.col) <= 1;
-	  };
-	
-	  ClickHandler.prototype.unclickCell = function(cell) {
-	    var last;
-	    last = this.lastClicked();
-	    if (cell !== this.lastClicked()) {
-	      return null;
-	    }
-	    cell.unSelect();
-	    return this.removeFromClicked(cell);
 	  };
 	
 	  return ClickHandler;
@@ -17315,20 +17100,12 @@
 	  Board.prototype.initializer = function() {
 	    var solutionService;
 	    solutionService = new this.SolutionService(this, this.goals);
-	    this.clickHandler = new this.ClickHandler(this, this.two, solutionService, this.goalContainer, this.BoardSolvedService);
+	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.BoardSolvedService);
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);
-	    this.clickHandler.bindDefaultClick().bindDefaultMousedown().bindDefaultMouseup();
-	    this.clickHandler.bindClickTo(this.cells);
-<<<<<<< HEAD
-	    this.clickHandler.bindMouseupTo(this.cells);
-	    this.clickHandler.bindMousedownTo(this.cells);
-	    this.clickHandler.bindMouseenterTo(this.cells);
-	    return this.two.update();
-=======
+	    this.clickHandler.bindDefaultMouseEvents();
 	    return this.scene.update();
->>>>>>> master
 	  };
 	
 	  Board.prototype.createBoard = function() {
@@ -17611,6 +17388,15 @@
 	      this.cell = this.scene.makeGroup(this.rect);
 	    }
 	    this.scene.update();
+	    if (this.clickHandler != null) {
+	      if (!this.clickHandler.isOnMobile()) {
+	        this.bindMouseMove();
+	        this.bindMouseUp();
+	        this.bindMouseDown();
+	      } else {
+	        this.bindClick();
+	      }
+	    }
 	  }
 	
 	  Cell.prototype.newSymbol = function(blueprint) {
@@ -17687,84 +17473,82 @@
 	    return this.setIndices(row, col);
 	  };
 	
+	  Cell.prototype.bindClick = function() {
+	    return $('#' + this.cell.id).click((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        if (_this.isDeleted) {
+	          return;
+	        }
+	        if (!_this.isSelected) {
+	          return _this.clickHandler.onSelect(_this);
+	        } else {
+	          return _this.clickHandler.onUnselect(_this);
+	        }
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMouseMove = function() {
+	    return $('#' + this.cell.id).mousemove((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        if (_this.isDeleted) {
+	          return;
+	        }
+	        if (!_this.isSelected && _this.clickHandler.isMouseDown() && _this.inHitBox(e.offsetX, e.offsetY)) {
+	          return _this.clickHandler.onSelect(_this);
+	        }
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMouseUp = function() {
+	    return $('#' + this.cell.id).mouseup((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        return _this.clickHandler.setMouseAsUp();
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMouseDown = function() {
+	    return $('#' + this.cell.id).mousedown((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        if (_this.isDeleted) {
+	          return;
+	        }
+	        if (!_this.isSelected) {
+	          return _this.clickHandler.onSelect(_this);
+	        }
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.inHitBox = function(mouseX, mouseY) {
+	    var shrinkSize;
+	    shrinkSize = (0.70 * this.size) / 2.0;
+	    return Math.abs(mouseX - this.getX()) < shrinkSize && Math.abs(mouseY - this.getY()) < shrinkSize;
+	  };
+	
 	  Cell.prototype.select = function() {
 	    this.isSelected = true;
 	    return this.setColor(Colors.select);
 	  };
 	
-	  Cell.prototype.unSelect = function() {
+	  Cell.prototype.unselect = function() {
 	    this.isSelected = false;
 	    return this.setColor(Colors.cell);
 	  };
 	
-	  Cell.prototype.bindClick = function() {
-	    if (this.clickHandler == null) {
-	      return;
-	    }
-	    return $(this.cell._renderer.elem).click((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        if (_this.isDeleted) {
-	          return;
-	        }
-	        e.stopPropagation();
-	        if (_this.isSelected) {
-	          return _this.clickHandler.unclickCell(_this);
-	        } else {
-	          return _this.clickHandler.clickCell(_this);
-	        }
-	      };
-	    })(this));
-	  };
-	
-	  Cell.prototype.bindMouseenter = function() {
-	    if (this.clickHandler == null) {
-	      return;
-	    }
-	    return $(this.cell._renderer.elem).mouseenter((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        console.log(e);
-	        if (_this.isDeleted) {
-	          return;
-	        }
-	        e.stopPropagation();
-	        if (!_this.isSelected) {
-	          return _this.clickHandler.onEnter(_this);
-	        }
-	      };
-	    })(this));
-	  };
-	
-	  Cell.prototype.bindMouseup = function() {
-	    if (this.clickHandler == null) {
-	      return;
-	    }
-	    return $(this.cell._renderer.elem).mouseup((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        _this.clickHandler.onUp(_this);
-	        return e.stopPropagation();
-	      };
-	    })(this));
-	  };
-	
-	  Cell.prototype.bindMousedown = function() {
-	    if (this.clickHandler == null) {
-	      return;
-	    }
-	    return $(this.cell._renderer.elem).mousedown((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        if (_this.isDeleted) {
-	          return;
-	        }
-	        e.stopPropagation();
-	        if (!_this.isSelected) {
-	          return _this.clickHandler.onDown(_this);
-	        }
-	      };
-	    })(this));
+	  Cell.prototype["delete"] = function() {
+	    this.hide();
+	    return this.isDeleted = true;
 	  };
 	
 	  Cell.prototype.x = function() {
@@ -17773,11 +17557,6 @@
 	
 	  Cell.prototype.y = function() {
 	    return this.row;
-	  };
-	
-	  Cell.prototype["delete"] = function() {
-	    this.hide();
-	    return this.isDeleted = true;
 	  };
 	
 	  return Cell;
