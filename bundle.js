@@ -6961,7 +6961,7 @@
 	    console.log('\n');
 	    gameModel = this.generateBoard(inputs, length);
 	    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
-	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService);
+	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService);
 	    return ResetButton.bindClick(this.board);
 	  };
 	
@@ -7029,6 +7029,29 @@
 	
 	  MathSwipeController.prototype.generateBoard = function(inputs, length) {
 	    return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
+	  };
+	
+	  MathSwipeController.prototype.isMobile = function() {
+	    return {
+	      Android: function() {
+	        return navigator.userAgent.match(/Android/i);
+	      },
+	      BlackBerry: function() {
+	        return navigator.userAgent.match(/BlackBerry/i);
+	      },
+	      iOS: function() {
+	        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+	      },
+	      Opera: function() {
+	        return navigator.userAgent.match(/Opera Mini/i);
+	      },
+	      Windows: function() {
+	        return navigator.userAgent.match(/IEMobile/i);
+	      },
+	      any: function() {
+	        return this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows();
+	      }
+	    };
 	  };
 	
 	  MathSwipeController.prototype.tests = function() {
@@ -16459,14 +16482,14 @@
 	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
 	ClickHandler = (function() {
-	  function ClickHandler(board, solutionService, goalContainer, BoardSolvedService) {
+	  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService) {
 	    this.board = board;
 	    this.solutionService = solutionService;
 	    this.goalContainer = goalContainer;
+	    this.isMobile = isMobile;
 	    this.BoardSolvedService = BoardSolvedService;
 	    this.clicked = [];
 	    this.mouseDown = false;
-	    this.onMobile = false;
 	  }
 	
 	  ClickHandler.prototype.setMouseAsDown = function() {
@@ -16474,7 +16497,7 @@
 	  };
 	
 	  ClickHandler.prototype.setMouseAsUp = function() {
-	    if (!this.onMobile) {
+	    if (!this.isMobile) {
 	      this.checkForSolution();
 	      this.unselectAll();
 	    }
@@ -16486,7 +16509,7 @@
 	  };
 	
 	  ClickHandler.prototype.isOnMobile = function() {
-	    return this.onMobile;
+	    return this.isMobile;
 	  };
 	
 	  ClickHandler.prototype.bindDefaultMouseEvents = function() {
@@ -16519,7 +16542,7 @@
 	      this.setMouseAsDown();
 	      this.clicked.push(cell);
 	      cell.select();
-	      if (this.onMobile && this.checkForSolution()) {
+	      if (this.isMobile && this.checkForSolution()) {
 	        this.unselectAll();
 	      }
 	    }
@@ -16572,7 +16595,7 @@
 	          };
 	        })(this)), 100);
 	      }
-	      true;
+	      return true;
 	    }
 	    return false;
 	  };
@@ -17077,12 +17100,13 @@
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
 	Board = (function() {
-	  function Board(boardValues, scene, goals, symbols, goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService) {
+	  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService) {
 	    this.boardValues = boardValues;
 	    this.scene = scene;
 	    this.goals = goals;
 	    this.symbols = symbols;
 	    this.goalContainer = goalContainer;
+	    this.isMobile = isMobile;
 	    this.Cell = Cell;
 	    this.Colors = Colors;
 	    this.ClickHandler = ClickHandler;
@@ -17100,7 +17124,7 @@
 	  Board.prototype.initializer = function() {
 	    var solutionService;
 	    solutionService = new this.SolutionService(this, this.goals);
-	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.BoardSolvedService);
+	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService);
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);

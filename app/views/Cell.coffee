@@ -21,7 +21,6 @@ class Cell
       else
         @bindClick()
 
-
   newSymbol: (blueprint)->
     offset = - @size * 4 / 10
     symbol = blueprint.clone()
@@ -94,8 +93,8 @@ class Cell
       e.stopPropagation()
       return if @isDeleted
       if not @isSelected and @clickHandler.isMouseDown() and
-      @inHitBox(e.offsetX, e.offsetY)
-        @clickHandler.onSelect this
+        @inHitBox(e.offsetX, e.offsetY)
+          @clickHandler.onSelect this
 
   bindMouseUp: ->
     $('#' + @cell.id).mouseup (e) =>

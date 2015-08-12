@@ -42,6 +42,7 @@ class ClickHandler
       @clicked.push cell
       cell.select()
 
+      # Keep for when we switch to swiping on mobile
       if @isMobile and @checkForSolution()
         @unselectAll()
     false
@@ -72,8 +73,8 @@ class ClickHandler
       @board.deleteCells @clickedToTuples()
       if @BoardSolvedService.isCleared @board
         setTimeout (() => @BoardSolvedService.createNewBoard()), 100
-      true
-    false
+      return true
+    return false
 
   isAdjacentToLast: (cell) ->
     return true if @clicked.length < 1

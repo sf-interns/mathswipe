@@ -119,7 +119,7 @@ ClickHandler = (function() {
           };
         })(this)), 100);
       }
-      true;
+      return true;
     }
     return false;
   };
