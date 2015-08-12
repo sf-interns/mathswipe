@@ -43,7 +43,7 @@ MathSwipeController = (function() {
     this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
     this.tests = bind(this.tests, this);
     this.gameScene = this.createGameScene();
-    this.goalsScene = this.createGoalsScene();
+    this.goalsScene = $('#goals');
     this.symbols = this.getSymbols();
     this.initialize();
     this.bindNewGameButton();
@@ -76,7 +76,7 @@ MathSwipeController = (function() {
     return $('#new-game-button').click((function(_this) {
       return function(e) {
         _this.gameScene.clear();
-        _this.goalsScene.clear();
+        _this.goalContainer.clearGoals();
         ResetButton.unbindClick();
         return _this.initialize();
       };
@@ -97,15 +97,8 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.createGoalsScene = function() {
-    var goalsDom, scene;
-    goalsDom = document.getElementById('goals');
-    scene = new Two({
-      fullscreen: false,
-      autostart: true,
-      height: 100,
-      width: goalsDom.clientWidth
-    }).appendTo(goalsDom);
-    return scene;
+    var goalsDom;
+    return goalsDom = document.getElementById('goals');
   };
 
   MathSwipeController.prototype.getSymbols = function() {
