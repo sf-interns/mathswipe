@@ -23,6 +23,7 @@ class MathSwipeController
     @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
+    @createHowToPlay()
     # @tests()
 
   initialize: ->
@@ -46,6 +47,16 @@ class MathSwipeController
     @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
     @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+
+  createHowToPlay: ->
+    if @isMobile().any()?
+      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
+        clearing the board. Click adjacent tiles to create an
+        equation, and if it equals an answer, the tiles disappear!')
+    else
+      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
+        clearing the board. Drag your mouse across the tiles to create an
+        equation, and if it equals an answer, the tiles disappear!')
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
