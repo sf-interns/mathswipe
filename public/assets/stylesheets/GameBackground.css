@@ -33,9 +33,9 @@ body {
     font-size: 150%;
     margin-bottom: 10px; }
   .center-column .how-to-play {
-    margin: 50px auto 0 auto;
+    margin: 10px auto 10px auto;
     width: 95%;
-    color: #EFE8BE;
+    color: #729199;
     font-size: 24px;
     font-family: monospace; }
 
@@ -48,7 +48,7 @@ body {
 
 .game-button-wrapper {
   text-align: center;
-  margin: 10px 0px; }
+  margin: 10px 0px 20px 0px; }
   .game-button-wrapper .game-btn {
     height: auto;
     display: inline-block;
@@ -57,7 +57,7 @@ body {
     background-color: Transparent;
     border-style: solid;
     border-color: #a7acb0;
-    border-radius: 100px; }
+    border-radius: 10px; }
     .game-button-wrapper .game-btn img {
       height: 40px;
       width: 100%; }
