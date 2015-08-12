@@ -7,6 +7,7 @@ Colors = require('./Colors');
 
 Cell = (function() {
   function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
+    var hitboxSize;
     this.col = col1;
     this.row = row1;
     this.size = size;
@@ -16,20 +17,23 @@ Cell = (function() {
     this.isDeleted = false;
     this.isSelected = false;
     this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
-    if (symbolBlueprint) {
-      this.cell = this.scene.makeGroup(this.rect, this.newSymbol(symbolBlueprint));
-    } else {
-      this.cell = this.scene.makeGroup(this.rect);
+    if (symbolBlueprint == null) {
+      this.cell = this.rect;
+      this.scene.update();
+      return;
     }
+    hitboxSize = 0.7 * this.size;
+    this.hitbox = this.scene.makeRectangle(this.getX(), this.getY(), hitboxSize, hitboxSize);
+    this.hitbox.noStroke();
+    this.hitboxGroup = this.scene.makeGroup(this.hitbox, this.newSymbol(symbolBlueprint));
+    this.cell = this.scene.makeGroup(this.rect, this.hitboxGroup);
     this.scene.update();
-    if (this.clickHandler != null) {
-      if (!this.clickHandler.isOnMobile()) {
-        this.bindMouseMove();
-        this.bindMouseUp();
-        this.bindMouseDown();
-      } else {
-        this.bindClick();
-      }
+    if (!this.clickHandler.isOnMobile()) {
+      this.bindMouseMove();
+      this.bindMouseUp();
+      this.bindMouseDown();
+    } else {
+      this.bindClick();
     }
   }
 
@@ -46,6 +50,9 @@ Cell = (function() {
   Cell.prototype.setColor = function(c) {
     this.color = c;
     this.rect.fill = c;
+    if (this.hitbox != null) {
+      this.hitbox.fill = c;
+    }
     return this.scene.update();
   };
 
@@ -108,7 +115,7 @@ Cell = (function() {
   };
 
   Cell.prototype.bindClick = function() {
-    return $('#' + this.cell.id).click((function(_this) {
+    return $('#' + this.hitboxGroup.id).click((function(_this) {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -125,14 +132,14 @@ Cell = (function() {
   };
 
   Cell.prototype.bindMouseMove = function() {
-    return $('#' + this.cell.id).mousemove((function(_this) {
+    return $('#' + this.hitboxGroup.id).mousemove((function(_this) {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();
         if (_this.isDeleted) {
           return;
         }
-        if (!_this.isSelected && _this.clickHandler.isMouseDown() && _this.inHitBox(e.offsetX, e.offsetY)) {
+        if (!_this.isSelected && _this.clickHandler.isMouseDown()) {
           return _this.clickHandler.onSelect(_this);
         }
       };
@@ -140,7 +147,7 @@ Cell = (function() {
   };
 
   Cell.prototype.bindMouseUp = function() {
-    return $('#' + this.cell.id).mouseup((function(_this) {
+    return $('#' + this.hitboxGroup.id).mouseup((function(_this) {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -150,7 +157,7 @@ Cell = (function() {
   };
 
   Cell.prototype.bindMouseDown = function() {
-    return $('#' + this.cell.id).mousedown((function(_this) {
+    return $('#' + this.hitboxGroup.id).mousedown((function(_this) {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -162,12 +169,6 @@ Cell = (function() {
         }
       };
     })(this));
-  };
-
-  Cell.prototype.inHitBox = function(mouseX, mouseY) {
-    var shrinkSize;
-    shrinkSize = (0.70 * this.size) / 2.0;
-    return Math.abs(mouseX - this.getX()) < shrinkSize && Math.abs(mouseY - this.getY()) < shrinkSize;
   };
 
   Cell.prototype.select = function() {
