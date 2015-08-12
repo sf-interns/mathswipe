@@ -68,7 +68,7 @@ MathSwipeController = (function() {
     console.log('\n');
     gameModel = this.generateBoard(inputs, length);
     this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
-    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
+    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
     return ResetButton.bindClick(this.board);
   };
 
@@ -138,6 +138,29 @@ MathSwipeController = (function() {
     return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
   };
 
+  MathSwipeController.prototype.isMobile = function() {
+    return {
+      Android: function() {
+        return navigator.userAgent.match(/Android/i);
+      },
+      BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+      },
+      iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+      },
+      Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+      },
+      Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+      },
+      any: function() {
+        return this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows();
+      }
+    };
+  };
+
   MathSwipeController.prototype.tests = function() {
     this.testRandomizedFitLength();
     this.testExpGen();
@@ -150,7 +173,7 @@ MathSwipeController = (function() {
     size = 25;
     list = RandomizedFitLength.generate(size);
     console.log(list);
-    return console.log("Passed RandomizedFitLength");
+    return console.log('Passed RandomizedFitLength');
   };
 
   MathSwipeController.prototype.testExpGen = function() {

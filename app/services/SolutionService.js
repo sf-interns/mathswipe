@@ -16,22 +16,19 @@ SolutionService = (function() {
   }
 
   SolutionService.prototype.initialize = function(clickedCells) {
-    if (clickedCells == null) {
-      return false;
-    }
     this.setSolutionString(clickedCells);
     return this.value = InputSolver.compute(this.solution);
   };
 
   SolutionService.prototype.isSolution = function() {
-    var ref;
-    if (!(this.solution.length >= 3)) {
+    var ref, ref1;
+    if (!(((ref = this.solution) != null ? ref.length : void 0) >= 3)) {
       return false;
     }
     if (this.solution[this.solution.length - 1] === '+' || this.solution[this.solution.length - 1] === '-' || this.solution[this.solution.length - 1] === '*') {
       return false;
     }
-    if (ref = this.value, indexOf.call(this.goals, ref) < 0) {
+    if (ref1 = this.value, indexOf.call(this.goals, ref1) < 0) {
       return false;
     }
     this.valueIndex = this.goals.indexOf(this.value);

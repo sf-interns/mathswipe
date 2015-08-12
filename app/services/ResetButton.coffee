@@ -7,6 +7,6 @@ class ResetButton
       board.resetBoard()
 
   @unbindClick: ->
-    $('#reset-button').unbind("click")
+    $('#reset-button').unbind('click')
 
 module.exports = ResetButton

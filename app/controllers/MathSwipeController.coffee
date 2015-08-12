@@ -41,7 +41,7 @@ class MathSwipeController
 
     gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
-    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
+    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
 
   bindNewGameButton: ->
@@ -92,6 +92,20 @@ class MathSwipeController
   generateBoard: (inputs, length) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
+  isMobile: () ->
+    Android: () ->
+      return navigator.userAgent.match(/Android/i)
+    BlackBerry: () ->
+      return navigator.userAgent.match(/BlackBerry/i)
+    iOS: ()->
+      return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+    Opera: () ->
+      return navigator.userAgent.match(/Opera Mini/i)
+    Windows: () ->
+      return navigator.userAgent.match(/IEMobile/i)
+    any: () ->
+      return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
+
   tests: =>
     @testRandomizedFitLength()
     @testExpGen()
@@ -103,7 +117,7 @@ class MathSwipeController
     size = 25
     list = RandomizedFitLength.generate size
     console.log list
-    console.log "Passed RandomizedFitLength"
+    console.log 'Passed RandomizedFitLength'
 
   testExpGen: =>
     for length in [1..30]

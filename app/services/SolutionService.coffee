@@ -8,12 +8,11 @@ class SolutionService
       @goals.push g
 
   initialize: (clickedCells) ->
-    return false unless clickedCells?
     @setSolutionString clickedCells
     @value = InputSolver.compute @solution
 
   isSolution: ->
-    return false unless @solution.length >= 3
+    return false unless @solution?.length >= 3
     return false if @solution[@solution.length - 1] is '+' or
       @solution[@solution.length - 1] is '-' or
       @solution[@solution.length - 1] is '*'
