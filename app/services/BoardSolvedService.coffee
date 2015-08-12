@@ -2,8 +2,9 @@ $ = require 'jquery'
 
 class BoardSolvedService
 
-  @isCleared: (boardBottomRow) ->
-    for value in boardBottomRow
+  @isCleared: (board) ->
+    dim = board.dimension
+    for value in board.boardValues[dim - 1]
       return false unless value is ' '
     true
 

@@ -6,10 +6,12 @@ $ = require('jquery');
 BoardSolvedService = (function() {
   function BoardSolvedService() {}
 
-  BoardSolvedService.isCleared = function(boardBottomRow) {
-    var i, len, value;
-    for (i = 0, len = boardBottomRow.length; i < len; i++) {
-      value = boardBottomRow[i];
+  BoardSolvedService.isCleared = function(board) {
+    var dim, i, len, ref, value;
+    dim = board.dimension;
+    ref = board.boardValues[dim - 1];
+    for (i = 0, len = ref.length; i < len; i++) {
+      value = ref[i];
       if (value !== ' ') {
         return false;
       }

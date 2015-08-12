@@ -15,9 +15,10 @@ class InputSolver
 
   @compute: (input) ->
     terms = @parseInput input
-    previous = terms[0]
+    previous = ''
     sum = parseInt terms[0]
-    return NaN if isNaN sum
+    if terms[0] is '-' then sum = 0
+    return NaN if (isNaN sum) and (terms[0] != '-')
     for term in terms
       return NaN if (@isOperator previous) and (@isOperator term)
       sum = @operation sum, term, previous

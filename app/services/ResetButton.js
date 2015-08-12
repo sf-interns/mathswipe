@@ -15,7 +15,7 @@ ResetButton = (function() {
   };
 
   ResetButton.unbindClick = function() {
-    return $('#reset-button').unbind("click");
+    return $('#reset-button').unbind('click');
   };
 
   return ResetButton;

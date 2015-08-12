@@ -3,33 +3,90 @@ Tuple = require '../models/Tuple'
 
 class ClickHandler
 
-  constructor: (@board, two, @solutionService, @goalContainer, @BoardSolvedService, @clicked = []) ->
-    return unless @board.cells?
-    for row in @board.cells
-      break if row.length is 0
-      for cell in row
-        (@addToClicked cell) if cell.isSelected
+  # @isMobile: False is DESKTOP, True is MOBILE
+  constructor: (@board, @solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum) ->
+    @clicked = []
+    @mouseDown = false
 
-  bindDefaultClick: (board) ->
-    $('body').click (e) =>
+  setMouseAsDown: ->
+    @mouseDown = true
+
+  setMouseAsUp: ->
+    unless @isMobile
+      @checkForSolution()
+      @unselectAll()
+    @mouseDown = false
+
+  isMouseDown: ->
+    @mouseDown
+
+  isOnMobile: ->
+    @isMobile
+
+  bindDefaultMouseEvents: ->
+    body = $('body')
+    body.click (e) =>
       e.preventDefault()
-      @resetClicked()
+      @unselectAll()
+    body.mousedown (e) =>
+      e.preventDefault()
+    body.mouseup (e) =>
+      e.preventDefault()
+      @setMouseAsUp()
 
-  bindClickTo: (cells) ->
-    if cells.bindClick?
-      cells.bindClick()
-      return
-    for row in cells
-      if row.bindClick?
-        row.bindClick()
-        return
-      for cell in row
-        if cell.bindClick?
-          cell.bindClick()
-        else
-          console.log 'WARN: object not 2D arrays or simpler or no BindClick method'
+  onSelect: (cell) ->
+    unless @isSelected cell
+      unless @isAdjacentToLast cell
+        @unselectAll()
+      @setMouseAsDown()
+      @clicked.push cell
+      cell.select()
 
-  tuplesClicked: () ->
+      @solutionService.initialize @clicked
+      @RunningSum.display @solutionService.solution, @solutionService.value
+
+      # Keep for when we switch to swiping on mobile
+      if @isMobile and @checkForSolution()
+        @unselectAll()
+    false
+
+  onUnselect: (cell) ->
+    if @isSelected cell
+      if @clicked[@clicked.length - 1] is cell
+        cell.unselect()
+        @clicked.pop()
+      else
+        @unselectAll()
+        throw "Last item in 'clicked' was not the given cell"
+
+  isSelected: (cell) ->
+    for iterCell in @clicked
+      return true if cell is iterCell
+    false
+
+  unselectAll: ->
+    @RunningSum.display ''
+    return if @clicked.length < 1
+    for i in [@clicked.length - 1..0]
+      @clicked[i].unselect()
+    @clicked = []
+
+  checkForSolution: () ->
+    if @solutionService.isSolution()
+      @RunningSum.display ''
+      @goalContainer.deleteGoal @solutionService.valueIndex
+      @board.deleteCells @clickedToTuples()
+      if @BoardSolvedService.isCleared @board
+        setTimeout (() => @BoardSolvedService.createNewBoard()), 100
+      return true
+    return false
+
+  isAdjacentToLast: (cell) ->
+    return true if @clicked.length < 1
+    last = @clicked[@clicked.length - 1]
+    Math.abs(cell.row - last.row) <= 1 and Math.abs(cell.col - last.col) <= 1
+
+  clickedToTuples: ->
     tuples = []
     for cell in @clicked
       tuples.push new Tuple cell.col, cell.row

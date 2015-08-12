@@ -30,9 +30,12 @@ InputSolver = (function() {
   InputSolver.compute = function(input) {
     var i, len, previous, sum, term, terms;
     terms = this.parseInput(input);
-    previous = terms[0];
+    previous = '';
     sum = parseInt(terms[0]);
-    if (isNaN(sum)) {
+    if (terms[0] === '-') {
+      sum = 0;
+    }
+    if ((isNaN(sum)) && (terms[0] !== '-')) {
       return NaN;
     }
     for (i = 0, len = terms.length; i < len; i++) {

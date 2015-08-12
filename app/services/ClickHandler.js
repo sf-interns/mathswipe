@@ -7,69 +7,144 @@ $ = require('jquery');
 Tuple = require('../models/Tuple');
 
 ClickHandler = (function() {
-  function ClickHandler(board1, two, solutionService, goalContainer, BoardSolvedService, clicked) {
-    var cell, i, j, len, len1, ref, row;
-    this.board = board1;
+  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum) {
+    this.board = board;
     this.solutionService = solutionService;
     this.goalContainer = goalContainer;
+    this.isMobile = isMobile;
     this.BoardSolvedService = BoardSolvedService;
-    this.clicked = clicked != null ? clicked : [];
-    if (this.board.cells == null) {
-      return;
-    }
-    ref = this.board.cells;
-    for (i = 0, len = ref.length; i < len; i++) {
-      row = ref[i];
-      if (row.length === 0) {
-        break;
-      }
-      for (j = 0, len1 = row.length; j < len1; j++) {
-        cell = row[j];
-        if (cell.isSelected) {
-          this.addToClicked(cell);
-        }
-      }
-    }
+    this.RunningSum = RunningSum;
+    this.clicked = [];
+    this.mouseDown = false;
   }
 
-  ClickHandler.prototype.bindDefaultClick = function(board) {
-    return $('body').click((function(_this) {
+  ClickHandler.prototype.setMouseAsDown = function() {
+    return this.mouseDown = true;
+  };
+
+  ClickHandler.prototype.setMouseAsUp = function() {
+    if (!this.isMobile) {
+      this.checkForSolution();
+      this.unselectAll();
+    }
+    return this.mouseDown = false;
+  };
+
+  ClickHandler.prototype.isMouseDown = function() {
+    return this.mouseDown;
+  };
+
+  ClickHandler.prototype.isOnMobile = function() {
+    return this.isMobile;
+  };
+
+  ClickHandler.prototype.bindDefaultMouseEvents = function() {
+    var body;
+    body = $('body');
+    body.click((function(_this) {
       return function(e) {
         e.preventDefault();
-        return _this.resetClicked();
+        return _this.unselectAll();
+      };
+    })(this));
+    body.mousedown((function(_this) {
+      return function(e) {
+        return e.preventDefault();
+      };
+    })(this));
+    return body.mouseup((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        return _this.setMouseAsUp();
       };
     })(this));
   };
 
-  ClickHandler.prototype.bindClickTo = function(cells) {
-    var cell, i, j, len, len1, row;
-    if (cells.bindClick != null) {
-      cells.bindClick();
-      return;
-    }
-    for (i = 0, len = cells.length; i < len; i++) {
-      row = cells[i];
-      if (row.bindClick != null) {
-        row.bindClick();
-        return;
+  ClickHandler.prototype.onSelect = function(cell) {
+    if (!this.isSelected(cell)) {
+      if (!this.isAdjacentToLast(cell)) {
+        this.unselectAll();
       }
-      for (j = 0, len1 = row.length; j < len1; j++) {
-        cell = row[j];
-        if (cell.bindClick != null) {
-          cell.bindClick();
-        } else {
-          console.log('WARN: object not 2D arrays or simpler or no BindClick method');
-        }
+      this.setMouseAsDown();
+      this.clicked.push(cell);
+      cell.select();
+      this.solutionService.initialize(this.clicked);
+      this.RunningSum.display(this.solutionService.solution, this.solutionService.value);
+      if (this.isMobile && this.checkForSolution()) {
+        this.unselectAll();
+      }
+    }
+    return false;
+  };
+
+  ClickHandler.prototype.onUnselect = function(cell) {
+    if (this.isSelected(cell)) {
+      if (this.clicked[this.clicked.length - 1] === cell) {
+        cell.unselect();
+        return this.clicked.pop();
+      } else {
+        this.unselectAll();
+        throw "Last item in 'clicked' was not the given cell";
       }
     }
   };
 
-  ClickHandler.prototype.tuplesClicked = function() {
-    var cell, i, len, ref, tuples;
+  ClickHandler.prototype.isSelected = function(cell) {
+    var iterCell, j, len, ref;
+    ref = this.clicked;
+    for (j = 0, len = ref.length; j < len; j++) {
+      iterCell = ref[j];
+      if (cell === iterCell) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  ClickHandler.prototype.unselectAll = function() {
+    var i, j, ref;
+    this.RunningSum.display('');
+    if (this.clicked.length < 1) {
+      return;
+    }
+    for (i = j = ref = this.clicked.length - 1; ref <= 0 ? j <= 0 : j >= 0; i = ref <= 0 ? ++j : --j) {
+      this.clicked[i].unselect();
+    }
+    return this.clicked = [];
+  };
+
+  ClickHandler.prototype.checkForSolution = function() {
+    if (this.solutionService.isSolution()) {
+      this.RunningSum.display('');
+      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
+      this.board.deleteCells(this.clickedToTuples());
+      if (this.BoardSolvedService.isCleared(this.board)) {
+        setTimeout(((function(_this) {
+          return function() {
+            return _this.BoardSolvedService.createNewBoard();
+          };
+        })(this)), 100);
+      }
+      return true;
+    }
+    return false;
+  };
+
+  ClickHandler.prototype.isAdjacentToLast = function(cell) {
+    var last;
+    if (this.clicked.length < 1) {
+      return true;
+    }
+    last = this.clicked[this.clicked.length - 1];
+    return Math.abs(cell.row - last.row) <= 1 && Math.abs(cell.col - last.col) <= 1;
+  };
+
+  ClickHandler.prototype.clickedToTuples = function() {
+    var cell, j, len, ref, tuples;
     tuples = [];
     ref = this.clicked;
-    for (i = 0, len = ref.length; i < len; i++) {
-      cell = ref[i];
+    for (j = 0, len = ref.length; j < len; j++) {
+      cell = ref[j];
       tuples.push(new Tuple(cell.col, cell.row));
     }
     return tuples;
@@ -87,11 +162,11 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.resetClicked = function() {
-    var cell, i, ref, results;
+    var cell, j, ref, results;
     ref = this.clicked;
     results = [];
-    for (i = ref.length - 1; i >= 0; i += -1) {
-      cell = ref[i];
+    for (j = ref.length - 1; j >= 0; j += -1) {
+      cell = ref[j];
       results.push(this.unclickCell(cell));
     }
     return results;
