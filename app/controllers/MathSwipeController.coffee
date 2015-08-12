@@ -19,7 +19,6 @@ class MathSwipeController
 
   constructor: ->
     @gameScene = @createGameScene()
-    @goalsScene = $('#goals')
     @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
@@ -43,7 +42,7 @@ class MathSwipeController
     console.log '\n'
 
     gameModel = @generateBoard inputs, length
-    @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
+    @goalContainer = new GoalContainer answers, Colors
     @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
 

@@ -43,7 +43,6 @@ MathSwipeController = (function() {
     this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
     this.tests = bind(this.tests, this);
     this.gameScene = this.createGameScene();
-    this.goalsScene = $('#goals');
     this.symbols = this.getSymbols();
     this.initialize();
     this.bindNewGameButton();
@@ -71,7 +70,7 @@ MathSwipeController = (function() {
     }
     console.log('\n');
     gameModel = this.generateBoard(inputs, length);
-    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
+    this.goalContainer = new GoalContainer(answers, Colors);
     this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
     return ResetButton.bindClick(this.board);
   };

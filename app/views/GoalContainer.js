@@ -4,32 +4,24 @@ var $, GoalContainer;
 $ = require('jquery');
 
 GoalContainer = (function() {
-  function GoalContainer(scene, inputs, symbols, Colors) {
-    this.scene = scene;
+  function GoalContainer(inputs, Colors) {
+    var goal, i, len, ref;
     this.inputs = inputs;
-    this.symbols = symbols;
     this.Colors = Colors;
     this.container = $('#goals');
-    this.show();
-  }
-
-  GoalContainer.prototype.show = function() {
-    var goal, i, len, ref, results;
     ref = this.inputs;
-    results = [];
     for (i = 0, len = ref.length; i < len; i++) {
       goal = ref[i];
-      results.push(this.container.append('<span class="goal-span">' + goal + '</span>'));
+      this.container.append('<span class="goal-span">' + goal + '</span>');
     }
-    return results;
-  };
+  }
 
   GoalContainer.prototype.deleteGoal = function(idx) {
-    return $(this.container.children()[idx]).css('color', '#2F4F4F');
+    return $(this.container.children()[idx]).css('color', this.Colors.deletedGoalGrey);
   };
 
   GoalContainer.prototype.resetGoals = function() {
-    return $(this.container.children()).css('color', '#EFE8BE');
+    return $(this.container.children()).css('color', this.Colors.cell);
   };
 
   GoalContainer.prototype.clearGoals = function() {
