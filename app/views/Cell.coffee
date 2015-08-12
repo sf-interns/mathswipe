@@ -13,6 +13,14 @@ class Cell
       @cell = @scene.makeGroup @rect
     @scene.update()
 
+    if @clickHandler?
+      unless @clickHandler.isOnMobile()
+        @bindMouseMove()
+        @bindMouseUp()
+        @bindMouseDown()
+      else
+        @bindClick()
+
   newSymbol: (blueprint)->
     offset = - @size * 4 / 10
     symbol = blueprint.clone()
@@ -69,31 +77,59 @@ class Cell
 
     @setIndices row, col
 
+  bindClick: ->
+    $('#' + @cell.id).click (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      return if @isDeleted
+      unless @isSelected
+        @clickHandler.onSelect this
+      else
+        @clickHandler.onUnselect this
+
+  bindMouseMove: ->
+    $('#' + @cell.id).mousemove (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      return if @isDeleted
+      if not @isSelected and @clickHandler.isMouseDown() and
+        @inHitBox(e.offsetX, e.offsetY)
+          @clickHandler.onSelect this
+
+  bindMouseUp: ->
+    $('#' + @cell.id).mouseup (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      @clickHandler.setMouseAsUp()
+
+  bindMouseDown: ->
+    $('#' + @cell.id).mousedown (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      return if @isDeleted
+      unless @isSelected
+        @clickHandler.onSelect this
+
+  inHitBox: (mouseX, mouseY) ->
+    # Within a box 70% of the actual
+    shrinkSize = (0.70 * @size) / 2.0
+    Math.abs(mouseX - @getX()) < shrinkSize and
+    Math.abs(mouseY - @getY()) < shrinkSize
+
   select: ->
     @isSelected = true
     @setColor Colors.select
 
-  unSelect: ->
+  unselect: ->
     @isSelected = false
     @setColor Colors.cell
-
-  bindClick: ->
-    return unless @clickHandler?
-    $(@cell._renderer.elem).click (e) =>
-      e.preventDefault()
-      return if @isDeleted
-      if @isSelected
-        @clickHandler.unclickCell this
-      else
-        @clickHandler.clickCell this
-      e.stopPropagation()
-
-  x: -> @col
-
-  y: -> @row
 
   delete: ->
     @hide()
     @isDeleted = true
+
+  x: -> @col
+
+  y: -> @row
 
 module.exports = Cell

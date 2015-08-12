@@ -22,6 +22,15 @@ Cell = (function() {
       this.cell = this.scene.makeGroup(this.rect);
     }
     this.scene.update();
+    if (this.clickHandler != null) {
+      if (!this.clickHandler.isOnMobile()) {
+        this.bindMouseMove();
+        this.bindMouseUp();
+        this.bindMouseDown();
+      } else {
+        this.bindClick();
+      }
+    }
   }
 
   Cell.prototype.newSymbol = function(blueprint) {
@@ -98,34 +107,82 @@ Cell = (function() {
     return this.setIndices(row, col);
   };
 
+  Cell.prototype.bindClick = function() {
+    return $('#' + this.cell.id).click((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected) {
+          return _this.clickHandler.onSelect(_this);
+        } else {
+          return _this.clickHandler.onUnselect(_this);
+        }
+      };
+    })(this));
+  };
+
+  Cell.prototype.bindMouseMove = function() {
+    return $('#' + this.cell.id).mousemove((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected && _this.clickHandler.isMouseDown() && _this.inHitBox(e.offsetX, e.offsetY)) {
+          return _this.clickHandler.onSelect(_this);
+        }
+      };
+    })(this));
+  };
+
+  Cell.prototype.bindMouseUp = function() {
+    return $('#' + this.cell.id).mouseup((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return _this.clickHandler.setMouseAsUp();
+      };
+    })(this));
+  };
+
+  Cell.prototype.bindMouseDown = function() {
+    return $('#' + this.cell.id).mousedown((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected) {
+          return _this.clickHandler.onSelect(_this);
+        }
+      };
+    })(this));
+  };
+
+  Cell.prototype.inHitBox = function(mouseX, mouseY) {
+    var shrinkSize;
+    shrinkSize = (0.70 * this.size) / 2.0;
+    return Math.abs(mouseX - this.getX()) < shrinkSize && Math.abs(mouseY - this.getY()) < shrinkSize;
+  };
+
   Cell.prototype.select = function() {
     this.isSelected = true;
     return this.setColor(Colors.select);
   };
 
-  Cell.prototype.unSelect = function() {
+  Cell.prototype.unselect = function() {
     this.isSelected = false;
     return this.setColor(Colors.cell);
   };
 
-  Cell.prototype.bindClick = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
-    return $(this.cell._renderer.elem).click((function(_this) {
-      return function(e) {
-        e.preventDefault();
-        if (_this.isDeleted) {
-          return;
-        }
-        if (_this.isSelected) {
-          _this.clickHandler.unclickCell(_this);
-        } else {
-          _this.clickHandler.clickCell(_this);
-        }
-        return e.stopPropagation();
-      };
-    })(this));
+  Cell.prototype["delete"] = function() {
+    this.hide();
+    return this.isDeleted = true;
   };
 
   Cell.prototype.x = function() {
@@ -134,11 +191,6 @@ Cell = (function() {
 
   Cell.prototype.y = function() {
     return this.row;
-  };
-
-  Cell.prototype["delete"] = function() {
-    this.hide();
-    return this.isDeleted = true;
   };
 
   return Cell;
