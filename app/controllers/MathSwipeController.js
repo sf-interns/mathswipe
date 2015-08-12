@@ -50,16 +50,20 @@ MathSwipeController = (function() {
   }
 
   MathSwipeController.prototype.initialize = function() {
-    var answers, expression, gameModel, i, inputLengths, inputSize, inputs, k, l, len, len1, length;
+    var answers, expression, gameModel, i, inputLengths, inputSize, inputs, k, l, len, len1, length, value;
     length = 3;
     inputs = [];
     answers = [];
     inputLengths = RandomizedFitLength.generate(length * length);
     for (k = 0, len = inputLengths.length; k < len; k++) {
       inputSize = inputLengths[k];
-      expression = ExpressionGenerator.generate(inputSize);
-      inputs.push(expression.split(''));
+      value = -1;
+      while (value < 1 || value > 300) {
+        expression = ExpressionGenerator.generate(inputSize);
+        value = InputSolver.compute(expression);
+      }
       answers.push(InputSolver.compute(expression));
+      inputs.push(expression.split(''));
     }
     for (l = 0, len1 = inputs.length; l < len1; l++) {
       i = inputs[l];
