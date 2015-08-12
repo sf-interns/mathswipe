@@ -6,69 +6,60 @@ body {
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;
-}
+  user-select: none; }
 
-.title-image {
-  max-width: 100%;
-  height: auto;
+.title-column {
+  max-width: 700px;
+  min-width: 320px;
   display: block;
-  margin: auto;
-  padding-top: 35px;
-  padding-left: 15px;
-}
-
-.button-background {
-  background-color: Transparent;
-  border-style: solid;
-  border-color: #a7acb0;
-  border-radius: 100px;
-}
-
-.button-background:focus {
-  outline: none;
-}
+  margin: 3% auto 10px auto; }
+  .title-column img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: auto; }
 
 .center-column {
   max-width: 500px;
   min-width: 320px;
   display: block;
   margin-left: auto;
-  margin-right: auto;
-}
-
-.running-sum {
-  height: 20px;
-  color: #EFE8BE;
-  text-align: center;
-  font-family: VCROSD;
-  font-size: 150%;
-  margin-bottom: 10px;
-}
+  margin-right: auto; }
+  .center-column.running-sum {
+    height: 20px;
+    color: #EFE8BE;
+    text-align: center;
+    font-family: VCROSD;
+    font-size: 150%;
+    margin-bottom: 10px; }
 
 @font-face {
-    font-family: VCROSD;
-    src: url(../fonts/VCR_OSD_MONO_1.001.ttf);
-}
-
-.title-column {
-  max-width: 700px;
-  min-width: 320px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 10px;
-}
-
+  font-family: VCROSD;
+  src: url(../fonts/VCR_OSD_MONO_1.001.ttf); }
 #goals {
   text-align: center;
-  margin: 20px 0px;
-}
+  margin: 20px 0px; }
 
-.left-btn {
-  float: left;
-}
+.game-button-wrapper {
+  text-align: center;
+  margin: 10px 0px; }
+  .game-button-wrapper .game-btn {
+    height: auto;
+    display: inline-block;
+    width: 40%;
+    margin: 0px 10px;
+    background-color: Transparent;
+    border-style: solid;
+    border-color: #a7acb0;
+    border-radius: 100px; }
+    .game-button-wrapper .game-btn img {
+      height: 40px;
+      width: 100%; }
 
-.right-btn {
-  float: right;
-}
+.how-to-play {
+  margin-top: 50px;
+  color: #D1857F;
+  font-size: 20px;
+  font-family: monospace; }
+
+/*# sourceMappingURL=GameBackground.css.map */

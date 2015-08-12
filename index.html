@@ -1,9 +1,10 @@
 <head>
   <link rel="StyleSheet" type="text/css" href="./public/assets/stylesheets/GameBackground.css">
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
 </head>
 <body>
   <div class="title-column">
-      <img src = "./public/assets/images/title.png" class = "title-image">
+      <img src = "./public/assets/images/title.png">
   </div>
   <div class="center-column running-sum">
     <div id="running-sum"></div>
@@ -15,8 +16,10 @@
     <div id="goals"></div>
   </div>
   <div class="center-column">
-    <button id="reset-button" type="submit" class="button-background left-btn"><img src = "./public/assets/images/reset.png" width="200px" height="50px"></button>
-    <button id="new-game-button" type="submit" class="button-background right-btn"><img src = "./public/assets/images/new-game.png" width="200px" height="50px"></button>
+    <div class="game-button-wrapper">
+      <div id="reset-button" type="submit" class="game-btn"><img src = "./public/assets/images/reset.png"></div>
+      <div id="new-game-button" type="submit" class="game-btn"><img src = "./public/assets/images/new-game.png"></div>
+    </div>
   </div>
   <!-- Assets in this order: 0 1 2 3 4 5 6 7 8 9 + - X Success!-->
   <div id= "assets" style="height: 0px; overflow: hidden;">

@@ -32,9 +32,12 @@ class MathSwipeController
 
     inputLengths = RandomizedFitLength.generate length * length
     for inputSize in inputLengths
-      expression = (ExpressionGenerator.generate inputSize)
-      inputs.push expression.split('')
+      value = -1
+      while value < 1 or value > 300
+        expression = ExpressionGenerator.generate inputSize
+        value = InputSolver.compute expression
       answers.push (InputSolver.compute expression)
+      inputs.push expression.split('')
 
     console.log i for i in inputs
     console.log '\n'
