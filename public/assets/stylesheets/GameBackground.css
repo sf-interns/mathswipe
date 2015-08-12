@@ -12,7 +12,7 @@ body {
   max-width: 700px;
   min-width: 320px;
   display: block;
-  margin: 3% auto 10px auto; }
+  margin: 3% auto 0 auto; }
   .title-column img {
     max-width: 100%;
     height: auto;
@@ -26,19 +26,28 @@ body {
   margin-left: auto;
   margin-right: auto; }
   .center-column.running-sum {
-    height: 20px;
+    min-height: 30px;
     color: #EFE8BE;
     text-align: center;
     font-family: VCROSD;
-    font-size: 150%;
-    margin-bottom: 10px; }
+    font-size: 30px; }
 
 @font-face {
   font-family: VCROSD;
   src: url(../fonts/VCR_OSD_MONO_1.001.ttf); }
 #goals {
-  text-align: center;
-  margin: 20px 0px; }
+  width: 80%;
+  margin: 0 auto;
+  display: table;
+  width: 100%;
+  table-layout: fixed; }
+  #goals .goal-span {
+    display: table-cell;
+    text-align: center;
+    color: #EFE8BE;
+    font-family: VCROSD;
+    font-size: 80px;
+    margin: 0 10px 10px 10px; }
 
 .game-button-wrapper {
   text-align: center;

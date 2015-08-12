@@ -15,7 +15,6 @@ GoalContainer = (function() {
 
   GoalContainer.prototype.show = function() {
     var goal, i, len, ref, results;
-    console.log(this.inputs);
     ref = this.inputs;
     results = [];
     for (i = 0, len = ref.length; i < len; i++) {
@@ -25,9 +24,13 @@ GoalContainer = (function() {
     return results;
   };
 
-  GoalContainer.prototype.deleteGoal = function(index) {};
+  GoalContainer.prototype.deleteGoal = function(idx) {
+    return $(this.container.children()[idx]).css('color', '#2F4F4F');
+  };
 
-  GoalContainer.prototype.resetGoals = function() {};
+  GoalContainer.prototype.resetGoals = function() {
+    return $(this.container.children()).css('color', '#EFE8BE');
+  };
 
   GoalContainer.prototype.clearGoals = function() {
     return this.container.empty();
