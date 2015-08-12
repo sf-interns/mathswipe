@@ -73,7 +73,16 @@ MathSwipeController = (function() {
     gameModel = this.generateBoard(inputs, length);
     this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
     this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
+    this.createHowToPlay();
     return ResetButton.bindClick(this.board);
+  };
+
+  MathSwipeController.prototype.createHowToPlay = function() {
+    if (this.isMobile().any() != null) {
+      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an expression, and if it equals an answer, the tiles disappear!');
+    } else {
+      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an expression, and if it equals an answer, the tiles disappear!');
+    }
   };
 
   MathSwipeController.prototype.bindNewGameButton = function() {
