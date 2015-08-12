@@ -1,14 +1,14 @@
 class Board
 
   # @boardValues is a 2D array of characters
-  constructor: (@boardValues, @scene, @goals, @symbols, @goalContainer, @isMobile, @Cell, @Colors, @ClickHandler, @SolutionService, @BoardSolvedService) ->
+  constructor: (@boardValues, @scene, @goals, @symbols, @goalContainer, @isMobile, @Cell, @Colors, @ClickHandler, @SolutionService, @BoardSolvedService, @RunningSum) ->
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
 
   initializer: =>
     solutionService = new @SolutionService this, @goals
-    @clickHandler = new @ClickHandler this, solutionService, @goalContainer, @isMobile, @BoardSolvedService
+    @clickHandler = new @ClickHandler this, solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum
 
     @createBoard()
     @createEmptyCells @cellWidth - 5

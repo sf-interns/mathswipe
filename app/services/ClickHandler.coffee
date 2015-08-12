@@ -4,7 +4,7 @@ Tuple = require '../models/Tuple'
 class ClickHandler
 
   # @isMobile: False is DESKTOP, True is MOBILE
-  constructor: (@board, @solutionService, @goalContainer, @isMobile, @BoardSolvedService) ->
+  constructor: (@board, @solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum) ->
     @clicked = []
     @mouseDown = false
 
@@ -42,6 +42,9 @@ class ClickHandler
       @clicked.push cell
       cell.select()
 
+      @solutionService.initialize @clicked
+      @RunningSum.display @solutionService.solution, @solutionService.value
+
       # Keep for when we switch to swiping on mobile
       if @isMobile and @checkForSolution()
         @unselectAll()
@@ -53,7 +56,7 @@ class ClickHandler
         cell.unselect()
         @clicked.pop()
       else
-        unselectAll()
+        @unselectAll()
         throw "Last item in 'clicked' was not the given cell"
 
   isSelected: (cell) ->
@@ -62,13 +65,15 @@ class ClickHandler
     false
 
   unselectAll: ->
+    @RunningSum.display ''
     return if @clicked.length < 1
     for i in [@clicked.length - 1..0]
       @clicked[i].unselect()
     @clicked = []
 
   checkForSolution: () ->
-    if @solutionService.isSolution @clicked
+    if @solutionService.isSolution()
+      @RunningSum.display ''
       @goalContainer.deleteGoal @solutionService.valueIndex
       @board.deleteCells @clickedToTuples()
       if @BoardSolvedService.isCleared @board

@@ -6,6 +6,7 @@ ExpressionGenerator     = require '../services/ExpressionGenerator'
 InputSolver             = require '../services/InputSolver'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
+RunningSum              = require '../services/RunningSum'
 SolutionService         = require '../services/SolutionService'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
@@ -40,7 +41,7 @@ class MathSwipeController
 
     gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
-    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService
+    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
 
   bindNewGameButton: ->
@@ -116,7 +117,7 @@ class MathSwipeController
     size = 25
     list = RandomizedFitLength.generate size
     console.log list
-    console.log "Passed RandomizedFitLength"
+    console.log 'Passed RandomizedFitLength'
 
   testExpGen: =>
     for length in [1..30]

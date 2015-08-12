@@ -6,12 +6,13 @@ $ = require('jquery');
 Tuple = require('../models/Tuple');
 
 ClickHandler = (function() {
-  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService) {
+  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum) {
     this.board = board;
     this.solutionService = solutionService;
     this.goalContainer = goalContainer;
     this.isMobile = isMobile;
     this.BoardSolvedService = BoardSolvedService;
+    this.RunningSum = RunningSum;
     this.clicked = [];
     this.mouseDown = false;
   }
@@ -66,6 +67,8 @@ ClickHandler = (function() {
       this.setMouseAsDown();
       this.clicked.push(cell);
       cell.select();
+      this.solutionService.initialize(this.clicked);
+      this.RunningSum.display(this.solutionService.solution, this.solutionService.value);
       if (this.isMobile && this.checkForSolution()) {
         this.unselectAll();
       }
@@ -79,7 +82,7 @@ ClickHandler = (function() {
         cell.unselect();
         return this.clicked.pop();
       } else {
-        unselectAll();
+        this.unselectAll();
         throw "Last item in 'clicked' was not the given cell";
       }
     }
@@ -99,6 +102,7 @@ ClickHandler = (function() {
 
   ClickHandler.prototype.unselectAll = function() {
     var i, j, ref;
+    this.RunningSum.display('');
     if (this.clicked.length < 1) {
       return;
     }
@@ -109,7 +113,8 @@ ClickHandler = (function() {
   };
 
   ClickHandler.prototype.checkForSolution = function() {
-    if (this.solutionService.isSolution(this.clicked)) {
+    if (this.solutionService.isSolution()) {
+      this.RunningSum.display('');
       this.goalContainer.deleteGoal(this.solutionService.valueIndex);
       this.board.deleteCells(this.clickedToTuples());
       if (this.BoardSolvedService.isCleared(this.board)) {
