@@ -72,3 +72,10 @@ body {
 .right-btn {
   float: right;
 }
+
+.how-to-play {
+  margin-top: 120px;
+  color: #D1857F;
+  font-size: 20px;
+  font-family: monospace;
+}
