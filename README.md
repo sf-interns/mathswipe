@@ -8,6 +8,8 @@ Note that the other services, when run locally, expect the frontend to be served
 
 The codebase is primarily written in CoffeeScript, including wrappers for creating React elements. The entire project (including its dependencies) is bundled before runtime by webpack, which serves up a single bundle.js file.
 
+The styling is written in Sass and needs to be manually compiled down to CSS before running every time the styling is changed. We recommend using the Sublime plugin `SASS Build` to compile.
+
 ### Stack
 
 - [Coffeescript](http://coffeescript.org/)
