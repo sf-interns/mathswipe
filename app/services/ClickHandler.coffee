@@ -77,7 +77,9 @@ class ClickHandler
       @goalContainer.deleteGoal @solutionService.valueIndex
       @board.deleteCells @clickedToTuples()
       if @BoardSolvedService.isCleared @board
-        setTimeout (() => @BoardSolvedService.createNewBoard()), 100
+        document.getElementById('new-game-button').disabled = true
+        @board.successAnimation()
+        setTimeout (() => @BoardSolvedService.createNewBoard()), 800
       return true
     return false
 
@@ -91,45 +93,5 @@ class ClickHandler
     for cell in @clicked
       tuples.push new Tuple cell.col, cell.row
     tuples
-
-  addToClicked: (cell) ->
-    return if cell.isDeleted
-    @clicked.push cell
-
-  removeFromClicked: ->
-    @clicked.pop()
-
-  resetClicked: ->
-    @unclickCell cell for cell in @clicked by -1
-
-  lastClicked: ->
-    @clicked[@clicked.length - 1]
-
-  clickCell: (cell) ->
-    # if cell is adjacent to lastClicked
-    if @clicked.length is 0 or @areAdjacent cell, @lastClicked()
-      unless @cell in @clicked
-        cell.select()
-        @addToClicked cell
-        if @solutionService.isSolution @clicked
-          @goalContainer.deleteGoal @solutionService.valueIndex
-          @board.deleteCells @tuplesClicked()
-          @clicked = []
-          if @BoardSolvedService.isCleared @board.boardValues[@board.dimension - 1]
-            document.getElementById('new-game-button').disabled = true
-            @board.successAnimation()
-            setTimeout (() => @BoardSolvedService.createNewBoard()), 1100
-    else
-      @resetClicked()
-      @clickCell cell
-
-  areAdjacent: (cell, otherCell) ->
-    return Math.abs(cell.row - otherCell.row) <= 1 and Math.abs(cell.col - otherCell.col) <= 1
-
-  unclickCell: (cell) ->
-    last = @lastClicked()
-    return null unless cell is @lastClicked()
-    cell.unSelect()
-    @removeFromClicked cell
 
 module.exports = ClickHandler
