@@ -46,6 +46,12 @@ class MathSwipeController
     @goalContainer = new GoalContainer answers, Colors
     @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+    unless @isMobile().any()?
+      @cursorToPointer()
+
+  cursorToPointer: ->
+    $('#game').addClass('pointer')
+    $('#game-buton-wrapper').addClass('pointer')
 
   createHowToPlay: ->
     if @isMobile().any()?
