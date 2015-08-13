@@ -6938,10 +6938,10 @@
 	    this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
 	    this.tests = bind(this.tests, this);
 	    this.gameScene = this.createGameScene();
-	    this.goalsScene = this.createGoalsScene();
 	    this.symbols = this.getSymbols();
 	    this.initialize();
 	    this.bindNewGameButton();
+	    this.createHowToPlay();
 	  }
 	
 	  MathSwipeController.prototype.initialize = function() {
@@ -6966,16 +6966,32 @@
 	    }
 	    console.log('\n');
 	    gameModel = this.generateBoard(inputs, length);
-	    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
+	    this.goalContainer = new GoalContainer(answers, Colors);
 	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-	    return ResetButton.bindClick(this.board);
+	    ResetButton.bindClick(this.board);
+	    if (this.isMobile().any() == null) {
+	      return this.cursorToPointer();
+	    }
+	  };
+	
+	  MathSwipeController.prototype.cursorToPointer = function() {
+	    $('#game').addClass('pointer');
+	    return $('#game-button-wrapper').addClass('pointer');
+	  };
+	
+	  MathSwipeController.prototype.createHowToPlay = function() {
+	    if (this.isMobile().any() != null) {
+	      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	    } else {
+	      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	    }
 	  };
 	
 	  MathSwipeController.prototype.bindNewGameButton = function() {
 	    return $('#new-game-button').click((function(_this) {
 	      return function(e) {
 	        _this.gameScene.clear();
-	        _this.goalsScene.clear();
+	        _this.goalContainer.clearGoals();
 	        ResetButton.unbindClick();
 	        return _this.initialize();
 	      };
@@ -6996,15 +7012,8 @@
 	  };
 	
 	  MathSwipeController.prototype.createGoalsScene = function() {
-	    var goalsDom, scene;
-	    goalsDom = document.getElementById('goals');
-	    scene = new Two({
-	      fullscreen: false,
-	      autostart: true,
-	      height: 100,
-	      width: goalsDom.clientWidth
-	    }).appendTo(goalsDom);
-	    return scene;
+	    var goalsDom;
+	    return goalsDom = document.getElementById('goals');
 	  };
 	
 	  MathSwipeController.prototype.getSymbols = function() {
@@ -17358,102 +17367,35 @@
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	var GoalContainer;
+	var $, GoalContainer;
+	
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	GoalContainer = (function() {
-	  function GoalContainer(scene, inputs, symbols, Colors) {
-	    this.scene = scene;
+	  function GoalContainer(inputs, Colors) {
+	    var goal, i, len, ref;
 	    this.inputs = inputs;
-	    this.symbols = symbols;
 	    this.Colors = Colors;
-	    this.inputsToSymbols();
-	    this.show();
+	    this.container = $('#goals');
+	    ref = this.inputs;
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      goal = ref[i];
+	      this.container.append('<span class="goal-span">' + goal + '</span>');
+	    }
 	  }
 	
-	  GoalContainer.prototype.inputsToSymbols = function() {
-	    var character, i, index, input, j, len, len1, ref, ref1;
-	    this.inputSymbols = [];
-	    this.count = 0;
-	    ref = this.inputs;
-	    for (index = i = 0, len = ref.length; i < len; index = ++i) {
-	      input = ref[index];
-	      this.inputSymbols.push([]);
-	      ref1 = input.toString();
-	      for (j = 0, len1 = ref1.length; j < len1; j++) {
-	        character = ref1[j];
-	        this.inputSymbols[index].push(this.symbols[this.charToIndex(character)].clone());
-	        this.count++;
-	      }
-	      this.count++;
-	    }
-	    this.count--;
-	    return this.inputSymbols;
-	  };
-	
-	  GoalContainer.prototype.show = function() {
-	    var character, i, index, inputStr, j, len, len1, ref, symbolSize;
-	    index = 0;
-	    symbolSize = this.scene.width / this.count;
-	    ref = this.inputSymbols;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      inputStr = ref[i];
-	      for (j = 0, len1 = inputStr.length; j < len1; j++) {
-	        character = inputStr[j];
-	        character.translation.set(index * symbolSize, 0);
-	        character.noStroke().fill = '#EFE8BE';
-	        character.visible = true;
-	        character.scale = Math.min(1, (this.scene.width / 100) / this.count);
-	        this.scene.add(character);
-	        index++;
-	      }
-	      index++;
-	    }
-	    return this.scene.update();
-	  };
-	
-	  GoalContainer.prototype.charToIndex = function(character) {
-	    switch (character) {
-	      case '+':
-	        return 10;
-	      case '-':
-	        return 11;
-	      case '*':
-	        return 12;
-	      default:
-	        return parseInt(character);
-	    }
-	  };
-	
-	  GoalContainer.prototype.deleteGoal = function(index) {
-	    var character, i, len, ref, results;
-	    ref = this.inputSymbols[index];
-	    results = [];
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      character = ref[i];
-	      results.push(character.noStroke().fill = '#2F4F4F');
-	    }
-	    return results;
+	  GoalContainer.prototype.deleteGoal = function(idx) {
+	    return $(this.container.children()[idx]).css('color', this.Colors.deletedGoalGrey);
 	  };
 	
 	  GoalContainer.prototype.resetGoals = function() {
-	    var character, i, inputStr, len, ref, results;
-	    ref = this.inputSymbols;
-	    results = [];
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      inputStr = ref[i];
-	      results.push((function() {
-	        var j, len1, results1;
-	        results1 = [];
-	        for (j = 0, len1 = inputStr.length; j < len1; j++) {
-	          character = inputStr[j];
-	          results1.push(character.noStroke().fill = '#EFE8BE');
-	        }
-	        return results1;
-	      })());
-	    }
-	    return results;
+	    return $(this.container.children()).css('color', this.Colors.cell);
+	  };
+	
+	  GoalContainer.prototype.clearGoals = function() {
+	    return this.container.empty();
 	  };
 	
 	  return GoalContainer;
@@ -17478,45 +17420,51 @@
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
+	    var hitboxSize;
 	    this.col = col1;
 	    this.row = row1;
 	    this.size = size;
 	    this.scene = scene;
 	    this.board = board;
 	    this.clickHandler = clickHandler;
-	    this.isDeleted = false;
-	    this.isSelected = false;
+	    this.isDeleted = this.isSelected = false;
 	    this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
-	    if (symbolBlueprint) {
-	      this.cell = this.scene.makeGroup(this.rect, this.newSymbol(symbolBlueprint));
-	    } else {
-	      this.cell = this.scene.makeGroup(this.rect);
+	    if (!((symbolBlueprint != null) && (this.clickHandler != null))) {
+	      this.cell = this.rect;
+	      this.scene.update();
+	      return;
 	    }
+	    hitboxSize = 0.7 * this.size;
+	    this.hitbox = this.scene.makeRectangle(this.getX(), this.getY(), hitboxSize, hitboxSize);
+	    this.hitbox.noStroke();
+	    this.cloneSymbol(symbolBlueprint);
+	    this.hitboxGroup = this.scene.makeGroup(this.hitbox, this.symbol);
+	    this.cell = this.scene.makeGroup(this.rect, this.hitboxGroup);
 	    this.scene.update();
-	    if (this.clickHandler != null) {
-	      if (!this.clickHandler.isOnMobile()) {
-	        this.bindMouseMove();
-	        this.bindMouseUp();
-	        this.bindMouseDown();
-	      } else {
-	        this.bindClick();
-	      }
+	    if (!this.clickHandler.isOnMobile()) {
+	      this.bindMouseOver();
+	      this.bindMouseUp();
+	      this.bindMouseDown();
+	    } else {
+	      this.bindClick();
 	    }
 	  }
 	
-	  Cell.prototype.newSymbol = function(blueprint) {
-	    var offset, symbol;
+	  Cell.prototype.cloneSymbol = function(blueprint) {
+	    var offset;
 	    offset = -this.size * 4 / 10;
-	    symbol = blueprint.clone();
-	    symbol.translation.set(this.getX() + offset, this.getY() + offset);
-	    symbol.scale = (this.size / 100) * .8;
-	    symbol.noStroke().fill = Colors.symbol;
-	    return symbol;
+	    this.symbol = blueprint.clone();
+	    this.symbol.translation.set(this.getX() + offset, this.getY() + offset);
+	    this.symbol.scale = (this.size / 100) * 0.8;
+	    return this.symbol.noStroke().fill = Colors.symbol;
 	  };
 	
 	  Cell.prototype.setColor = function(c) {
 	    this.color = c;
 	    this.rect.fill = c;
+	    if (this.hitbox != null) {
+	      this.hitbox.fill = c;
+	    }
 	    return this.scene.update();
 	  };
 	
@@ -17579,7 +17527,7 @@
 	  };
 	
 	  Cell.prototype.bindClick = function() {
-	    return $('#' + this.cell.id).click((function(_this) {
+	    return $('#' + this.hitboxGroup.id).click((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
 	        e.stopPropagation();
@@ -17595,15 +17543,15 @@
 	    })(this));
 	  };
 	
-	  Cell.prototype.bindMouseMove = function() {
-	    return $('#' + this.cell.id).mousemove((function(_this) {
+	  Cell.prototype.bindMouseOver = function() {
+	    return $('#' + this.hitboxGroup.id).mouseover((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
 	        e.stopPropagation();
 	        if (_this.isDeleted) {
 	          return;
 	        }
-	        if (!_this.isSelected && _this.clickHandler.isMouseDown() && _this.inHitBox(e.offsetX, e.offsetY)) {
+	        if (!_this.isSelected && _this.clickHandler.isMouseDown()) {
 	          return _this.clickHandler.onSelect(_this);
 	        }
 	      };
@@ -17611,7 +17559,7 @@
 	  };
 	
 	  Cell.prototype.bindMouseUp = function() {
-	    return $('#' + this.cell.id).mouseup((function(_this) {
+	    return $('#' + this.hitboxGroup.id).mouseup((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
 	        e.stopPropagation();
@@ -17621,7 +17569,7 @@
 	  };
 	
 	  Cell.prototype.bindMouseDown = function() {
-	    return $('#' + this.cell.id).mousedown((function(_this) {
+	    return $('#' + this.hitboxGroup.id).mousedown((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
 	        e.stopPropagation();
@@ -17633,12 +17581,6 @@
 	        }
 	      };
 	    })(this));
-	  };
-	
-	  Cell.prototype.inHitBox = function(mouseX, mouseY) {
-	    var shrinkSize;
-	    shrinkSize = (0.70 * this.size) / 2.0;
-	    return Math.abs(mouseX - this.getX()) < shrinkSize && Math.abs(mouseY - this.getY()) < shrinkSize;
 	  };
 	
 	  Cell.prototype.select = function() {
@@ -17687,7 +17629,8 @@
 	  emptyCellBorder: '#41565c',
 	  board: '#294248',
 	  select: '#c7a579',
-	  symbol: 'black'
+	  symbol: 'black',
+	  deletedGoalGrey: '#2F4F4F'
 	};
 	
 	module.exports = Colors;

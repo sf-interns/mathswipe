@@ -19,10 +19,10 @@ class MathSwipeController
 
   constructor: ->
     @gameScene = @createGameScene()
-    @goalsScene = @createGoalsScene()
     @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
+    @createHowToPlay()
     # @tests()
 
   initialize: ->
@@ -43,14 +43,30 @@ class MathSwipeController
     console.log '\n'
 
     gameModel = @generateBoard inputs, length
-    @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
+    @goalContainer = new GoalContainer answers, Colors
     @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+    unless @isMobile().any()?
+      @cursorToPointer()
+
+  cursorToPointer: ->
+    $('#game').addClass('pointer')
+    $('#game-button-wrapper').addClass('pointer')
+
+  createHowToPlay: ->
+    if @isMobile().any()?
+      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
+        clearing the board. Click adjacent tiles to create an
+        equation, and if it equals an answer, the tiles disappear!')
+    else
+      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
+        clearing the board. Drag your mouse across the tiles to create an
+        equation, and if it equals an answer, the tiles disappear!')
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       @gameScene.clear()
-      @goalsScene.clear()
+      @goalContainer.clearGoals()
       ResetButton.unbindClick()
       @initialize()
 
@@ -67,13 +83,6 @@ class MathSwipeController
 
   createGoalsScene: ->
     goalsDom = document.getElementById('goals')
-    scene = new Two(
-      fullscreen: false
-      autostart: true
-      height: 100
-      width: goalsDom.clientWidth
-    ).appendTo(goalsDom);
-    return scene
 
   getSymbols: ->
     scene = new Two()

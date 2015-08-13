@@ -43,10 +43,10 @@ MathSwipeController = (function() {
     this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
     this.tests = bind(this.tests, this);
     this.gameScene = this.createGameScene();
-    this.goalsScene = this.createGoalsScene();
     this.symbols = this.getSymbols();
     this.initialize();
     this.bindNewGameButton();
+    this.createHowToPlay();
   }
 
   MathSwipeController.prototype.initialize = function() {
@@ -71,16 +71,32 @@ MathSwipeController = (function() {
     }
     console.log('\n');
     gameModel = this.generateBoard(inputs, length);
-    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
+    this.goalContainer = new GoalContainer(answers, Colors);
     this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-    return ResetButton.bindClick(this.board);
+    ResetButton.bindClick(this.board);
+    if (this.isMobile().any() == null) {
+      return this.cursorToPointer();
+    }
+  };
+
+  MathSwipeController.prototype.cursorToPointer = function() {
+    $('#game').addClass('pointer');
+    return $('#game-button-wrapper').addClass('pointer');
+  };
+
+  MathSwipeController.prototype.createHowToPlay = function() {
+    if (this.isMobile().any() != null) {
+      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
+    } else {
+      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
+    }
   };
 
   MathSwipeController.prototype.bindNewGameButton = function() {
     return $('#new-game-button').click((function(_this) {
       return function(e) {
         _this.gameScene.clear();
-        _this.goalsScene.clear();
+        _this.goalContainer.clearGoals();
         ResetButton.unbindClick();
         return _this.initialize();
       };
@@ -101,15 +117,8 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.createGoalsScene = function() {
-    var goalsDom, scene;
-    goalsDom = document.getElementById('goals');
-    scene = new Two({
-      fullscreen: false,
-      autostart: true,
-      height: 100,
-      width: goalsDom.clientWidth
-    }).appendTo(goalsDom);
-    return scene;
+    var goalsDom;
+    return goalsDom = document.getElementById('goals');
   };
 
   MathSwipeController.prototype.getSymbols = function() {
