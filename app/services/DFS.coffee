@@ -1,5 +1,5 @@
-Tuple = require '../models/Tuple'
 GridCell = require '../models/GridCell'
+Tuple    = require '../models/Tuple'
 
 class DFS
 

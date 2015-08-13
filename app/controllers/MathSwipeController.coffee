@@ -1,19 +1,20 @@
+$                       = require 'jquery'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 BoardSolvedService      = require '../services/BoardSolvedService'
 ClickHandler            = require '../services/ClickHandler'
 DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
+HowToPlay               = require '../services/HowToPlay'
 InputSolver             = require '../services/InputSolver'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
 SolutionService         = require '../services/SolutionService'
-Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
-GoalContainer           = require '../views/GoalContainer'
 Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
-$                       = require 'jquery'
+GoalContainer           = require '../views/GoalContainer'
+GeneralTests            = require '../../tests/controllers/GeneralTests'
 
 class MathSwipeController
 
@@ -22,8 +23,12 @@ class MathSwipeController
     @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
-    @createHowToPlay()
-    # @tests()
+    HowToPlay.createHowToPlay @isMobile
+    unless @isMobile().any()?
+      @cursorToPointer()
+
+    # # Uncomment the following line to perform general tests
+    # GeneralTests.tests @board
 
   initialize: ->
     length = 3
@@ -31,37 +36,35 @@ class MathSwipeController
     answers = []
 
     inputLengths = RandomizedFitLength.generate length * length
-    for inputSize in inputLengths
-      value = -1
-      while value < 1 or value > 300
-        expression = ExpressionGenerator.generate inputSize
-        value = InputSolver.compute expression
-      answers.push (InputSolver.compute expression)
-      inputs.push expression.split('')
 
-    console.log i for i in inputs
+    @generateInputs inputLengths, inputs, answers
+
+    console.log expression for expression in inputs
     console.log '\n'
 
     gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer answers, Colors
-    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
+    @board = new Board  gameModel, @gameScene, answers, @symbols,
+                        @goalContainer, @isMobile().any()?, Cell,
+                        Colors, ClickHandler, SolutionService,
+                        BoardSolvedService, RunningSum
     ResetButton.bindClick @board
-    unless @isMobile().any()?
-      @cursorToPointer()
 
-  cursorToPointer: ->
-    $('#game').addClass('pointer')
-    $('#game-button-wrapper').addClass('pointer')
+  isMobile: () ->
+    Android: () ->
+      return navigator.userAgent.match(/Android/i)
+    BlackBerry: () ->
+      return navigator.userAgent.match(/BlackBerry/i)
+    iOS: ()->
+      return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+    Opera: () ->
+      return navigator.userAgent.match(/Opera Mini/i)
+    Windows: () ->
+      return navigator.userAgent.match(/IEMobile/i)
+    any: () ->
+      return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
 
-  createHowToPlay: ->
-    if @isMobile().any()?
-      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
-        clearing the board. Click adjacent tiles to create an
-        equation, and if it equals an answer, the tiles disappear!')
-    else
-      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
-        clearing the board. Drag your mouse across the tiles to create an
-        equation, and if it equals an answer, the tiles disappear!')
+  # -------- Front-end -------- #
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
@@ -84,6 +87,10 @@ class MathSwipeController
   createGoalsScene: ->
     goalsDom = document.getElementById('goals')
 
+  cursorToPointer: ->
+    $('#game').addClass('pointer')
+    $('#game-button-wrapper').addClass('pointer')
+
   getSymbols: ->
     scene = new Two()
     svgs = $('#assets svg')
@@ -93,70 +100,22 @@ class MathSwipeController
       symbols[index].visible = false
     symbols
 
-  randExpression: (length) ->
-    ExpressionGenerator.generate length
-
-  generateInputs: (length) ->
-    inputs = []
-    inputs.push @randExpression(length).split('') for i in [0...length]
-    inputs
+  # -------- Back-end -------- #
 
   generateBoard: (inputs, length) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
-  isMobile: () ->
-    Android: () ->
-      return navigator.userAgent.match(/Android/i)
-    BlackBerry: () ->
-      return navigator.userAgent.match(/BlackBerry/i)
-    iOS: ()->
-      return navigator.userAgent.match(/iPhone|iPad|iPod/i)
-    Opera: () ->
-      return navigator.userAgent.match(/Opera Mini/i)
-    Windows: () ->
-      return navigator.userAgent.match(/IEMobile/i)
-    any: () ->
-      return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
+  generateInputs: (inputLengths, inputs, answers) ->
+    for inputSize in inputLengths
+      value = -1
+      while value < 1 or value > 300
+        expression = ExpressionGenerator.generate inputSize
+        value = InputSolver.compute expression
+      answers.push (InputSolver.compute expression)
+      inputs.push expression.split('')
 
-  tests: =>
-    @testRandomizedFitLength()
-    @testExpGen()
-    # @testCellDelete()
-    @testInputSolver()
-    @testDFS()
+  randExpression: (length) ->
+    ExpressionGenerator.generate length
 
-  testRandomizedFitLength: =>
-    size = 25
-    list = RandomizedFitLength.generate size
-    console.log list
-    console.log 'Passed RandomizedFitLength'
-
-  testExpGen: =>
-    for length in [1..30]
-      expression = ExpressionGenerator.generate length
-      console.log length, expression, InputSolver.compute expression
-
-  testCellDelete: =>
-    solution = [(new Tuple 0, 0), (new Tuple 1, 1), (new Tuple 0, 2)]
-    @board.deleteCells solution
-
-  testInputSolver: =>
-    console.log InputSolver.compute('1+2*3')
-
-  testDFS: =>
-    length = 5
-    inputList = []
-
-    for i in [0...length]
-      inputList.push (ExpressionGenerator.generate length).split('')
-    for each in inputList
-      console.log each
-
-    console.log '\n'
-    for each in DFS.setEquationsOnGrid length, inputList, AdjacentCellsCalculator
-      line = ''
-      for j in each
-        line += j + '\t'
-      console.log line
 
 module.exports = MathSwipeController

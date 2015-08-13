@@ -1,4 +1,4 @@
-InputSolver  = require './InputSolver'
+InputSolver = require './InputSolver'
 
 class SolutionService
 
