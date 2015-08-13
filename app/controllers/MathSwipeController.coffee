@@ -8,11 +8,11 @@ RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
 SolutionService         = require '../services/SolutionService'
-Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
 GoalContainer           = require '../views/GoalContainer'
 Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
+GeneralTests            = require '../../tests/controllers/GeneralTests'
 $                       = require 'jquery'
 
 class MathSwipeController
@@ -23,7 +23,7 @@ class MathSwipeController
     @initialize()
     @bindNewGameButton()
     @createHowToPlay()
-    # @tests()
+    # GeneralTests.tests(@board)
 
   initialize: ->
     length = 3
@@ -118,45 +118,6 @@ class MathSwipeController
     any: () ->
       return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
 
-  tests: =>
-    @testRandomizedFitLength()
-    @testExpGen()
-    # @testCellDelete()
-    @testInputSolver()
-    @testDFS()
 
-  testRandomizedFitLength: =>
-    size = 25
-    list = RandomizedFitLength.generate size
-    console.log list
-    console.log 'Passed RandomizedFitLength'
-
-  testExpGen: =>
-    for length in [1..30]
-      expression = ExpressionGenerator.generate length
-      console.log length, expression, InputSolver.compute expression
-
-  testCellDelete: =>
-    solution = [(new Tuple 0, 0), (new Tuple 1, 1), (new Tuple 0, 2)]
-    @board.deleteCells solution
-
-  testInputSolver: =>
-    console.log InputSolver.compute('1+2*3')
-
-  testDFS: =>
-    length = 5
-    inputList = []
-
-    for i in [0...length]
-      inputList.push (ExpressionGenerator.generate length).split('')
-    for each in inputList
-      console.log each
-
-    console.log '\n'
-    for each in DFS.setEquationsOnGrid length, inputList, AdjacentCellsCalculator
-      line = ''
-      for j in each
-        line += j + '\t'
-      console.log line
 
 module.exports = MathSwipeController
