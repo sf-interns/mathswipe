@@ -6938,10 +6938,10 @@
 	    this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
 	    this.tests = bind(this.tests, this);
 	    this.gameScene = this.createGameScene();
-	    this.goalsScene = $('#goals');
 	    this.symbols = this.getSymbols();
 	    this.initialize();
 	    this.bindNewGameButton();
+	    this.createHowToPlay();
 	  }
 	
 	  MathSwipeController.prototype.initialize = function() {
@@ -6966,9 +6966,17 @@
 	    }
 	    console.log('\n');
 	    gameModel = this.generateBoard(inputs, length);
-	    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
+	    this.goalContainer = new GoalContainer(answers, Colors);
 	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
 	    return ResetButton.bindClick(this.board);
+	  };
+	
+	  MathSwipeController.prototype.createHowToPlay = function() {
+	    if (this.isMobile().any() != null) {
+	      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	    } else {
+	      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	    }
 	  };
 	
 	  MathSwipeController.prototype.bindNewGameButton = function() {
@@ -17358,32 +17366,24 @@
 	$ = __webpack_require__(/*! jquery */ 7);
 	
 	GoalContainer = (function() {
-	  function GoalContainer(scene, inputs, symbols, Colors) {
-	    this.scene = scene;
+	  function GoalContainer(inputs, Colors) {
+	    var goal, i, len, ref;
 	    this.inputs = inputs;
-	    this.symbols = symbols;
 	    this.Colors = Colors;
 	    this.container = $('#goals');
-	    this.show();
-	  }
-	
-	  GoalContainer.prototype.show = function() {
-	    var goal, i, len, ref, results;
 	    ref = this.inputs;
-	    results = [];
 	    for (i = 0, len = ref.length; i < len; i++) {
 	      goal = ref[i];
-	      results.push(this.container.append('<span class="goal-span">' + goal + '</span>'));
+	      this.container.append('<span class="goal-span">' + goal + '</span>');
 	    }
-	    return results;
-	  };
+	  }
 	
 	  GoalContainer.prototype.deleteGoal = function(idx) {
-	    return $(this.container.children()[idx]).css('color', '#2F4F4F');
+	    return $(this.container.children()[idx]).css('color', this.Colors.deletedGoalGrey);
 	  };
 	
 	  GoalContainer.prototype.resetGoals = function() {
-	    return $(this.container.children()).css('color', '#EFE8BE');
+	    return $(this.container.children()).css('color', this.Colors.cell);
 	  };
 	
 	  GoalContainer.prototype.clearGoals = function() {
@@ -17621,7 +17621,8 @@
 	  emptyCellBorder: '#41565c',
 	  board: '#294248',
 	  select: '#c7a579',
-	  symbol: 'black'
+	  symbol: 'black',
+	  deletedGoalGrey: '#2F4F4F'
 	};
 	
 	module.exports = Colors;
