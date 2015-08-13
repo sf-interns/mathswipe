@@ -51,7 +51,6 @@ body {
 @font-face {
   font-family: ClearSans;
   src: url(../fonts/ClearSans-Regular.ttf); }
-
 #goals {
   width: 80%;
   margin: 0 auto;
@@ -80,8 +79,13 @@ body {
     border-radius: 10px; }
     .game-button-wrapper .game-btn:active {
       background-color: #EFE8BE; }
-    .game-button-wrapper .game-btn img {
-      height: 40px;
-      width: 100%; }
+    .game-button-wrapper .game-btn p {
+      font-family: ClearSans;
+      font-weight: bold;
+      text-align: center;
+      font-size: 30px;
+      color: #D1857F;
+      margin-top: 0px;
+      margin-bottom: 7px; }
 
 /*# sourceMappingURL=GameBackground.css.map */
