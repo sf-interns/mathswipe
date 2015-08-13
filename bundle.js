@@ -6938,7 +6938,6 @@
 	    this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
 	    this.tests = bind(this.tests, this);
 	    this.gameScene = this.createGameScene();
-	    this.goalsScene = this.createGoalsScene();
 	    this.symbols = this.getSymbols();
 	    this.initialize();
 	    this.bindNewGameButton();
@@ -6967,7 +6966,7 @@
 	    }
 	    console.log('\n');
 	    gameModel = this.generateBoard(inputs, length);
-	    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
+	    this.goalContainer = new GoalContainer(answers, Colors);
 	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
 	    return ResetButton.bindClick(this.board);
 	  };
@@ -6984,7 +6983,7 @@
 	    return $('#new-game-button').click((function(_this) {
 	      return function(e) {
 	        _this.gameScene.clear();
-	        _this.goalsScene.clear();
+	        _this.goalContainer.clearGoals();
 	        ResetButton.unbindClick();
 	        return _this.initialize();
 	      };
@@ -7005,15 +7004,8 @@
 	  };
 	
 	  MathSwipeController.prototype.createGoalsScene = function() {
-	    var goalsDom, scene;
-	    goalsDom = document.getElementById('goals');
-	    scene = new Two({
-	      fullscreen: false,
-	      autostart: true,
-	      height: 100,
-	      width: goalsDom.clientWidth
-	    }).appendTo(goalsDom);
-	    return scene;
+	    var goalsDom;
+	    return goalsDom = document.getElementById('goals');
 	  };
 	
 	  MathSwipeController.prototype.getSymbols = function() {
@@ -17367,102 +17359,35 @@
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	var GoalContainer;
+	var $, GoalContainer;
+	
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	GoalContainer = (function() {
-	  function GoalContainer(scene, inputs, symbols, Colors) {
-	    this.scene = scene;
+	  function GoalContainer(inputs, Colors) {
+	    var goal, i, len, ref;
 	    this.inputs = inputs;
-	    this.symbols = symbols;
 	    this.Colors = Colors;
-	    this.inputsToSymbols();
-	    this.show();
+	    this.container = $('#goals');
+	    ref = this.inputs;
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      goal = ref[i];
+	      this.container.append('<span class="goal-span">' + goal + '</span>');
+	    }
 	  }
 	
-	  GoalContainer.prototype.inputsToSymbols = function() {
-	    var character, i, index, input, j, len, len1, ref, ref1;
-	    this.inputSymbols = [];
-	    this.count = 0;
-	    ref = this.inputs;
-	    for (index = i = 0, len = ref.length; i < len; index = ++i) {
-	      input = ref[index];
-	      this.inputSymbols.push([]);
-	      ref1 = input.toString();
-	      for (j = 0, len1 = ref1.length; j < len1; j++) {
-	        character = ref1[j];
-	        this.inputSymbols[index].push(this.symbols[this.charToIndex(character)].clone());
-	        this.count++;
-	      }
-	      this.count++;
-	    }
-	    this.count--;
-	    return this.inputSymbols;
-	  };
-	
-	  GoalContainer.prototype.show = function() {
-	    var character, i, index, inputStr, j, len, len1, ref, symbolSize;
-	    index = 0;
-	    symbolSize = this.scene.width / this.count;
-	    ref = this.inputSymbols;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      inputStr = ref[i];
-	      for (j = 0, len1 = inputStr.length; j < len1; j++) {
-	        character = inputStr[j];
-	        character.translation.set(index * symbolSize, 0);
-	        character.noStroke().fill = '#EFE8BE';
-	        character.visible = true;
-	        character.scale = Math.min(1, (this.scene.width / 100) / this.count);
-	        this.scene.add(character);
-	        index++;
-	      }
-	      index++;
-	    }
-	    return this.scene.update();
-	  };
-	
-	  GoalContainer.prototype.charToIndex = function(character) {
-	    switch (character) {
-	      case '+':
-	        return 10;
-	      case '-':
-	        return 11;
-	      case '*':
-	        return 12;
-	      default:
-	        return parseInt(character);
-	    }
-	  };
-	
-	  GoalContainer.prototype.deleteGoal = function(index) {
-	    var character, i, len, ref, results;
-	    ref = this.inputSymbols[index];
-	    results = [];
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      character = ref[i];
-	      results.push(character.noStroke().fill = '#2F4F4F');
-	    }
-	    return results;
+	  GoalContainer.prototype.deleteGoal = function(idx) {
+	    return $(this.container.children()[idx]).css('color', this.Colors.deletedGoalGrey);
 	  };
 	
 	  GoalContainer.prototype.resetGoals = function() {
-	    var character, i, inputStr, len, ref, results;
-	    ref = this.inputSymbols;
-	    results = [];
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      inputStr = ref[i];
-	      results.push((function() {
-	        var j, len1, results1;
-	        results1 = [];
-	        for (j = 0, len1 = inputStr.length; j < len1; j++) {
-	          character = inputStr[j];
-	          results1.push(character.noStroke().fill = '#EFE8BE');
-	        }
-	        return results1;
-	      })());
-	    }
-	    return results;
+	    return $(this.container.children()).css('color', this.Colors.cell);
+	  };
+	
+	  GoalContainer.prototype.clearGoals = function() {
+	    return this.container.empty();
 	  };
 	
 	  return GoalContainer;
@@ -17696,7 +17621,8 @@
 	  emptyCellBorder: '#41565c',
 	  board: '#294248',
 	  select: '#c7a579',
-	  symbol: 'black'
+	  symbol: 'black',
+	  deletedGoalGrey: '#2F4F4F'
 	};
 	
 	module.exports = Colors;

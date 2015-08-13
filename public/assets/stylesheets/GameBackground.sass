@@ -14,7 +14,7 @@ body
   max-width: 700px
   min-width: 320px
   display: block
-  margin: 3% auto 10px auto
+  margin: 3% auto 0 auto
 
   img
     max-width: 100%
@@ -30,12 +30,11 @@ body
   margin-right: auto
 
   &.running-sum
-    height: 20px
+    min-height: 30px
     color: #EFE8BE
     text-align: center
     font-family: VCROSD
-    font-size: 150%
-    margin-bottom: 10px
+    font-size: 30px
 
   .how-to-play
     margin: 10px auto 10px auto
@@ -49,8 +48,20 @@ body
   src: url(../fonts/VCR_OSD_MONO_1.001.ttf)
 
 #goals
-  text-align: center
-  margin: 20px 0px
+  width: 80%
+  margin: 0 auto
+  display: table
+  width: 100%
+  table-layout: fixed
+  margin-bottom: 20px
+
+  .goal-span
+    display: table-cell
+    text-align: center
+    color: #EFE8BE
+    font-family: VCROSD
+    font-size: 80px
+    margin: 0 10px 10px 10px
 
 .game-button-wrapper
   text-align: center

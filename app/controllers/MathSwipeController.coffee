@@ -19,7 +19,6 @@ class MathSwipeController
 
   constructor: ->
     @gameScene = @createGameScene()
-    @goalsScene = @createGoalsScene()
     @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
@@ -44,7 +43,7 @@ class MathSwipeController
     console.log '\n'
 
     gameModel = @generateBoard inputs, length
-    @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
+    @goalContainer = new GoalContainer answers, Colors
     @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
 
@@ -61,7 +60,7 @@ class MathSwipeController
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       @gameScene.clear()
-      @goalsScene.clear()
+      @goalContainer.clearGoals()
       ResetButton.unbindClick()
       @initialize()
 
@@ -78,13 +77,6 @@ class MathSwipeController
 
   createGoalsScene: ->
     goalsDom = document.getElementById('goals')
-    scene = new Two(
-      fullscreen: false
-      autostart: true
-      height: 100
-      width: goalsDom.clientWidth
-    ).appendTo(goalsDom);
-    return scene
 
   getSymbols: ->
     scene = new Two()

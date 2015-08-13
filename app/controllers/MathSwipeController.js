@@ -43,7 +43,6 @@ MathSwipeController = (function() {
     this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
     this.tests = bind(this.tests, this);
     this.gameScene = this.createGameScene();
-    this.goalsScene = this.createGoalsScene();
     this.symbols = this.getSymbols();
     this.initialize();
     this.bindNewGameButton();
@@ -72,7 +71,7 @@ MathSwipeController = (function() {
     }
     console.log('\n');
     gameModel = this.generateBoard(inputs, length);
-    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
+    this.goalContainer = new GoalContainer(answers, Colors);
     this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
     return ResetButton.bindClick(this.board);
   };
@@ -89,7 +88,7 @@ MathSwipeController = (function() {
     return $('#new-game-button').click((function(_this) {
       return function(e) {
         _this.gameScene.clear();
-        _this.goalsScene.clear();
+        _this.goalContainer.clearGoals();
         ResetButton.unbindClick();
         return _this.initialize();
       };
@@ -110,15 +109,8 @@ MathSwipeController = (function() {
   };
 
   MathSwipeController.prototype.createGoalsScene = function() {
-    var goalsDom, scene;
-    goalsDom = document.getElementById('goals');
-    scene = new Two({
-      fullscreen: false,
-      autostart: true,
-      height: 100,
-      width: goalsDom.clientWidth
-    }).appendTo(goalsDom);
-    return scene;
+    var goalsDom;
+    return goalsDom = document.getElementById('goals');
   };
 
   MathSwipeController.prototype.getSymbols = function() {
