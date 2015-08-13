@@ -6,6 +6,7 @@ ExpressionGenerator     = require '../services/ExpressionGenerator'
 InputSolver             = require '../services/InputSolver'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
+RunningSum              = require '../services/RunningSum'
 SolutionService         = require '../services/SolutionService'
 Tuple                   = require '../models/Tuple'
 Board                   = require '../views/Board'
@@ -18,10 +19,10 @@ class MathSwipeController
 
   constructor: ->
     @gameScene = @createGameScene()
-    @goalsScene = @createGoalsScene()
     @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
+    @createHowToPlay()
     # @tests()
 
   initialize: ->
@@ -31,22 +32,41 @@ class MathSwipeController
 
     inputLengths = RandomizedFitLength.generate length * length
     for inputSize in inputLengths
-      expression = (ExpressionGenerator.generate inputSize)
-      inputs.push expression.split('')
+      value = -1
+      while value < 1 or value > 300
+        expression = ExpressionGenerator.generate inputSize
+        value = InputSolver.compute expression
       answers.push (InputSolver.compute expression)
+      inputs.push expression.split('')
 
     console.log i for i in inputs
     console.log '\n'
 
     gameModel = @generateBoard inputs, length
-    @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
-    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService
+    @goalContainer = new GoalContainer answers, Colors
+    @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+    unless @isMobile().any()?
+      @cursorToPointer()
+
+  cursorToPointer: ->
+    $('#game').addClass('pointer')
+    $('#game-button-wrapper').addClass('pointer')
+
+  createHowToPlay: ->
+    if @isMobile().any()?
+      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
+        clearing the board. Click adjacent tiles to create an
+        equation, and if it equals an answer, the tiles disappear!')
+    else
+      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
+        clearing the board. Drag your mouse across the tiles to create an
+        equation, and if it equals an answer, the tiles disappear!')
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       @gameScene.clear()
-      @goalsScene.clear()
+      @goalContainer.clearGoals()
       ResetButton.unbindClick()
       @initialize()
 
@@ -63,13 +83,6 @@ class MathSwipeController
 
   createGoalsScene: ->
     goalsDom = document.getElementById('goals')
-    scene = new Two(
-      fullscreen: false
-      autostart: true
-      height: 100
-      width: goalsDom.clientWidth
-    ).appendTo(goalsDom);
-    return scene
 
   getSymbols: ->
     scene = new Two()
@@ -91,6 +104,20 @@ class MathSwipeController
   generateBoard: (inputs, length) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
+  isMobile: () ->
+    Android: () ->
+      return navigator.userAgent.match(/Android/i)
+    BlackBerry: () ->
+      return navigator.userAgent.match(/BlackBerry/i)
+    iOS: ()->
+      return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+    Opera: () ->
+      return navigator.userAgent.match(/Opera Mini/i)
+    Windows: () ->
+      return navigator.userAgent.match(/IEMobile/i)
+    any: () ->
+      return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
+
   tests: =>
     @testRandomizedFitLength()
     @testExpGen()
@@ -102,7 +129,7 @@ class MathSwipeController
     size = 25
     list = RandomizedFitLength.generate size
     console.log list
-    console.log "Passed RandomizedFitLength"
+    console.log 'Passed RandomizedFitLength'
 
   testExpGen: =>
     for length in [1..30]

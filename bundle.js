@@ -6894,7 +6894,7 @@
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GoalContainer, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, SolutionService, Tuple,
+	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GoalContainer, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService, Tuple,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
 	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 4);
@@ -6913,17 +6913,19 @@
 	
 	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 14);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 15);
+	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 15);
+	
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 16);
 	
 	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 16);
+	Board = __webpack_require__(/*! ../views/Board */ 17);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 17);
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 18);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 18);
+	Cell = __webpack_require__(/*! ../views/Cell */ 19);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 19);
+	Colors = __webpack_require__(/*! ../views/Colors */ 20);
 	
 	$ = __webpack_require__(/*! jquery */ 7);
 	
@@ -6936,23 +6938,27 @@
 	    this.testRandomizedFitLength = bind(this.testRandomizedFitLength, this);
 	    this.tests = bind(this.tests, this);
 	    this.gameScene = this.createGameScene();
-	    this.goalsScene = this.createGoalsScene();
 	    this.symbols = this.getSymbols();
 	    this.initialize();
 	    this.bindNewGameButton();
+	    this.createHowToPlay();
 	  }
 	
 	  MathSwipeController.prototype.initialize = function() {
-	    var answers, expression, gameModel, i, inputLengths, inputSize, inputs, k, l, len, len1, length;
+	    var answers, expression, gameModel, i, inputLengths, inputSize, inputs, k, l, len, len1, length, value;
 	    length = 3;
 	    inputs = [];
 	    answers = [];
 	    inputLengths = RandomizedFitLength.generate(length * length);
 	    for (k = 0, len = inputLengths.length; k < len; k++) {
 	      inputSize = inputLengths[k];
-	      expression = ExpressionGenerator.generate(inputSize);
-	      inputs.push(expression.split(''));
+	      value = -1;
+	      while (value < 1 || value > 300) {
+	        expression = ExpressionGenerator.generate(inputSize);
+	        value = InputSolver.compute(expression);
+	      }
 	      answers.push(InputSolver.compute(expression));
+	      inputs.push(expression.split(''));
 	    }
 	    for (l = 0, len1 = inputs.length; l < len1; l++) {
 	      i = inputs[l];
@@ -6960,16 +6966,32 @@
 	    }
 	    console.log('\n');
 	    gameModel = this.generateBoard(inputs, length);
-	    this.goalContainer = new GoalContainer(this.goalsScene, answers, this.symbols, Colors);
-	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService);
-	    return ResetButton.bindClick(this.board);
+	    this.goalContainer = new GoalContainer(answers, Colors);
+	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
+	    ResetButton.bindClick(this.board);
+	    if (this.isMobile().any() == null) {
+	      return this.cursorToPointer();
+	    }
+	  };
+	
+	  MathSwipeController.prototype.cursorToPointer = function() {
+	    $('#game').addClass('pointer');
+	    return $('#game-button-wrapper').addClass('pointer');
+	  };
+	
+	  MathSwipeController.prototype.createHowToPlay = function() {
+	    if (this.isMobile().any() != null) {
+	      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	    } else {
+	      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	    }
 	  };
 	
 	  MathSwipeController.prototype.bindNewGameButton = function() {
 	    return $('#new-game-button').click((function(_this) {
 	      return function(e) {
 	        _this.gameScene.clear();
-	        _this.goalsScene.clear();
+	        _this.goalContainer.clearGoals();
 	        ResetButton.unbindClick();
 	        return _this.initialize();
 	      };
@@ -6990,15 +7012,8 @@
 	  };
 	
 	  MathSwipeController.prototype.createGoalsScene = function() {
-	    var goalsDom, scene;
-	    goalsDom = document.getElementById('goals');
-	    scene = new Two({
-	      fullscreen: false,
-	      autostart: true,
-	      height: 100,
-	      width: goalsDom.clientWidth
-	    }).appendTo(goalsDom);
-	    return scene;
+	    var goalsDom;
+	    return goalsDom = document.getElementById('goals');
 	  };
 	
 	  MathSwipeController.prototype.getSymbols = function() {
@@ -7031,6 +7046,29 @@
 	    return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
 	  };
 	
+	  MathSwipeController.prototype.isMobile = function() {
+	    return {
+	      Android: function() {
+	        return navigator.userAgent.match(/Android/i);
+	      },
+	      BlackBerry: function() {
+	        return navigator.userAgent.match(/BlackBerry/i);
+	      },
+	      iOS: function() {
+	        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+	      },
+	      Opera: function() {
+	        return navigator.userAgent.match(/Opera Mini/i);
+	      },
+	      Windows: function() {
+	        return navigator.userAgent.match(/IEMobile/i);
+	      },
+	      any: function() {
+	        return this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows();
+	      }
+	    };
+	  };
+	
 	  MathSwipeController.prototype.tests = function() {
 	    this.testRandomizedFitLength();
 	    this.testExpGen();
@@ -7043,7 +7081,7 @@
 	    size = 25;
 	    list = RandomizedFitLength.generate(size);
 	    console.log(list);
-	    return console.log("Passed RandomizedFitLength");
+	    return console.log('Passed RandomizedFitLength');
 	  };
 	
 	  MathSwipeController.prototype.testExpGen = function() {
@@ -7202,10 +7240,12 @@
 	BoardSolvedService = (function() {
 	  function BoardSolvedService() {}
 	
-	  BoardSolvedService.isCleared = function(boardBottomRow) {
-	    var i, len, value;
-	    for (i = 0, len = boardBottomRow.length; i < len; i++) {
-	      value = boardBottomRow[i];
+	  BoardSolvedService.isCleared = function(board) {
+	    var dim, i, len, ref, value;
+	    dim = board.dimension;
+	    ref = board.boardValues[dim - 1];
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      value = ref[i];
 	      if (value !== ' ') {
 	        return false;
 	      }
@@ -16450,145 +16490,154 @@
   \******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, ClickHandler, Tuple,
-	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+	var $, ClickHandler, Tuple;
 	
 	$ = __webpack_require__(/*! jquery */ 7);
 	
 	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
 	ClickHandler = (function() {
-	  function ClickHandler(board1, two, solutionService, goalContainer, BoardSolvedService, clicked) {
-	    var cell, i, j, len, len1, ref, row;
-	    this.board = board1;
+	  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum) {
+	    this.board = board;
 	    this.solutionService = solutionService;
 	    this.goalContainer = goalContainer;
+	    this.isMobile = isMobile;
 	    this.BoardSolvedService = BoardSolvedService;
-	    this.clicked = clicked != null ? clicked : [];
-	    if (this.board.cells == null) {
-	      return;
-	    }
-	    ref = this.board.cells;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      row = ref[i];
-	      if (row.length === 0) {
-	        break;
-	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.isSelected) {
-	          this.addToClicked(cell);
-	        }
-	      }
-	    }
+	    this.RunningSum = RunningSum;
+	    this.clicked = [];
+	    this.mouseDown = false;
 	  }
 	
-	  ClickHandler.prototype.bindDefaultClick = function(board) {
-	    return $('body').click((function(_this) {
+	  ClickHandler.prototype.setMouseAsDown = function() {
+	    return this.mouseDown = true;
+	  };
+	
+	  ClickHandler.prototype.setMouseAsUp = function() {
+	    if (!this.isMobile) {
+	      this.checkForSolution();
+	      this.unselectAll();
+	    }
+	    return this.mouseDown = false;
+	  };
+	
+	  ClickHandler.prototype.isMouseDown = function() {
+	    return this.mouseDown;
+	  };
+	
+	  ClickHandler.prototype.isOnMobile = function() {
+	    return this.isMobile;
+	  };
+	
+	  ClickHandler.prototype.bindDefaultMouseEvents = function() {
+	    var body;
+	    body = $('body');
+	    body.click((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
-	        return _this.resetClicked();
+	        return _this.unselectAll();
+	      };
+	    })(this));
+	    body.mousedown((function(_this) {
+	      return function(e) {
+	        return e.preventDefault();
+	      };
+	    })(this));
+	    return body.mouseup((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        return _this.setMouseAsUp();
 	      };
 	    })(this));
 	  };
 	
-	  ClickHandler.prototype.bindClickTo = function(cells) {
-	    var cell, i, j, len, len1, row;
-	    if (cells.bindClick != null) {
-	      cells.bindClick();
-	      return;
-	    }
-	    for (i = 0, len = cells.length; i < len; i++) {
-	      row = cells[i];
-	      if (row.bindClick != null) {
-	        row.bindClick();
-	        return;
+	  ClickHandler.prototype.onSelect = function(cell) {
+	    if (!this.isSelected(cell)) {
+	      if (!this.isAdjacentToLast(cell)) {
+	        this.unselectAll();
 	      }
-	      for (j = 0, len1 = row.length; j < len1; j++) {
-	        cell = row[j];
-	        if (cell.bindClick != null) {
-	          cell.bindClick();
-	        } else {
-	          console.log('WARN: object not 2D arrays or simpler or no BindClick method');
-	        }
+	      this.setMouseAsDown();
+	      this.clicked.push(cell);
+	      cell.select();
+	      this.solutionService.initialize(this.clicked);
+	      this.RunningSum.display(this.solutionService.solution, this.solutionService.value);
+	      if (this.isMobile && this.checkForSolution()) {
+	        this.unselectAll();
+	      }
+	    }
+	    return false;
+	  };
+	
+	  ClickHandler.prototype.onUnselect = function(cell) {
+	    if (this.isSelected(cell)) {
+	      if (this.clicked[this.clicked.length - 1] === cell) {
+	        cell.unselect();
+	        return this.clicked.pop();
+	      } else {
+	        this.unselectAll();
+	        throw "Last item in 'clicked' was not the given cell";
 	      }
 	    }
 	  };
 	
-	  ClickHandler.prototype.tuplesClicked = function() {
-	    var cell, i, len, ref, tuples;
+	  ClickHandler.prototype.isSelected = function(cell) {
+	    var iterCell, j, len, ref;
+	    ref = this.clicked;
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      iterCell = ref[j];
+	      if (cell === iterCell) {
+	        return true;
+	      }
+	    }
+	    return false;
+	  };
+	
+	  ClickHandler.prototype.unselectAll = function() {
+	    var i, j, ref;
+	    this.RunningSum.display('');
+	    if (this.clicked.length < 1) {
+	      return;
+	    }
+	    for (i = j = ref = this.clicked.length - 1; ref <= 0 ? j <= 0 : j >= 0; i = ref <= 0 ? ++j : --j) {
+	      this.clicked[i].unselect();
+	    }
+	    return this.clicked = [];
+	  };
+	
+	  ClickHandler.prototype.checkForSolution = function() {
+	    if (this.solutionService.isSolution()) {
+	      this.RunningSum.display('');
+	      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
+	      this.board.deleteCells(this.clickedToTuples());
+	      if (this.BoardSolvedService.isCleared(this.board)) {
+	        setTimeout(((function(_this) {
+	          return function() {
+	            return _this.BoardSolvedService.createNewBoard();
+	          };
+	        })(this)), 100);
+	      }
+	      return true;
+	    }
+	    return false;
+	  };
+	
+	  ClickHandler.prototype.isAdjacentToLast = function(cell) {
+	    var last;
+	    if (this.clicked.length < 1) {
+	      return true;
+	    }
+	    last = this.clicked[this.clicked.length - 1];
+	    return Math.abs(cell.row - last.row) <= 1 && Math.abs(cell.col - last.col) <= 1;
+	  };
+	
+	  ClickHandler.prototype.clickedToTuples = function() {
+	    var cell, j, len, ref, tuples;
 	    tuples = [];
 	    ref = this.clicked;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      cell = ref[i];
+	    for (j = 0, len = ref.length; j < len; j++) {
+	      cell = ref[j];
 	      tuples.push(new Tuple(cell.col, cell.row));
 	    }
 	    return tuples;
-	  };
-	
-	  ClickHandler.prototype.addToClicked = function(cell) {
-	    if (cell.isDeleted) {
-	      return;
-	    }
-	    return this.clicked.push(cell);
-	  };
-	
-	  ClickHandler.prototype.removeFromClicked = function() {
-	    return this.clicked.pop();
-	  };
-	
-	  ClickHandler.prototype.resetClicked = function() {
-	    var cell, i, ref, results;
-	    ref = this.clicked;
-	    results = [];
-	    for (i = ref.length - 1; i >= 0; i += -1) {
-	      cell = ref[i];
-	      results.push(this.unclickCell(cell));
-	    }
-	    return results;
-	  };
-	
-	  ClickHandler.prototype.lastClicked = function() {
-	    return this.clicked[this.clicked.length - 1];
-	  };
-	
-	  ClickHandler.prototype.clickCell = function(cell) {
-	    var ref;
-	    if (this.clicked.length === 0 || this.areAdjacent(cell, this.lastClicked())) {
-	      if (ref = this.cell, indexOf.call(this.clicked, ref) < 0) {
-	        cell.select();
-	        this.addToClicked(cell);
-	        if (this.solutionService.isSolution(this.clicked)) {
-	          this.goalContainer.deleteGoal(this.solutionService.valueIndex);
-	          this.board.deleteCells(this.tuplesClicked());
-	          this.clicked = [];
-	          if (this.BoardSolvedService.isCleared(this.board.boardValues[this.board.dimension - 1])) {
-	            return setTimeout(((function(_this) {
-	              return function() {
-	                return _this.BoardSolvedService.createNewBoard();
-	              };
-	            })(this)), 100);
-	          }
-	        }
-	      }
-	    } else {
-	      this.resetClicked();
-	      return this.clickCell(cell);
-	    }
-	  };
-	
-	  ClickHandler.prototype.areAdjacent = function(cell, otherCell) {
-	    return Math.abs(cell.row - otherCell.row) <= 1 && Math.abs(cell.col - otherCell.col) <= 1;
-	  };
-	
-	  ClickHandler.prototype.unclickCell = function(cell) {
-	    var last;
-	    last = this.lastClicked();
-	    if (cell !== this.lastClicked()) {
-	      return null;
-	    }
-	    cell.unSelect();
-	    return this.removeFromClicked(cell);
 	  };
 	
 	  return ClickHandler;
@@ -16906,9 +16955,12 @@
 	  InputSolver.compute = function(input) {
 	    var i, len, previous, sum, term, terms;
 	    terms = this.parseInput(input);
-	    previous = terms[0];
+	    previous = '';
 	    sum = parseInt(terms[0]);
-	    if (isNaN(sum)) {
+	    if (terms[0] === '-') {
+	      sum = 0;
+	    }
+	    if ((isNaN(sum)) && (terms[0] !== '-')) {
 	      return NaN;
 	    }
 	    for (i = 0, len = terms.length; i < len; i++) {
@@ -16992,7 +17044,7 @@
 	  };
 	
 	  ResetButton.unbindClick = function() {
-	    return $('#reset-button').unbind("click");
+	    return $('#reset-button').unbind('click');
 	  };
 	
 	  return ResetButton;
@@ -17004,6 +17056,68 @@
 
 /***/ },
 /* 15 */
+/*!****************************************!*\
+  !*** ./app/services/RunningSum.coffee ***!
+  \****************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var $, RunningSum;
+	
+	$ = __webpack_require__(/*! jquery */ 7);
+	
+	RunningSum = (function() {
+	  function RunningSum() {}
+	
+	  RunningSum.display = function(solution, value) {
+	    var expression;
+	    if (solution === '') {
+	      expression = '';
+	    } else if (isNaN(value)) {
+	      expression = 'Invalid Expression';
+	    } else if (this.isCompleteExpression(solution)) {
+	      expression = (this.addParens(solution)) + '=' + value;
+	    } else {
+	      expression = solution;
+	    }
+	    return $('#running-sum').html(this.format(expression));
+	  };
+	
+	  RunningSum.isCompleteExpression = function(solution) {
+	    return solution.search(/-?\d+[-+\*]\d+/g) === 0;
+	  };
+	
+	  RunningSum.addParens = function(solution) {
+	    var char, first, index, lastOpIndex;
+	    if (solution.length < 3) {
+	      return solution;
+	    }
+	    lastOpIndex = solution.search(/\d[-+\*]/g) + 1;
+	    index = lastOpIndex;
+	    while (index < solution.length) {
+	      char = solution[index];
+	      if (lastOpIndex < index && (char === '+' || char === '-' || char === '*')) {
+	        first = '(' + (solution.substring(0, index)) + ')';
+	        lastOpIndex = first.length;
+	        solution = first + (solution.substring(index));
+	      }
+	      index++;
+	    }
+	    return solution;
+	  };
+	
+	  RunningSum.format = function(input) {
+	    return input.replace(/\*/g, ' x ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
+	  };
+	
+	  return RunningSum;
+	
+	})();
+	
+	module.exports = RunningSum;
+
+
+/***/ },
+/* 16 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -17025,32 +17139,36 @@
 	    }
 	  }
 	
-	  SolutionService.prototype.isSolution = function(clickedCells) {
-	    var solution, value;
-	    if (!((clickedCells != null) && clickedCells.length >= 3)) {
+	  SolutionService.prototype.initialize = function(clickedCells) {
+	    this.setSolutionString(clickedCells);
+	    return this.value = InputSolver.compute(this.solution);
+	  };
+	
+	  SolutionService.prototype.isSolution = function() {
+	    var ref, ref1;
+	    if (!(((ref = this.solution) != null ? ref.length : void 0) >= 3)) {
 	      return false;
 	    }
-	    solution = this.getSolutionString(clickedCells);
-	    if (solution[solution.length - 1] === '+' || solution[solution.length - 1] === '-' || solution[solution.length - 1] === '*') {
+	    if (this.solution[this.solution.length - 1] === '+' || this.solution[this.solution.length - 1] === '-' || this.solution[this.solution.length - 1] === '*') {
 	      return false;
 	    }
-	    value = InputSolver.compute(solution);
-	    if (indexOf.call(this.goals, value) < 0) {
+	    if (ref1 = this.value, indexOf.call(this.goals, ref1) < 0) {
 	      return false;
 	    }
-	    this.valueIndex = this.goals.indexOf(value);
+	    this.valueIndex = this.goals.indexOf(this.value);
 	    this.goals[this.valueIndex] = ' ';
 	    return true;
 	  };
 	
-	  SolutionService.prototype.getSolutionString = function(cells) {
-	    var c, i, len, solution;
-	    solution = '';
+	  SolutionService.prototype.setSolutionString = function(cells) {
+	    var c, i, len, results;
+	    this.solution = '';
+	    results = [];
 	    for (i = 0, len = cells.length; i < len; i++) {
 	      c = cells[i];
-	      solution += this.board.boardValues[c.row][c.col];
+	      results.push(this.solution += this.board.boardValues[c.row][c.col]);
 	    }
-	    return solution;
+	    return results;
 	  };
 	
 	  return SolutionService;
@@ -17061,7 +17179,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -17071,17 +17189,19 @@
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
 	Board = (function() {
-	  function Board(boardValues, scene, goals, symbols, goalContainer, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService) {
+	  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum) {
 	    this.boardValues = boardValues;
 	    this.scene = scene;
 	    this.goals = goals;
 	    this.symbols = symbols;
 	    this.goalContainer = goalContainer;
+	    this.isMobile = isMobile;
 	    this.Cell = Cell;
 	    this.Colors = Colors;
 	    this.ClickHandler = ClickHandler;
 	    this.SolutionService = SolutionService;
 	    this.BoardSolvedService = BoardSolvedService;
+	    this.RunningSum = RunningSum;
 	    this.createCells = bind(this.createCells, this);
 	    this.createEmptyCells = bind(this.createEmptyCells, this);
 	    this.createBoard = bind(this.createBoard, this);
@@ -17094,12 +17214,11 @@
 	  Board.prototype.initializer = function() {
 	    var solutionService;
 	    solutionService = new this.SolutionService(this, this.goals);
-	    this.clickHandler = new this.ClickHandler(this, this.two, solutionService, this.goalContainer, this.BoardSolvedService);
+	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum);
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);
-	    this.clickHandler.bindDefaultClick(this.board);
-	    this.clickHandler.bindClickTo(this.cells);
+	    this.clickHandler.bindDefaultMouseEvents();
 	    return this.scene.update();
 	  };
 	
@@ -17244,106 +17363,39 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	var GoalContainer;
+	var $, GoalContainer;
+	
+	$ = __webpack_require__(/*! jquery */ 7);
 	
 	GoalContainer = (function() {
-	  function GoalContainer(scene, inputs, symbols, Colors) {
-	    this.scene = scene;
+	  function GoalContainer(inputs, Colors) {
+	    var goal, i, len, ref;
 	    this.inputs = inputs;
-	    this.symbols = symbols;
 	    this.Colors = Colors;
-	    this.inputsToSymbols();
-	    this.show();
+	    this.container = $('#goals');
+	    ref = this.inputs;
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      goal = ref[i];
+	      this.container.append('<span class="goal-span">' + goal + '</span>');
+	    }
 	  }
 	
-	  GoalContainer.prototype.inputsToSymbols = function() {
-	    var character, i, index, input, j, len, len1, ref, ref1;
-	    this.inputSymbols = [];
-	    this.count = 0;
-	    ref = this.inputs;
-	    for (index = i = 0, len = ref.length; i < len; index = ++i) {
-	      input = ref[index];
-	      this.inputSymbols.push([]);
-	      ref1 = input.toString();
-	      for (j = 0, len1 = ref1.length; j < len1; j++) {
-	        character = ref1[j];
-	        this.inputSymbols[index].push(this.symbols[this.charToIndex(character)].clone());
-	        this.count++;
-	      }
-	      this.count++;
-	    }
-	    this.count--;
-	    return this.inputSymbols;
-	  };
-	
-	  GoalContainer.prototype.show = function() {
-	    var character, i, index, inputStr, j, len, len1, ref, symbolSize;
-	    index = 0;
-	    symbolSize = this.scene.width / this.count;
-	    ref = this.inputSymbols;
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      inputStr = ref[i];
-	      for (j = 0, len1 = inputStr.length; j < len1; j++) {
-	        character = inputStr[j];
-	        character.translation.set(index * symbolSize, 0);
-	        character.noStroke().fill = '#EFE8BE';
-	        character.visible = true;
-	        character.scale = Math.min(1, (this.scene.width / 100) / this.count);
-	        this.scene.add(character);
-	        index++;
-	      }
-	      index++;
-	    }
-	    return this.scene.update();
-	  };
-	
-	  GoalContainer.prototype.charToIndex = function(character) {
-	    switch (character) {
-	      case '+':
-	        return 10;
-	      case '-':
-	        return 11;
-	      case '*':
-	        return 12;
-	      default:
-	        return parseInt(character);
-	    }
-	  };
-	
-	  GoalContainer.prototype.deleteGoal = function(index) {
-	    var character, i, len, ref, results;
-	    ref = this.inputSymbols[index];
-	    results = [];
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      character = ref[i];
-	      results.push(character.noStroke().fill = '#2F4F4F');
-	    }
-	    return results;
+	  GoalContainer.prototype.deleteGoal = function(idx) {
+	    return $(this.container.children()[idx]).css('color', this.Colors.deletedGoalGrey);
 	  };
 	
 	  GoalContainer.prototype.resetGoals = function() {
-	    var character, i, inputStr, len, ref, results;
-	    ref = this.inputSymbols;
-	    results = [];
-	    for (i = 0, len = ref.length; i < len; i++) {
-	      inputStr = ref[i];
-	      results.push((function() {
-	        var j, len1, results1;
-	        results1 = [];
-	        for (j = 0, len1 = inputStr.length; j < len1; j++) {
-	          character = inputStr[j];
-	          results1.push(character.noStroke().fill = '#EFE8BE');
-	        }
-	        return results1;
-	      })());
-	    }
-	    return results;
+	    return $(this.container.children()).css('color', this.Colors.cell);
+	  };
+	
+	  GoalContainer.prototype.clearGoals = function() {
+	    return this.container.empty();
 	  };
 	
 	  return GoalContainer;
@@ -17354,7 +17406,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -17364,40 +17416,55 @@
 	
 	$ = __webpack_require__(/*! jquery */ 7);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 19);
+	Colors = __webpack_require__(/*! ./Colors */ 20);
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
+	    var hitboxSize;
 	    this.col = col1;
 	    this.row = row1;
 	    this.size = size;
 	    this.scene = scene;
 	    this.board = board;
 	    this.clickHandler = clickHandler;
-	    this.isDeleted = false;
-	    this.isSelected = false;
+	    this.isDeleted = this.isSelected = false;
 	    this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
-	    if (symbolBlueprint) {
-	      this.cell = this.scene.makeGroup(this.rect, this.newSymbol(symbolBlueprint));
-	    } else {
-	      this.cell = this.scene.makeGroup(this.rect);
+	    if (!((symbolBlueprint != null) && (this.clickHandler != null))) {
+	      this.cell = this.rect;
+	      this.scene.update();
+	      return;
 	    }
+	    hitboxSize = 0.7 * this.size;
+	    this.hitbox = this.scene.makeRectangle(this.getX(), this.getY(), hitboxSize, hitboxSize);
+	    this.hitbox.noStroke();
+	    this.cloneSymbol(symbolBlueprint);
+	    this.hitboxGroup = this.scene.makeGroup(this.hitbox, this.symbol);
+	    this.cell = this.scene.makeGroup(this.rect, this.hitboxGroup);
 	    this.scene.update();
+	    if (!this.clickHandler.isOnMobile()) {
+	      this.bindMouseOver();
+	      this.bindMouseUp();
+	      this.bindMouseDown();
+	    } else {
+	      this.bindClick();
+	    }
 	  }
 	
-	  Cell.prototype.newSymbol = function(blueprint) {
-	    var offset, symbol;
+	  Cell.prototype.cloneSymbol = function(blueprint) {
+	    var offset;
 	    offset = -this.size * 4 / 10;
-	    symbol = blueprint.clone();
-	    symbol.translation.set(this.getX() + offset, this.getY() + offset);
-	    symbol.scale = (this.size / 100) * .8;
-	    symbol.noStroke().fill = Colors.symbol;
-	    return symbol;
+	    this.symbol = blueprint.clone();
+	    this.symbol.translation.set(this.getX() + offset, this.getY() + offset);
+	    this.symbol.scale = (this.size / 100) * 0.8;
+	    return this.symbol.noStroke().fill = Colors.symbol;
 	  };
 	
 	  Cell.prototype.setColor = function(c) {
 	    this.color = c;
 	    this.rect.fill = c;
+	    if (this.hitbox != null) {
+	      this.hitbox.fill = c;
+	    }
 	    return this.scene.update();
 	  };
 	
@@ -17459,34 +17526,76 @@
 	    return this.setIndices(row, col);
 	  };
 	
+	  Cell.prototype.bindClick = function() {
+	    return $('#' + this.hitboxGroup.id).click((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        if (_this.isDeleted) {
+	          return;
+	        }
+	        if (!_this.isSelected) {
+	          return _this.clickHandler.onSelect(_this);
+	        } else {
+	          return _this.clickHandler.onUnselect(_this);
+	        }
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMouseOver = function() {
+	    return $('#' + this.hitboxGroup.id).mouseover((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        if (_this.isDeleted) {
+	          return;
+	        }
+	        if (!_this.isSelected && _this.clickHandler.isMouseDown()) {
+	          return _this.clickHandler.onSelect(_this);
+	        }
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMouseUp = function() {
+	    return $('#' + this.hitboxGroup.id).mouseup((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        return _this.clickHandler.setMouseAsUp();
+	      };
+	    })(this));
+	  };
+	
+	  Cell.prototype.bindMouseDown = function() {
+	    return $('#' + this.hitboxGroup.id).mousedown((function(_this) {
+	      return function(e) {
+	        e.preventDefault();
+	        e.stopPropagation();
+	        if (_this.isDeleted) {
+	          return;
+	        }
+	        if (!_this.isSelected) {
+	          return _this.clickHandler.onSelect(_this);
+	        }
+	      };
+	    })(this));
+	  };
+	
 	  Cell.prototype.select = function() {
 	    this.isSelected = true;
 	    return this.setColor(Colors.select);
 	  };
 	
-	  Cell.prototype.unSelect = function() {
+	  Cell.prototype.unselect = function() {
 	    this.isSelected = false;
 	    return this.setColor(Colors.cell);
 	  };
 	
-	  Cell.prototype.bindClick = function() {
-	    if (this.clickHandler == null) {
-	      return;
-	    }
-	    return $(this.cell._renderer.elem).click((function(_this) {
-	      return function(e) {
-	        e.preventDefault();
-	        if (_this.isDeleted) {
-	          return;
-	        }
-	        if (_this.isSelected) {
-	          _this.clickHandler.unclickCell(_this);
-	        } else {
-	          _this.clickHandler.clickCell(_this);
-	        }
-	        return e.stopPropagation();
-	      };
-	    })(this));
+	  Cell.prototype["delete"] = function() {
+	    this.hide();
+	    return this.isDeleted = true;
 	  };
 	
 	  Cell.prototype.x = function() {
@@ -17497,11 +17606,6 @@
 	    return this.row;
 	  };
 	
-	  Cell.prototype["delete"] = function() {
-	    this.hide();
-	    return this.isDeleted = true;
-	  };
-	
 	  return Cell;
 	
 	})();
@@ -17510,7 +17614,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
@@ -17525,7 +17629,8 @@
 	  emptyCellBorder: '#41565c',
 	  board: '#294248',
 	  select: '#c7a579',
-	  symbol: 'black'
+	  symbol: 'black',
+	  deletedGoalGrey: '#2F4F4F'
 	};
 	
 	module.exports = Colors;

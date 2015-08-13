@@ -4,26 +4,41 @@ Colors = require './Colors'
 class Cell
 
   constructor: (@col, @row, @size, @scene, @board, @clickHandler, symbolBlueprint) ->
-    @isDeleted = false
-    @isSelected = false
+    @isDeleted = @isSelected = false
     @rect = @scene.makeRectangle @getX(), @getY(), @size, @size
-    if symbolBlueprint
-      @cell = @scene.makeGroup @rect, (@newSymbol symbolBlueprint)
-    else
-      @cell = @scene.makeGroup @rect
+
+    unless symbolBlueprint? and @clickHandler?
+      @cell = @rect
+      @scene.update()
+      return
+
+    hitboxSize = 0.7 * @size
+    @hitbox = @scene.makeRectangle @getX(), @getY(), hitboxSize, hitboxSize
+    @hitbox.noStroke()
+
+    @cloneSymbol symbolBlueprint
+    @hitboxGroup = @scene.makeGroup @hitbox, @symbol
+    @cell = @scene.makeGroup @rect, @hitboxGroup
     @scene.update()
 
-  newSymbol: (blueprint)->
+    unless @clickHandler.isOnMobile()
+      @bindMouseOver()
+      @bindMouseUp()
+      @bindMouseDown()
+    else
+      @bindClick()
+
+  cloneSymbol: (blueprint)->
     offset = - @size * 4 / 10
-    symbol = blueprint.clone()
-    symbol.translation.set @getX() + offset, @getY() + offset
-    symbol.scale = (@size / 100) *.8
-    symbol.noStroke().fill = Colors.symbol
-    symbol
+    @symbol = blueprint.clone()
+    @symbol.translation.set @getX() + offset, @getY() + offset
+    @symbol.scale = (@size / 100) * 0.8
+    @symbol.noStroke().fill = Colors.symbol
 
   setColor: (c) ->
     @color = c
     @rect.fill = c
+    if @hitbox? then @hitbox.fill = c
     @scene.update()
 
   setBorder: (c) ->
@@ -69,31 +84,52 @@ class Cell
 
     @setIndices row, col
 
+  bindClick: ->
+    $('#' + @hitboxGroup.id).click (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      return if @isDeleted
+      unless @isSelected
+        @clickHandler.onSelect this
+      else
+        @clickHandler.onUnselect this
+
+  bindMouseOver: ->
+    $('#' + @hitboxGroup.id).mouseover (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      return if @isDeleted
+      if not @isSelected and @clickHandler.isMouseDown()
+          @clickHandler.onSelect this
+
+  bindMouseUp: ->
+    $('#' + @hitboxGroup.id).mouseup (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      @clickHandler.setMouseAsUp()
+
+  bindMouseDown: ->
+    $('#' + @hitboxGroup.id).mousedown (e) =>
+      e.preventDefault()
+      e.stopPropagation()
+      return if @isDeleted
+      unless @isSelected
+        @clickHandler.onSelect this
+
   select: ->
     @isSelected = true
     @setColor Colors.select
 
-  unSelect: ->
+  unselect: ->
     @isSelected = false
     @setColor Colors.cell
-
-  bindClick: ->
-    return unless @clickHandler?
-    $(@cell._renderer.elem).click (e) =>
-      e.preventDefault()
-      return if @isDeleted
-      if @isSelected
-        @clickHandler.unclickCell this
-      else
-        @clickHandler.clickCell this
-      e.stopPropagation()
-
-  x: -> @col
-
-  y: -> @row
 
   delete: ->
     @hide()
     @isDeleted = true
+
+  x: -> @col
+
+  y: -> @row
 
 module.exports = Cell

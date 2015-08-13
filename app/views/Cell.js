@@ -7,36 +7,51 @@ Colors = require('./Colors');
 
 Cell = (function() {
   function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
+    var hitboxSize;
     this.col = col1;
     this.row = row1;
     this.size = size;
     this.scene = scene;
     this.board = board;
     this.clickHandler = clickHandler;
-    this.isDeleted = false;
-    this.isSelected = false;
+    this.isDeleted = this.isSelected = false;
     this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
-    if (symbolBlueprint) {
-      this.cell = this.scene.makeGroup(this.rect, this.newSymbol(symbolBlueprint));
-    } else {
-      this.cell = this.scene.makeGroup(this.rect);
+    if (!((symbolBlueprint != null) && (this.clickHandler != null))) {
+      this.cell = this.rect;
+      this.scene.update();
+      return;
     }
+    hitboxSize = 0.7 * this.size;
+    this.hitbox = this.scene.makeRectangle(this.getX(), this.getY(), hitboxSize, hitboxSize);
+    this.hitbox.noStroke();
+    this.cloneSymbol(symbolBlueprint);
+    this.hitboxGroup = this.scene.makeGroup(this.hitbox, this.symbol);
+    this.cell = this.scene.makeGroup(this.rect, this.hitboxGroup);
     this.scene.update();
+    if (!this.clickHandler.isOnMobile()) {
+      this.bindMouseOver();
+      this.bindMouseUp();
+      this.bindMouseDown();
+    } else {
+      this.bindClick();
+    }
   }
 
-  Cell.prototype.newSymbol = function(blueprint) {
-    var offset, symbol;
+  Cell.prototype.cloneSymbol = function(blueprint) {
+    var offset;
     offset = -this.size * 4 / 10;
-    symbol = blueprint.clone();
-    symbol.translation.set(this.getX() + offset, this.getY() + offset);
-    symbol.scale = (this.size / 100) * .8;
-    symbol.noStroke().fill = Colors.symbol;
-    return symbol;
+    this.symbol = blueprint.clone();
+    this.symbol.translation.set(this.getX() + offset, this.getY() + offset);
+    this.symbol.scale = (this.size / 100) * 0.8;
+    return this.symbol.noStroke().fill = Colors.symbol;
   };
 
   Cell.prototype.setColor = function(c) {
     this.color = c;
     this.rect.fill = c;
+    if (this.hitbox != null) {
+      this.hitbox.fill = c;
+    }
     return this.scene.update();
   };
 
@@ -98,34 +113,76 @@ Cell = (function() {
     return this.setIndices(row, col);
   };
 
+  Cell.prototype.bindClick = function() {
+    return $('#' + this.hitboxGroup.id).click((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected) {
+          return _this.clickHandler.onSelect(_this);
+        } else {
+          return _this.clickHandler.onUnselect(_this);
+        }
+      };
+    })(this));
+  };
+
+  Cell.prototype.bindMouseOver = function() {
+    return $('#' + this.hitboxGroup.id).mouseover((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected && _this.clickHandler.isMouseDown()) {
+          return _this.clickHandler.onSelect(_this);
+        }
+      };
+    })(this));
+  };
+
+  Cell.prototype.bindMouseUp = function() {
+    return $('#' + this.hitboxGroup.id).mouseup((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return _this.clickHandler.setMouseAsUp();
+      };
+    })(this));
+  };
+
+  Cell.prototype.bindMouseDown = function() {
+    return $('#' + this.hitboxGroup.id).mousedown((function(_this) {
+      return function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_this.isDeleted) {
+          return;
+        }
+        if (!_this.isSelected) {
+          return _this.clickHandler.onSelect(_this);
+        }
+      };
+    })(this));
+  };
+
   Cell.prototype.select = function() {
     this.isSelected = true;
     return this.setColor(Colors.select);
   };
 
-  Cell.prototype.unSelect = function() {
+  Cell.prototype.unselect = function() {
     this.isSelected = false;
     return this.setColor(Colors.cell);
   };
 
-  Cell.prototype.bindClick = function() {
-    if (this.clickHandler == null) {
-      return;
-    }
-    return $(this.cell._renderer.elem).click((function(_this) {
-      return function(e) {
-        e.preventDefault();
-        if (_this.isDeleted) {
-          return;
-        }
-        if (_this.isSelected) {
-          _this.clickHandler.unclickCell(_this);
-        } else {
-          _this.clickHandler.clickCell(_this);
-        }
-        return e.stopPropagation();
-      };
-    })(this));
+  Cell.prototype["delete"] = function() {
+    this.hide();
+    return this.isDeleted = true;
   };
 
   Cell.prototype.x = function() {
@@ -134,11 +191,6 @@ Cell = (function() {
 
   Cell.prototype.y = function() {
     return this.row;
-  };
-
-  Cell.prototype["delete"] = function() {
-    this.hide();
-    return this.isDeleted = true;
   };
 
   return Cell;
