@@ -7254,6 +7254,7 @@
 	  };
 	
 	  BoardSolvedService.createNewBoard = function() {
+	    document.getElementById('new-game-button').disabled = false;
 	    return $('#new-game-button').trigger('click');
 	  };
 	
@@ -16609,11 +16610,8 @@
 	      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
 	      this.board.deleteCells(this.clickedToTuples());
 	      if (this.BoardSolvedService.isCleared(this.board)) {
-	        setTimeout(((function(_this) {
-	          return function() {
-	            return _this.BoardSolvedService.createNewBoard();
-	          };
-	        })(this)), 100);
+	        document.getElementById('new-game-button').disabled = true;
+	        this.board.successAnimation();
 	      }
 	      return true;
 	    }
@@ -17209,6 +17207,7 @@
 	    this.dimension = this.boardValues.length;
 	    this.initialValues = this.copyValues(this.boardValues);
 	    this.initializer();
+	    this.getSuccessSVG();
 	  }
 	
 	  Board.prototype.initializer = function() {
@@ -17353,6 +17352,33 @@
 	    this.boardValues = this.copyValues(this.initialValues);
 	    this.goalContainer.resetGoals();
 	    return this.initializer();
+	  };
+	
+	  Board.prototype.getSuccessSVG = function() {
+	    this.successSVG = this.symbols[this.symbols.length - 1].clone();
+	    return this.successSVG.noStroke().fill = '#D1857F';
+	  };
+	
+	  Board.prototype.successAnimation = function() {
+	    var delta;
+	    this.success = this.scene.makeGroup(this.successSVG);
+	    this.success.translation.set(this.scene.width / 2, this.scene.width / 2);
+	    this.success.scale = 0.001;
+	    delta = 0.027;
+	    return this.scene.bind('update', (function(_this) {
+	      return function(frameCount) {
+	        if (!(_this.success.rotation > 12.535)) {
+	          delta = (1 - _this.success.scale) * 0.07;
+	        }
+	        _this.success.scale += delta;
+	        _this.success.rotation += delta * Math.PI * 4;
+	        if (_this.success.rotation > Math.PI * 4 * 0.999999) {
+	          _this.scene.unbind('update');
+	          _this.success.scale = 1;
+	          return _this.success.rotation = 0;
+	        }
+	      };
+	    })(this)).play();
 	  };
 	
 	  return Board;

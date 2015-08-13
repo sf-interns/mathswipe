@@ -176,17 +176,22 @@ Board = (function() {
   };
 
   Board.prototype.successAnimation = function() {
+    var delta;
     this.success = this.scene.makeGroup(this.successSVG);
     this.success.translation.set(this.scene.width / 2, this.scene.width / 2);
     this.success.scale = 0.001;
+    delta = 0.027;
     return this.scene.bind('update', (function(_this) {
       return function(frameCount) {
-        var delta;
-        delta = (1 - _this.success.scale) * 0.05;
+        if (!(_this.success.rotation > 12.535)) {
+          delta = (1 - _this.success.scale) * 0.07;
+        }
         _this.success.scale += delta;
-        _this.success.rotation += delta * Math.PI * 2;
-        if (_this.success.scale > 0.999) {
-          return _this.success.scale = _this.success.rotation = 0;
+        _this.success.rotation += delta * Math.PI * 4;
+        if (_this.success.rotation > Math.PI * 4 * 0.999999) {
+          _this.scene.unbind('update');
+          _this.success.scale = 1;
+          return _this.success.rotation = 0;
         }
       };
     })(this)).play();

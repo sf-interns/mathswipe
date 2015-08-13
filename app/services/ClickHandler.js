@@ -120,11 +120,6 @@ ClickHandler = (function() {
       if (this.BoardSolvedService.isCleared(this.board)) {
         document.getElementById('new-game-button').disabled = true;
         this.board.successAnimation();
-        setTimeout(((function(_this) {
-          return function() {
-            return _this.BoardSolvedService.createNewBoard();
-          };
-        })(this)), 1850);
       }
       return true;
     }

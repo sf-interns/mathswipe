@@ -120,12 +120,16 @@ class Board
     @success = @scene.makeGroup @successSVG
     @success.translation.set(@scene.width / 2, @scene.width / 2)
     @success.scale = 0.001
+    delta = 0.027
     @scene.bind('update', (frameCount) =>
-      delta = (1 - @success.scale) * 0.05
+      unless @success.rotation > 12.535
+        delta = (1 - @success.scale) * 0.07
       @success.scale += delta
-      @success.rotation += delta * Math.PI * 2
-      if @success.scale > 0.999
-        @success.scale = @success.rotation = 0
+      @success.rotation += delta * Math.PI * 4
+      if @success.rotation > Math.PI * 4 * 0.999999
+        @scene.unbind 'update'
+        @success.scale = 1
+        @success.rotation = 0
     ).play()
 
 module.exports = Board
