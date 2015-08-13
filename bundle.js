@@ -6968,7 +6968,15 @@
 	    gameModel = this.generateBoard(inputs, length);
 	    this.goalContainer = new GoalContainer(answers, Colors);
 	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-	    return ResetButton.bindClick(this.board);
+	    ResetButton.bindClick(this.board);
+	    if (this.isMobile().any() == null) {
+	      return this.cursorToPointer();
+	    }
+	  };
+	
+	  MathSwipeController.prototype.cursorToPointer = function() {
+	    $('#game').addClass('pointer');
+	    return $('#game-buton-wrapper').addClass('pointer');
 	  };
 	
 	  MathSwipeController.prototype.createHowToPlay = function() {
