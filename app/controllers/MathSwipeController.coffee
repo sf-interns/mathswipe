@@ -51,7 +51,7 @@ class MathSwipeController
 
   cursorToPointer: ->
     $('#game').addClass('pointer')
-    $('#game-buton-wrapper').addClass('pointer')
+    $('#game-button-wrapper').addClass('pointer')
 
   createHowToPlay: ->
     if @isMobile().any()?

@@ -6976,7 +6976,7 @@
 	
 	  MathSwipeController.prototype.cursorToPointer = function() {
 	    $('#game').addClass('pointer');
-	    return $('#game-buton-wrapper').addClass('pointer');
+	    return $('#game-button-wrapper').addClass('pointer');
 	  };
 	
 	  MathSwipeController.prototype.createHowToPlay = function() {
