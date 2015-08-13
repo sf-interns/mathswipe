@@ -5,6 +5,7 @@ class Board
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
+    @getSuccessSVG()
 
   initializer: =>
     solutionService = new @SolutionService this, @goals
@@ -110,5 +111,25 @@ class Board
     @boardValues = @copyValues @initialValues
     @goalContainer.resetGoals()
     @initializer()
+
+  getSuccessSVG: ->
+    @successSVG = @symbols[@symbols.length - 1].clone()
+    @successSVG.noStroke().fill = '#D1857F'
+
+  successAnimation: ->
+    @success = @scene.makeGroup @successSVG
+    @success.translation.set(@scene.width / 2, @scene.width / 2)
+    @success.scale = 0.001
+    delta = 0.027
+    @scene.bind('update', (frameCount) =>
+      unless @success.rotation > 12.535
+        delta = (1 - @success.scale) * 0.07
+      @success.scale += delta
+      @success.rotation += delta * Math.PI * 4
+      if @success.rotation > Math.PI * 4 * 0.999999
+        @scene.unbind 'update'
+        @success.scale = 1
+        @success.rotation = 0
+    ).play()
 
 module.exports = Board

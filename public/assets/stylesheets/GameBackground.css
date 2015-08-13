@@ -77,4 +77,10 @@ body {
       height: 40px;
       width: 100%; }
 
+.how-to-play {
+  margin-top: 50px;
+  color: #D1857F;
+  font-size: 20px;
+  font-family: monospace; }
+
 /*# sourceMappingURL=GameBackground.css.map */
