@@ -77,7 +77,6 @@ class ClickHandler
       @goalContainer.deleteGoal @solutionService.valueIndex
       @board.deleteCells @clickedToTuples()
       if @BoardSolvedService.isCleared @board
-        document.getElementById('new-game-button').disabled = true
         @board.successAnimation()
       return true
     return false

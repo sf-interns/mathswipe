@@ -20,7 +20,6 @@ BoardSolvedService = (function() {
   };
 
   BoardSolvedService.createNewBoard = function() {
-    document.getElementById('new-game-button').disabled = false;
     return $('#new-game-button').trigger('click');
   };
 

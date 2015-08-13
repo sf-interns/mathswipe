@@ -7254,7 +7254,6 @@
 	  };
 	
 	  BoardSolvedService.createNewBoard = function() {
-	    document.getElementById('new-game-button').disabled = false;
 	    return $('#new-game-button').trigger('click');
 	  };
 	
@@ -16610,7 +16609,6 @@
 	      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
 	      this.board.deleteCells(this.clickedToTuples());
 	      if (this.BoardSolvedService.isCleared(this.board)) {
-	        document.getElementById('new-game-button').disabled = true;
 	        this.board.successAnimation();
 	      }
 	      return true;

@@ -118,7 +118,6 @@ ClickHandler = (function() {
       this.goalContainer.deleteGoal(this.solutionService.valueIndex);
       this.board.deleteCells(this.clickedToTuples());
       if (this.BoardSolvedService.isCleared(this.board)) {
-        document.getElementById('new-game-button').disabled = true;
         this.board.successAnimation();
       }
       return true;

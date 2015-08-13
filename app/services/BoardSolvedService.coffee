@@ -9,7 +9,6 @@ class BoardSolvedService
     true
 
   @createNewBoard: ->
-    document.getElementById('new-game-button').disabled = false
     $('#new-game-button').trigger('click')
 
 module.exports = BoardSolvedService
