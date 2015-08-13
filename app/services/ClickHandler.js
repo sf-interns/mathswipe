@@ -118,11 +118,7 @@ ClickHandler = (function() {
       this.goalContainer.deleteGoal(this.solutionService.valueIndex);
       this.board.deleteCells(this.clickedToTuples());
       if (this.BoardSolvedService.isCleared(this.board)) {
-        setTimeout(((function(_this) {
-          return function() {
-            return _this.BoardSolvedService.createNewBoard();
-          };
-        })(this)), 100);
+        this.board.successAnimation();
       }
       return true;
     }

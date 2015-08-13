@@ -77,7 +77,7 @@ class ClickHandler
       @goalContainer.deleteGoal @solutionService.valueIndex
       @board.deleteCells @clickedToTuples()
       if @BoardSolvedService.isCleared @board
-        setTimeout (() => @BoardSolvedService.createNewBoard()), 100
+        @board.successAnimation()
       return true
     return false
 
