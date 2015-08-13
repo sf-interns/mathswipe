@@ -6,5 +6,6 @@ Colors =
   board: '#294248'
   select: '#c7a579'
   symbol: 'black'
+  deletedGoalGrey: '#2F4F4F'
 
 module.exports = Colors

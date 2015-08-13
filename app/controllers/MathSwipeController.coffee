@@ -19,10 +19,10 @@ class MathSwipeController
 
   constructor: ->
     @gameScene = @createGameScene()
-    @goalsScene = @createGoalsScene()
     @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
+    @createHowToPlay()
     # @tests()
 
   initialize: ->
@@ -32,22 +32,35 @@ class MathSwipeController
 
     inputLengths = RandomizedFitLength.generate length * length
     for inputSize in inputLengths
-      expression = (ExpressionGenerator.generate inputSize)
-      inputs.push expression.split('')
+      value = -1
+      while value < 1 or value > 300
+        expression = ExpressionGenerator.generate inputSize
+        value = InputSolver.compute expression
       answers.push (InputSolver.compute expression)
+      inputs.push expression.split('')
 
     console.log i for i in inputs
     console.log '\n'
 
     gameModel = @generateBoard inputs, length
-    @goalContainer = new GoalContainer @goalsScene, answers, @symbols, Colors
+    @goalContainer = new GoalContainer answers, Colors
     @board = new Board gameModel, @gameScene, answers, @symbols, @goalContainer, @isMobile().any()?, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+
+  createHowToPlay: ->
+    if @isMobile().any()?
+      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
+        clearing the board. Click adjacent tiles to create an
+        equation, and if it equals an answer, the tiles disappear!')
+    else
+      $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by
+        clearing the board. Drag your mouse across the tiles to create an
+        equation, and if it equals an answer, the tiles disappear!')
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       @gameScene.clear()
-      @goalsScene.clear()
+      @goalContainer.clearGoals()
       ResetButton.unbindClick()
       @initialize()
 
@@ -64,13 +77,6 @@ class MathSwipeController
 
   createGoalsScene: ->
     goalsDom = document.getElementById('goals')
-    scene = new Two(
-      fullscreen: false
-      autostart: true
-      height: 100
-      width: goalsDom.clientWidth
-    ).appendTo(goalsDom);
-    return scene
 
   getSymbols: ->
     scene = new Two()
