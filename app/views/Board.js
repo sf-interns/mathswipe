@@ -182,10 +182,10 @@ Board = (function() {
     return this.scene.bind('update', (function(_this) {
       return function(frameCount) {
         var delta;
-        delta = (1 - _this.success.scale) * 0.03;
+        delta = (1 - _this.success.scale) * 0.05;
         _this.success.scale += delta;
         _this.success.rotation += delta * Math.PI * 2;
-        if (_this.success.scale > 0.9999) {
+        if (_this.success.scale > 0.999) {
           return _this.success.scale = _this.success.rotation = 0;
         }
       };

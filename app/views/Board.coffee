@@ -121,11 +121,10 @@ class Board
     @success.translation.set(@scene.width / 2, @scene.width / 2)
     @success.scale = 0.001
     @scene.bind('update', (frameCount) =>
-      delta = (1 - @success.scale) * 0.03
+      delta = (1 - @success.scale) * 0.05
       @success.scale += delta
-      # @success.rotation = frameCount/30
       @success.rotation += delta * Math.PI * 2
-      if @success.scale > 0.9999
+      if @success.scale > 0.999
         @success.scale = @success.rotation = 0
     ).play()
 
