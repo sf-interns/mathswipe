@@ -1,4 +1,4 @@
-$ = require 'jquery'
+$     = require 'jquery'
 Tuple = require '../models/Tuple'
 
 class ClickHandler

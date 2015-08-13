@@ -1,6 +1,6 @@
-Two                 = require 'two.js'
+$                   = require 'jquery'
 MathSwipeController = require './app/controllers/MathSwipeController'
 Tuple               = require './app/models/Tuple'
-$                   = require 'jquery'
+Two                 = require 'two.js'
 
 game = new MathSwipeController
