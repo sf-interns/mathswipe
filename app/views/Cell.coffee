@@ -4,34 +4,41 @@ Colors = require './Colors'
 class Cell
 
   constructor: (@col, @row, @size, @scene, @board, @clickHandler, symbolBlueprint) ->
-    @isDeleted = false
-    @isSelected = false
+    @isDeleted = @isSelected = false
     @rect = @scene.makeRectangle @getX(), @getY(), @size, @size
-    if symbolBlueprint
-      @cell = @scene.makeGroup @rect, (@newSymbol symbolBlueprint)
-    else
-      @cell = @scene.makeGroup @rect
+
+    unless symbolBlueprint? and @clickHandler?
+      @cell = @rect
+      @scene.update()
+      return
+
+    hitboxSize = 0.7 * @size
+    @hitbox = @scene.makeRectangle @getX(), @getY(), hitboxSize, hitboxSize
+    @hitbox.noStroke()
+
+    @cloneSymbol symbolBlueprint
+    @hitboxGroup = @scene.makeGroup @hitbox, @symbol
+    @cell = @scene.makeGroup @rect, @hitboxGroup
     @scene.update()
 
-    if @clickHandler?
-      unless @clickHandler.isOnMobile()
-        @bindMouseMove()
-        @bindMouseUp()
-        @bindMouseDown()
-      else
-        @bindClick()
+    unless @clickHandler.isOnMobile()
+      @bindMouseOver()
+      @bindMouseUp()
+      @bindMouseDown()
+    else
+      @bindClick()
 
-  newSymbol: (blueprint)->
+  cloneSymbol: (blueprint)->
     offset = - @size * 4 / 10
-    symbol = blueprint.clone()
-    symbol.translation.set @getX() + offset, @getY() + offset
-    symbol.scale = (@size / 100) *.8
-    symbol.noStroke().fill = Colors.symbol
-    symbol
+    @symbol = blueprint.clone()
+    @symbol.translation.set @getX() + offset, @getY() + offset
+    @symbol.scale = (@size / 100) * 0.8
+    @symbol.noStroke().fill = Colors.symbol
 
   setColor: (c) ->
     @color = c
     @rect.fill = c
+    if @hitbox? then @hitbox.fill = c
     @scene.update()
 
   setBorder: (c) ->
@@ -78,7 +85,7 @@ class Cell
     @setIndices row, col
 
   bindClick: ->
-    $('#' + @cell.id).click (e) =>
+    $('#' + @hitboxGroup.id).click (e) =>
       e.preventDefault()
       e.stopPropagation()
       return if @isDeleted
@@ -87,34 +94,27 @@ class Cell
       else
         @clickHandler.onUnselect this
 
-  bindMouseMove: ->
-    $('#' + @cell.id).mousemove (e) =>
+  bindMouseOver: ->
+    $('#' + @hitboxGroup.id).mouseover (e) =>
       e.preventDefault()
       e.stopPropagation()
       return if @isDeleted
-      if not @isSelected and @clickHandler.isMouseDown() and
-        @inHitBox(e.offsetX, e.offsetY)
+      if not @isSelected and @clickHandler.isMouseDown()
           @clickHandler.onSelect this
 
   bindMouseUp: ->
-    $('#' + @cell.id).mouseup (e) =>
+    $('#' + @hitboxGroup.id).mouseup (e) =>
       e.preventDefault()
       e.stopPropagation()
       @clickHandler.setMouseAsUp()
 
   bindMouseDown: ->
-    $('#' + @cell.id).mousedown (e) =>
+    $('#' + @hitboxGroup.id).mousedown (e) =>
       e.preventDefault()
       e.stopPropagation()
       return if @isDeleted
       unless @isSelected
         @clickHandler.onSelect this
-
-  inHitBox: (mouseX, mouseY) ->
-    # Within a box 70% of the actual
-    shrinkSize = (0.70 * @size) / 2.0
-    Math.abs(mouseX - @getX()) < shrinkSize and
-    Math.abs(mouseY - @getY()) < shrinkSize
 
   select: ->
     @isSelected = true
