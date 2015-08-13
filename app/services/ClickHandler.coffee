@@ -79,7 +79,7 @@ class ClickHandler
       if @BoardSolvedService.isCleared @board
         document.getElementById('new-game-button').disabled = true
         @board.successAnimation()
-        setTimeout (() => @BoardSolvedService.createNewBoard()), 2000
+        setTimeout (() => @BoardSolvedService.createNewBoard()), 1850
       return true
     return false
 
