@@ -8,7 +8,7 @@ body {
   -ms-user-select: none;
   user-select: none; }
 
-#game {
+.pointer {
   cursor: pointer; }
 
 .title-column {
@@ -60,7 +60,6 @@ body {
     margin: 0 10px 10px 10px; }
 
 .game-button-wrapper {
-  cursor: pointer;
   text-align: center;
   margin: 10px 0px 20px 0px; }
   .game-button-wrapper .game-btn {
