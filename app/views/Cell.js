@@ -6,18 +6,17 @@ $ = require('jquery');
 Colors = require('./Colors');
 
 Cell = (function() {
-  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
+  function Cell(col1, row1, size, scene, board, clickHandler1, symbolBlueprint) {
     var hitboxSize;
     this.col = col1;
     this.row = row1;
     this.size = size;
     this.scene = scene;
     this.board = board;
-    this.clickHandler = clickHandler;
-    this.isDeleted = false;
-    this.isSelected = false;
+    this.clickHandler = clickHandler1;
+    this.isDeleted = this.isSelected = false;
     this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
-    if (symbolBlueprint == null) {
+    if (!((symbolBlueprint != null) && (typeof clickHandler !== "undefined" && clickHandler !== null))) {
       this.cell = this.rect;
       this.scene.update();
       return;
@@ -25,7 +24,8 @@ Cell = (function() {
     hitboxSize = 0.7 * this.size;
     this.hitbox = this.scene.makeRectangle(this.getX(), this.getY(), hitboxSize, hitboxSize);
     this.hitbox.noStroke();
-    this.hitboxGroup = this.scene.makeGroup(this.hitbox, this.newSymbol(symbolBlueprint));
+    this.cloneSymbol(symbolBlueprint);
+    this.hitboxGroup = this.scene.makeGroup(this.hitbox, this.symbol);
     this.cell = this.scene.makeGroup(this.rect, this.hitboxGroup);
     this.scene.update();
     if (!this.clickHandler.isOnMobile()) {
@@ -37,14 +37,13 @@ Cell = (function() {
     }
   }
 
-  Cell.prototype.newSymbol = function(blueprint) {
-    var offset, symbol;
+  Cell.prototype.cloneSymbol = function(blueprint) {
+    var offset;
     offset = -this.size * 4 / 10;
-    symbol = blueprint.clone();
-    symbol.translation.set(this.getX() + offset, this.getY() + offset);
-    symbol.scale = (this.size / 100) * .8;
-    symbol.noStroke().fill = Colors.symbol;
-    return symbol;
+    this.symbol = blueprint.clone();
+    this.symbol.translation.set(this.getX() + offset, this.getY() + offset);
+    this.symbol.scale = (this.size / 100) * 0.8;
+    return this.symbol.noStroke().fill = Colors.symbol;
   };
 
   Cell.prototype.setColor = function(c) {

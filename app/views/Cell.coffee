@@ -4,11 +4,10 @@ Colors = require './Colors'
 class Cell
 
   constructor: (@col, @row, @size, @scene, @board, @clickHandler, symbolBlueprint) ->
-    @isDeleted = false
-    @isSelected = false
+    @isDeleted = @isSelected = false
     @rect = @scene.makeRectangle @getX(), @getY(), @size, @size
 
-    unless symbolBlueprint?
+    unless symbolBlueprint? and clickHandler?
       @cell = @rect
       @scene.update()
       return
@@ -17,7 +16,8 @@ class Cell
     @hitbox = @scene.makeRectangle @getX(), @getY(), hitboxSize, hitboxSize
     @hitbox.noStroke()
 
-    @hitboxGroup = @scene.makeGroup @hitbox, (@newSymbol symbolBlueprint)
+    @cloneSymbol symbolBlueprint
+    @hitboxGroup = @scene.makeGroup @hitbox, @symbol
     @cell = @scene.makeGroup @rect, @hitboxGroup
     @scene.update()
 
@@ -28,13 +28,12 @@ class Cell
     else
       @bindClick()
 
-  newSymbol: (blueprint)->
+  cloneSymbol: (blueprint)->
     offset = - @size * 4 / 10
-    symbol = blueprint.clone()
-    symbol.translation.set @getX() + offset, @getY() + offset
-    symbol.scale = (@size / 100) *.8
-    symbol.noStroke().fill = Colors.symbol
-    symbol
+    @symbol = blueprint.clone()
+    @symbol.translation.set @getX() + offset, @getY() + offset
+    @symbol.scale = (@size / 100) * 0.8
+    @symbol.noStroke().fill = Colors.symbol
 
   setColor: (c) ->
     @color = c
