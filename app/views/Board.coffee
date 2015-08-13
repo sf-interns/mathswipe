@@ -118,20 +118,15 @@ class Board
 
   successAnimation: ->
     @success = @scene.makeGroup @successSVG
-    # console.log @scene.width
     @success.translation.set(@scene.width / 2, @scene.width / 2)
-    # @success.scale = 0.001
-    # @success.opacity = 0
+    @success.scale = 0.001
     @scene.bind('update', (frameCount) =>
-    #   if @success.scale > 0.7
-    #     @success.opacity = 1
-    #   if @success.scale > 0.9999
-    #     @success.scale = @success.rotation = 0
-    #     @success.opacity = 0
-    #   delta = (1 - @success.scale) * 0.10
-    #   @success.scale += delta
-    #   @success.rotation += delta * Math.PI * 2
-      @success.rotation = frameCount/60
+      delta = (1 - @success.scale) * 0.03
+      @success.scale += delta
+      # @success.rotation = frameCount/30
+      @success.rotation += delta * Math.PI * 2
+      if @success.scale > 0.9999
+        @success.scale = @success.rotation = 0
     ).play()
 
 module.exports = Board
