@@ -7,7 +7,7 @@ class Cell
     @isDeleted = @isSelected = false
     @rect = @scene.makeRectangle @getX(), @getY(), @size, @size
 
-    unless symbolBlueprint? and clickHandler?
+    unless symbolBlueprint? and @clickHandler?
       @cell = @rect
       @scene.update()
       return
@@ -22,7 +22,7 @@ class Cell
     @scene.update()
 
     unless @clickHandler.isOnMobile()
-      @bindMouseMove()
+      @bindMouseOver()
       @bindMouseUp()
       @bindMouseDown()
     else
@@ -94,8 +94,8 @@ class Cell
       else
         @clickHandler.onUnselect this
 
-  bindMouseMove: ->
-    $('#' + @hitboxGroup.id).mousemove (e) =>
+  bindMouseOver: ->
+    $('#' + @hitboxGroup.id).mouseover (e) =>
       e.preventDefault()
       e.stopPropagation()
       return if @isDeleted
