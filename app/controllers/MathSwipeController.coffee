@@ -1,3 +1,4 @@
+$                       = require 'jquery'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 BoardSolvedService      = require '../services/BoardSolvedService'
 ClickHandler            = require '../services/ClickHandler'
@@ -10,11 +11,10 @@ ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
 SolutionService         = require '../services/SolutionService'
 Board                   = require '../views/Board'
-GoalContainer           = require '../views/GoalContainer'
 Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
+GoalContainer           = require '../views/GoalContainer'
 GeneralTests            = require '../../tests/controllers/GeneralTests'
-$                       = require 'jquery'
 
 class MathSwipeController
 
@@ -50,9 +50,21 @@ class MathSwipeController
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
 
-  cursorToPointer: ->
-    $('#game').addClass('pointer')
-    $('#game-button-wrapper').addClass('pointer')
+  isMobile: () ->
+    Android: () ->
+      return navigator.userAgent.match(/Android/i)
+    BlackBerry: () ->
+      return navigator.userAgent.match(/BlackBerry/i)
+    iOS: ()->
+      return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+    Opera: () ->
+      return navigator.userAgent.match(/Opera Mini/i)
+    Windows: () ->
+      return navigator.userAgent.match(/IEMobile/i)
+    any: () ->
+      return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
+
+  # -------- Front-end -------- #
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
@@ -75,6 +87,10 @@ class MathSwipeController
   createGoalsScene: ->
     goalsDom = document.getElementById('goals')
 
+  cursorToPointer: ->
+    $('#game').addClass('pointer')
+    $('#game-button-wrapper').addClass('pointer')
+
   getSymbols: ->
     scene = new Two()
     svgs = $('#assets svg')
@@ -84,8 +100,10 @@ class MathSwipeController
       symbols[index].visible = false
     symbols
 
-  randExpression: (length) ->
-    ExpressionGenerator.generate length
+  # -------- Back-end -------- #
+
+  generateBoard: (inputs, length) ->
+    DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
 
   generateInputs: (inputLengths, inputs, answers) ->
     for inputSize in inputLengths
@@ -96,21 +114,8 @@ class MathSwipeController
       answers.push (InputSolver.compute expression)
       inputs.push expression.split('')
 
-  generateBoard: (inputs, length) ->
-    DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
+  randExpression: (length) ->
+    ExpressionGenerator.generate length
 
-  isMobile: () ->
-    Android: () ->
-      return navigator.userAgent.match(/Android/i)
-    BlackBerry: () ->
-      return navigator.userAgent.match(/BlackBerry/i)
-    iOS: ()->
-      return navigator.userAgent.match(/iPhone|iPad|iPod/i)
-    Opera: () ->
-      return navigator.userAgent.match(/Opera Mini/i)
-    Windows: () ->
-      return navigator.userAgent.match(/IEMobile/i)
-    any: () ->
-      return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
 
 module.exports = MathSwipeController
