@@ -17411,17 +17411,17 @@
 	Colors = __webpack_require__(/*! ./Colors */ 20);
 	
 	Cell = (function() {
-	  function Cell(col1, row1, size, scene, board, clickHandler1, symbolBlueprint) {
+	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
 	    var hitboxSize;
 	    this.col = col1;
 	    this.row = row1;
 	    this.size = size;
 	    this.scene = scene;
 	    this.board = board;
-	    this.clickHandler = clickHandler1;
+	    this.clickHandler = clickHandler;
 	    this.isDeleted = this.isSelected = false;
 	    this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
-	    if (!((symbolBlueprint != null) && (typeof clickHandler !== "undefined" && clickHandler !== null))) {
+	    if (!((symbolBlueprint != null) && (this.clickHandler != null))) {
 	      this.cell = this.rect;
 	      this.scene.update();
 	      return;
@@ -17434,7 +17434,7 @@
 	    this.cell = this.scene.makeGroup(this.rect, this.hitboxGroup);
 	    this.scene.update();
 	    if (!this.clickHandler.isOnMobile()) {
-	      this.bindMouseMove();
+	      this.bindMouseOver();
 	      this.bindMouseUp();
 	      this.bindMouseDown();
 	    } else {
@@ -17535,8 +17535,8 @@
 	    })(this));
 	  };
 	
-	  Cell.prototype.bindMouseMove = function() {
-	    return $('#' + this.hitboxGroup.id).mousemove((function(_this) {
+	  Cell.prototype.bindMouseOver = function() {
+	    return $('#' + this.hitboxGroup.id).mouseover((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
 	        e.stopPropagation();

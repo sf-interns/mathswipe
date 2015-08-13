@@ -8,6 +8,9 @@ body {
   -ms-user-select: none;
   user-select: none; }
 
+#game {
+  cursor: pointer; }
+
 .title-column {
   max-width: 700px;
   min-width: 320px;
@@ -57,6 +60,7 @@ body {
     margin: 0 10px 10px 10px; }
 
 .game-button-wrapper {
+  cursor: pointer;
   text-align: center;
   margin: 10px 0px 20px 0px; }
   .game-button-wrapper .game-btn {
@@ -68,6 +72,8 @@ body {
     border-style: solid;
     border-color: #a7acb0;
     border-radius: 10px; }
+    .game-button-wrapper .game-btn:active {
+      background-color: #EFE8BE; }
     .game-button-wrapper .game-btn img {
       height: 40px;
       width: 100%; }
