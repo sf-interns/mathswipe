@@ -17,11 +17,6 @@ body {
   min-width: 320px;
   display: block;
   margin: 3% auto 0 auto; }
-  .title-column img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: auto; }
   .title-column p {
     font-family: ClearSans;
     font-weight: bold;
