@@ -44,7 +44,7 @@ RunningSum = (function() {
   };
 
   RunningSum.format = function(input) {
-    return input.replace(/\*/g, ' x ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
+    return input.replace(/\*/g, ' &times; ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
   };
 
   return RunningSum;

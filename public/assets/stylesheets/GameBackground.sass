@@ -21,7 +21,6 @@ body
   margin: 3% auto 0 auto
 
   p
-    font-family: ClearSans
     font-weight: bold
     text-align: center
     font-size: 95px
@@ -37,20 +36,28 @@ body
   margin-right: auto
 
   &.running-sum
-    min-height: 30px
+    min-height: 40px
     color: #EFE8BE
     text-align: center
     font-size: 30px
 
-  .how-to-play
+  .game-desc-hr
+    margin: 40px 0px 20px 0px
+
+  #how-to-play
     margin: 10px auto 10px auto
     width: 95%
     color: #729199
-    font-size: 24px
+    font-size: 20px
 
 @font-face
   font-family: ClearSans
   src: url(../fonts/ClearSans-Regular.ttf)
+
+@font-face
+  font-family: ClearSans
+  src: url(../fonts/ClearSans-Bold.ttf)
+  font-weight: bold
 
 #goals
   width: 80%
@@ -81,14 +88,10 @@ body
     border-color: #a7acb0
     border-radius: 10px
 
-    &:active
-      background-color: #EFE8BE
-
     p
-      font-family: ClearSans
-      font-weight: bold
-      text-align: center
       font-size: 30px
       color: #D1857F
-      margin-top: 0px
-      margin-bottom: 7px
+      margin: 0px 0px 5px 0px
+
+    &:active
+      background-color: #EFE8BE
