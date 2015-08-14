@@ -15,6 +15,7 @@ class Board
     @createCells @cellWidth
 
     @getSuccessSVG()
+    @addedSuccessToScene = false
 
     @clickHandler.bindDefaultMouseEvents()
     @scene.update()

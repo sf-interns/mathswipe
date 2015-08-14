@@ -10,6 +10,7 @@ RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
 SolutionService         = require '../services/SolutionService'
+Title                   = require '../services/Title'
 Board                   = require '../views/Board'
 Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
@@ -24,7 +25,9 @@ class MathSwipeController
     @initialize()
     @bindNewGameButton()
     HowToPlay.createHowToPlay @isMobile
-    unless @isMobile().any()?
+    if @isMobile().any()?
+      Title.mobileTitle()
+    else
       @cursorToPointer()
 
     # # Uncomment the following line to perform general tests
