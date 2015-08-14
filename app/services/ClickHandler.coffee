@@ -1,4 +1,4 @@
-$ = require 'jquery'
+$     = require 'jquery'
 Tuple = require '../models/Tuple'
 
 class ClickHandler
@@ -15,6 +15,8 @@ class ClickHandler
     unless @isMobile
       @checkForSolution()
       @unselectAll()
+      if @BoardSolvedService.isCleared @board
+          @board.successAnimation()
     @mouseDown = false
 
   isMouseDown: ->
@@ -48,6 +50,8 @@ class ClickHandler
       # Keep for when we switch to swiping on mobile
       if @isMobile and @checkForSolution()
         @unselectAll()
+        if @BoardSolvedService.isCleared @board
+          @board.successAnimation()
     false
 
   onUnselect: (cell) ->
@@ -76,8 +80,6 @@ class ClickHandler
       @RunningSum.display ''
       @goalContainer.deleteGoal @solutionService.valueIndex
       @board.deleteCells @clickedToTuples()
-      if @BoardSolvedService.isCleared @board
-        setTimeout (() => @BoardSolvedService.createNewBoard()), 100
       return true
     return false
 

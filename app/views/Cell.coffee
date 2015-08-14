@@ -32,7 +32,7 @@ class Cell
     offset = - @size * 4 / 10
     @symbol = blueprint.clone()
     @symbol.translation.set @getX() + offset, @getY() + offset
-    @symbol.scale = (@size / 100) * 0.8
+    @symbol.scale = (@size / 100) * 0.4
     @symbol.noStroke().fill = Colors.symbol
 
   setColor: (c) ->

@@ -25,6 +25,9 @@ ClickHandler = (function() {
     if (!this.isMobile) {
       this.checkForSolution();
       this.unselectAll();
+      if (this.BoardSolvedService.isCleared(this.board)) {
+        this.board.successAnimation();
+      }
     }
     return this.mouseDown = false;
   };
@@ -71,6 +74,9 @@ ClickHandler = (function() {
       this.RunningSum.display(this.solutionService.solution, this.solutionService.value);
       if (this.isMobile && this.checkForSolution()) {
         this.unselectAll();
+        if (this.BoardSolvedService.isCleared(this.board)) {
+          this.board.successAnimation();
+        }
       }
     }
     return false;
@@ -117,13 +123,6 @@ ClickHandler = (function() {
       this.RunningSum.display('');
       this.goalContainer.deleteGoal(this.solutionService.valueIndex);
       this.board.deleteCells(this.clickedToTuples());
-      if (this.BoardSolvedService.isCleared(this.board)) {
-        setTimeout(((function(_this) {
-          return function() {
-            return _this.BoardSolvedService.createNewBoard();
-          };
-        })(this)), 100);
-      }
       return true;
     }
     return false;

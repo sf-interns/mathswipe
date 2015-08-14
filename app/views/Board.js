@@ -16,6 +16,7 @@ Board = (function() {
     this.SolutionService = SolutionService;
     this.BoardSolvedService = BoardSolvedService;
     this.RunningSum = RunningSum;
+    this.successAnimationCallback = bind(this.successAnimationCallback, this);
     this.createCells = bind(this.createCells, this);
     this.createEmptyCells = bind(this.createEmptyCells, this);
     this.createBoard = bind(this.createBoard, this);
@@ -32,6 +33,7 @@ Board = (function() {
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth);
+    this.getSuccessSVG();
     this.clickHandler.bindDefaultMouseEvents();
     return this.scene.update();
   };
@@ -167,6 +169,35 @@ Board = (function() {
     this.boardValues = this.copyValues(this.initialValues);
     this.goalContainer.resetGoals();
     return this.initializer();
+  };
+
+  Board.prototype.getSuccessSVG = function() {
+    this.successSVG = this.symbols[this.symbols.length - 1].clone();
+    return this.successSVG.noStroke().fill = '#D1857F';
+  };
+
+  Board.prototype.successAnimation = function() {
+    if (!this.addedSuccessToScene) {
+      this.scene.add(this.successSVG);
+      this.addedSuccessToScene = true;
+    }
+    this.successSVG.rotation = this.successSVG.scale = 0;
+    this.successSVG.translation.set(this.scene.width / 2, this.scene.width / 2);
+    this.delta = 0.027;
+    this.scene.unbind('update', this.successAnimationCallback);
+    return this.scene.bind('update', this.successAnimationCallback);
+  };
+
+  Board.prototype.successAnimationCallback = function(frameCount) {
+    this.delta = Math.max(0.0005, (1.0 - this.successSVG.scale) * 0.07);
+    if (this.successSVG.rotation >= Math.PI * 4) {
+      this.scene.unbind('update', this.successAnimationCallback);
+      this.scene.scale = 1;
+      return this.successSVG.rotation = 0;
+    } else {
+      this.successSVG.scale += this.delta;
+      return this.successSVG.rotation += this.delta * Math.PI * 4;
+    }
   };
 
   return Board;
