@@ -34,6 +34,7 @@ Board = (function() {
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth);
     this.getSuccessSVG();
+    this.addedSuccessToScene = false;
     this.clickHandler.bindDefaultMouseEvents();
     return this.scene.update();
   };

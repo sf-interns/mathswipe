@@ -10,7 +10,7 @@ body {
   max-width: 700px;
   min-width: 320px;
   display: block;
-  margin: 3% auto 0 auto; }
+  margin: 0 auto; }
   .title-column p {
     font-weight: bold;
     text-align: center;

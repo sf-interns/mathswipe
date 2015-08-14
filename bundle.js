@@ -65,7 +65,7 @@
 	
 	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
 	
-	Two = __webpack_require__(/*! two.js */ 22);
+	Two = __webpack_require__(/*! two.js */ 23);
 	
 	game = new MathSwipeController;
 
@@ -9296,7 +9296,7 @@
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService;
+	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService, Title;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
@@ -9322,15 +9322,17 @@
 	
 	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 16);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 17);
+	Title = __webpack_require__(/*! ../services/Title */ 17);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 18);
+	Board = __webpack_require__(/*! ../views/Board */ 18);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 19);
+	Cell = __webpack_require__(/*! ../views/Cell */ 19);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 20);
+	Colors = __webpack_require__(/*! ../views/Colors */ 20);
 	
-	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 21);
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 21);
+	
+	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 22);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
@@ -9339,7 +9341,9 @@
 	    this.initialize();
 	    this.bindNewGameButton();
 	    HowToPlay.createHowToPlay(this.isMobile);
-	    if (this.isMobile().any() == null) {
+	    if (this.isMobile().any() != null) {
+	      Title.mobileTitle();
+	    } else {
 	      this.cursorToPointer();
 	    }
 	  }
@@ -10043,12 +10047,12 @@
 	    if (isMobile().any() != null) {
 	      elemById.append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
 	    } else {
-	      elemById.append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	      elemById.append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click and drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
 	    }
 	    elemById.append('<br><br>');
-	    elemById.append('<b>Tip:</b> Cells can be selected diagonally!');
+	    elemById.append('<b>Tip:</b> Cells can be selected diagonally.');
 	    elemById.append('<br>');
-	    elemById.append('<b>Tip:</b> Select multiple number tiles to create a multi-digit number!');
+	    elemById.append('<b>Tip:</b> Select multiple number tiles to create a multi-digit number.');
 	    return elemById.append('<br><br>');
 	  };
 	
@@ -10322,6 +10326,33 @@
 
 /***/ },
 /* 17 */
+/*!***********************************!*\
+  !*** ./app/services/Title.coffee ***!
+  \***********************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var $, Title;
+	
+	$ = __webpack_require__(/*! jquery */ 2);
+	
+	Title = (function() {
+	  function Title() {}
+	
+	  Title.mobileTitle = function() {
+	    var elemById;
+	    elemById = $('#title');
+	    return elemById.css('font-size', '16vw');
+	  };
+	
+	  return Title;
+	
+	})();
+	
+	module.exports = Title;
+
+
+/***/ },
+/* 18 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -10362,6 +10393,7 @@
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);
 	    this.getSuccessSVG();
+	    this.addedSuccessToScene = false;
 	    this.clickHandler.bindDefaultMouseEvents();
 	    return this.scene.update();
 	  };
@@ -10536,7 +10568,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -10546,7 +10578,7 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 19);
+	Colors = __webpack_require__(/*! ./Colors */ 20);
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
@@ -10744,7 +10776,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
@@ -10767,7 +10799,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
@@ -10810,7 +10842,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /*!***********************************************!*\
   !*** ./tests/controllers/GeneralTests.coffee ***!
   \***********************************************/
@@ -10909,7 +10941,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /*!*******************************!*\
   !*** ./~/two.js/build/two.js ***!
   \*******************************/
@@ -10917,8 +10949,8 @@
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * two.js
-	 * a two-dimensional drawing api meant for modern browsers. It is renderer
-	 * agnostic enabling the same api for rendering in multiple contexts: webgl,
+	 * a two-dimensional drawing api meant for modern browsers. It is renderer 
+	 * agnostic enabling the same api for rendering in multiple contexts: webgl, 
 	 * canvas2d, and svg.
 	 *
 	 * Copyright (c) 2012 - 2013 jonobr1 / http://jonobr1.com
@@ -17189,7 +17221,7 @@
 	
 	      this._flagVertices =  this._flagFill =  this._flagStroke =
 	         this._flagLinewidth = this._flagOpacity = this._flagVisible =
-	         this._flagCap = this._flagJoin = this._flagMiter =
+	         this._flagCap = this._flagJoin = this._flagMiter = 
 	         this._flagClip = false;
 	
 	      Two.Shape.prototype.flagReset.call(this);
