@@ -5,7 +5,6 @@ class Board
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
-    @getSuccessSVG()
 
   initializer: =>
     solutionService = new @SolutionService this, @goals
@@ -14,6 +13,8 @@ class Board
     @createBoard()
     @createEmptyCells @cellWidth - 5
     @createCells @cellWidth
+
+    @getSuccessSVG()
 
     @clickHandler.bindDefaultMouseEvents()
     @scene.update()
@@ -117,19 +118,24 @@ class Board
     @successSVG.noStroke().fill = '#D1857F'
 
   successAnimation: ->
-    @success = @scene.makeGroup @successSVG
-    @success.translation.set(@scene.width / 2, @scene.width / 2)
-    @success.scale = 0.001
-    delta = 0.027
-    @scene.bind('update', (frameCount) =>
-      unless @success.rotation > 12.535
-        delta = (1 - @success.scale) * 0.07
-      @success.scale += delta
-      @success.rotation += delta * Math.PI * 4
-      if @success.rotation > Math.PI * 4 * 0.999999
-        @scene.unbind 'update'
-        @success.scale = 1
-        @success.rotation = 0
-    ).play()
+    unless @addedSuccessToScene
+      @scene.add @successSVG
+      @addedSuccessToScene = true
+    @successSVG.rotation = @successSVG.scale = 0
+    @successSVG.translation.set @scene.width / 2, @scene.width / 2
+    @delta = 0.027
+    @scene.unbind 'update', @successAnimationCallback
+    @scene.bind 'update', @successAnimationCallback
+
+  successAnimationCallback: (frameCount) =>
+    @delta = Math.max(0.0005, (1.0 - @successSVG.scale) * 0.07)
+    if (@successSVG.rotation >= Math.PI * 4)
+      @scene.unbind 'update', @successAnimationCallback
+      @scene.scale = 1
+      @successSVG.rotation = 0
+    else
+      @successSVG.scale += @delta
+      @successSVG.rotation += @delta * Math.PI * 4
+
 
 module.exports = Board

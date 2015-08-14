@@ -42,7 +42,7 @@ Cell = (function() {
     offset = -this.size * 4 / 10;
     this.symbol = blueprint.clone();
     this.symbol.translation.set(this.getX() + offset, this.getY() + offset);
-    this.symbol.scale = (this.size / 100) * 0.8;
+    this.symbol.scale = (this.size / 100) * 0.4;
     return this.symbol.noStroke().fill = Colors.symbol;
   };
 

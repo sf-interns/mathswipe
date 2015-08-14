@@ -31,6 +31,6 @@ class RunningSum
     solution
 
   @format: (input) ->
-    input.replace(/\*/g, ' x ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ')
+    input.replace(/\*/g, ' &times; ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ')
 
 module.exports = RunningSum
