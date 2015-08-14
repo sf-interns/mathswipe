@@ -16,6 +16,7 @@ Board = (function() {
     this.SolutionService = SolutionService;
     this.BoardSolvedService = BoardSolvedService;
     this.RunningSum = RunningSum;
+    this.successAnimationCallback = bind(this.successAnimationCallback, this);
     this.createCells = bind(this.createCells, this);
     this.createEmptyCells = bind(this.createEmptyCells, this);
     this.createBoard = bind(this.createBoard, this);
@@ -176,25 +177,24 @@ Board = (function() {
   };
 
   Board.prototype.successAnimation = function() {
-    var delta;
-    this.success = this.scene.makeGroup(this.successSVG);
-    this.success.translation.set(this.scene.width / 2, this.scene.width / 2);
-    this.success.scale = 0.001;
-    delta = 0.027;
-    return this.scene.bind('update', (function(_this) {
-      return function(frameCount) {
-        if (!(_this.success.rotation > 12.535)) {
-          delta = (1 - _this.success.scale) * 0.07;
-        }
-        _this.success.scale += delta;
-        _this.success.rotation += delta * Math.PI * 4;
-        if (_this.success.rotation > Math.PI * 4 * 0.999999) {
-          _this.scene.unbind('update');
-          _this.success.scale = 1;
-          return _this.success.rotation = 0;
-        }
-      };
-    })(this)).play();
+    this.scene.add(this.successSVG);
+    this.successSVG.rotation = this.successSVG.scale = 0;
+    this.successSVG.translation.set(this.scene.width / 2, this.scene.width / 2);
+    this.delta = 0.027;
+    this.scene.unbind('update', this.successAnimationCallback);
+    return this.scene.bind('update', this.successAnimationCallback);
+  };
+
+  Board.prototype.successAnimationCallback = function(frameCount) {
+    this.delta = Math.max(0.0005, (1.0 - this.successSVG.scale) * 0.07);
+    if (this.successSVG.rotation >= Math.PI * 4) {
+      this.scene.unbind('update', this.successAnimationCallback);
+      this.scene.scale = 1;
+      return this.successSVG.rotation = 0;
+    } else {
+      this.successSVG.scale += this.delta;
+      return this.successSVG.rotation += this.delta * Math.PI * 4;
+    }
   };
 
   return Board;
