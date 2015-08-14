@@ -9623,6 +9623,9 @@
 	    if (!this.isMobile) {
 	      this.checkForSolution();
 	      this.unselectAll();
+	      if (this.BoardSolvedService.isCleared(this.board)) {
+	        this.board.successAnimation();
+	      }
 	    }
 	    return this.mouseDown = false;
 	  };
@@ -9669,6 +9672,9 @@
 	      this.RunningSum.display(this.solutionService.solution, this.solutionService.value);
 	      if (this.isMobile && this.checkForSolution()) {
 	        this.unselectAll();
+	        if (this.BoardSolvedService.isCleared(this.board)) {
+	          this.board.successAnimation();
+	        }
 	      }
 	    }
 	    return false;
@@ -9715,9 +9721,6 @@
 	      this.RunningSum.display('');
 	      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
 	      this.board.deleteCells(this.clickedToTuples());
-	      if (this.BoardSolvedService.isCleared(this.board)) {
-	        this.board.successAnimation();
-	      }
 	      return true;
 	    }
 	    return false;
@@ -10035,11 +10038,18 @@
 	  function HowToPlay() {}
 	
 	  HowToPlay.createHowToPlay = function(isMobile) {
+	    var elemById;
+	    elemById = $('#how-to-play');
 	    if (isMobile().any() != null) {
-	      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	      elemById.append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
 	    } else {
-	      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
+	      elemById.append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
 	    }
+	    elemById.append('<br><br>');
+	    elemById.append('<b>Tip:</b> Cells can be selected diagonally!');
+	    elemById.append('<br>');
+	    elemById.append('<b>Tip:</b> Select multiple number tiles to create a multi-digit number!');
+	    return elemById.append('<br><br>');
 	  };
 	
 	  return HowToPlay;
@@ -10238,7 +10248,7 @@
 	  };
 	
 	  RunningSum.format = function(input) {
-	    return input.replace(/\*/g, ' x ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
+	    return input.replace(/\*/g, ' &times; ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
 	  };
 	
 	  return RunningSum;
@@ -10334,6 +10344,7 @@
 	    this.SolutionService = SolutionService;
 	    this.BoardSolvedService = BoardSolvedService;
 	    this.RunningSum = RunningSum;
+	    this.successAnimationCallback = bind(this.successAnimationCallback, this);
 	    this.createCells = bind(this.createCells, this);
 	    this.createEmptyCells = bind(this.createEmptyCells, this);
 	    this.createBoard = bind(this.createBoard, this);
@@ -10341,7 +10352,6 @@
 	    this.dimension = this.boardValues.length;
 	    this.initialValues = this.copyValues(this.boardValues);
 	    this.initializer();
-	    this.getSuccessSVG();
 	  }
 	
 	  Board.prototype.initializer = function() {
@@ -10351,6 +10361,7 @@
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);
+	    this.getSuccessSVG();
 	    this.clickHandler.bindDefaultMouseEvents();
 	    return this.scene.update();
 	  };
@@ -10494,25 +10505,27 @@
 	  };
 	
 	  Board.prototype.successAnimation = function() {
-	    var delta;
-	    this.success = this.scene.makeGroup(this.successSVG);
-	    this.success.translation.set(this.scene.width / 2, this.scene.width / 2);
-	    this.success.scale = 0.001;
-	    delta = 0.027;
-	    return this.scene.bind('update', (function(_this) {
-	      return function(frameCount) {
-	        if (!(_this.success.rotation > 12.535)) {
-	          delta = (1 - _this.success.scale) * 0.07;
-	        }
-	        _this.success.scale += delta;
-	        _this.success.rotation += delta * Math.PI * 4;
-	        if (_this.success.rotation > Math.PI * 4 * 0.999999) {
-	          _this.scene.unbind('update');
-	          _this.success.scale = 1;
-	          return _this.success.rotation = 0;
-	        }
-	      };
-	    })(this)).play();
+	    if (!this.addedSuccessToScene) {
+	      this.scene.add(this.successSVG);
+	      this.addedSuccessToScene = true;
+	    }
+	    this.successSVG.rotation = this.successSVG.scale = 0;
+	    this.successSVG.translation.set(this.scene.width / 2, this.scene.width / 2);
+	    this.delta = 0.027;
+	    this.scene.unbind('update', this.successAnimationCallback);
+	    return this.scene.bind('update', this.successAnimationCallback);
+	  };
+	
+	  Board.prototype.successAnimationCallback = function(frameCount) {
+	    this.delta = Math.max(0.0005, (1.0 - this.successSVG.scale) * 0.07);
+	    if (this.successSVG.rotation >= Math.PI * 4) {
+	      this.scene.unbind('update', this.successAnimationCallback);
+	      this.scene.scale = 1;
+	      return this.successSVG.rotation = 0;
+	    } else {
+	      this.successSVG.scale += this.delta;
+	      return this.successSVG.rotation += this.delta * Math.PI * 4;
+	    }
 	  };
 	
 	  return Board;
@@ -10572,7 +10585,7 @@
 	    offset = -this.size * 4 / 10;
 	    this.symbol = blueprint.clone();
 	    this.symbol.translation.set(this.getX() + offset, this.getY() + offset);
-	    this.symbol.scale = (this.size / 100) * 0.8;
+	    this.symbol.scale = (this.size / 100) * 0.4;
 	    return this.symbol.noStroke().fill = Colors.symbol;
 	  };
 	
@@ -10904,8 +10917,8 @@
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
 	 * two.js
-	 * a two-dimensional drawing api meant for modern browsers. It is renderer 
-	 * agnostic enabling the same api for rendering in multiple contexts: webgl, 
+	 * a two-dimensional drawing api meant for modern browsers. It is renderer
+	 * agnostic enabling the same api for rendering in multiple contexts: webgl,
 	 * canvas2d, and svg.
 	 *
 	 * Copyright (c) 2012 - 2013 jonobr1 / http://jonobr1.com
@@ -17176,7 +17189,7 @@
 	
 	      this._flagVertices =  this._flagFill =  this._flagStroke =
 	         this._flagLinewidth = this._flagOpacity = this._flagVisible =
-	         this._flagCap = this._flagJoin = this._flagMiter = 
+	         this._flagCap = this._flagJoin = this._flagMiter =
 	         this._flagClip = false;
 	
 	      Two.Shape.prototype.flagReset.call(this);
