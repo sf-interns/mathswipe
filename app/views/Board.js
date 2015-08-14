@@ -24,7 +24,6 @@ Board = (function() {
     this.dimension = this.boardValues.length;
     this.initialValues = this.copyValues(this.boardValues);
     this.initializer();
-    this.getSuccessSVG();
   }
 
   Board.prototype.initializer = function() {
@@ -34,6 +33,7 @@ Board = (function() {
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);
     this.createCells(this.cellWidth);
+    this.getSuccessSVG();
     this.clickHandler.bindDefaultMouseEvents();
     return this.scene.update();
   };
@@ -177,7 +177,10 @@ Board = (function() {
   };
 
   Board.prototype.successAnimation = function() {
-    this.scene.add(this.successSVG);
+    if (!this.addedSuccessToScene) {
+      this.scene.add(this.successSVG);
+      this.addedSuccessToScene = true;
+    }
     this.successSVG.rotation = this.successSVG.scale = 0;
     this.successSVG.translation.set(this.scene.width / 2, this.scene.width / 2);
     this.delta = 0.027;

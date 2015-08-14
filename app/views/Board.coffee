@@ -5,7 +5,6 @@ class Board
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
-    @getSuccessSVG()
 
   initializer: =>
     solutionService = new @SolutionService this, @goals
@@ -14,6 +13,8 @@ class Board
     @createBoard()
     @createEmptyCells @cellWidth - 5
     @createCells @cellWidth
+
+    @getSuccessSVG()
 
     @clickHandler.bindDefaultMouseEvents()
     @scene.update()
@@ -117,7 +118,9 @@ class Board
     @successSVG.noStroke().fill = '#D1857F'
 
   successAnimation: ->
-    @scene.add @successSVG
+    unless @addedSuccessToScene
+      @scene.add @successSVG
+      @addedSuccessToScene = true
     @successSVG.rotation = @successSVG.scale = 0
     @successSVG.translation.set @scene.width / 2, @scene.width / 2
     @delta = 0.027

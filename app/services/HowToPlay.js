@@ -7,11 +7,18 @@ HowToPlay = (function() {
   function HowToPlay() {}
 
   HowToPlay.createHowToPlay = function(isMobile) {
+    var elemById;
+    elemById = $('#how-to-play');
     if (isMobile().any() != null) {
-      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
+      elemById.append('<b>How To Play:</b> Solve the puzzle by clearing the board. Click adjacent tiles to create an equation, and if it equals an answer, the tiles disappear!');
     } else {
-      return $('#how-to-play').append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
+      elemById.append('<b>How To Play:</b> Solve the puzzle by clearing the board. Drag your mouse across the tiles to create an equation, and if it equals an answer, the tiles disappear!');
     }
+    elemById.append('<br><br>');
+    elemById.append('<b>Tip:</b> Cells can be selected diagonally!');
+    elemById.append('<br>');
+    elemById.append('<b>Tip:</b> Select multiple number tiles to create a multi-digit number!');
+    return elemById.append('<br><br>');
   };
 
   return HowToPlay;

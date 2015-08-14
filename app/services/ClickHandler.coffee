@@ -16,7 +16,7 @@ class ClickHandler
       @checkForSolution()
       @unselectAll()
       if @BoardSolvedService.isCleared @board
-        @board.successAnimation()
+          @board.successAnimation()
     @mouseDown = false
 
   isMouseDown: ->
