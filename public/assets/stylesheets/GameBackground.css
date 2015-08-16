@@ -74,4 +74,23 @@ body {
     .game-button-wrapper .game-btn:active {
       background-color: #EFE8BE; }
 
+.grid-container {
+  position: absolute;
+  z-index: 1; }
+  .grid-container .grid-row {
+    margin-bottom: 15px; }
+    .grid-container .grid-row:last-child {
+      margin-bottom: 0; }
+    .grid-container .grid-row:after {
+      content: "";
+      display: block;
+      clear: both; }
+    .grid-container .grid-row .grid-cell {
+      margin-right: 15px;
+      float: left;
+      border-radius: 3px;
+      background: rgba(238, 228, 218, 0.35); }
+      .grid-container .grid-row .grid-cell:last-child {
+        margin-right: 0; }
+
 /*# sourceMappingURL=GameBackground.css.map */

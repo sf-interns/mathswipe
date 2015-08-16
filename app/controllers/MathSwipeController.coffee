@@ -30,6 +30,9 @@ class MathSwipeController
     else
       @cursorToPointer()
 
+    # creating board without two.js
+    @createBoard(20)
+
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
 
@@ -52,6 +55,26 @@ class MathSwipeController
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+
+# ---------------- no more two.js ------------------
+
+  createBoard: (numRowCells) ->
+    @setGridStyling numRowCells
+
+    gridElem = $('#grid-container')
+    for row in [0...numRowCells]
+      gridRow = '<div id="grid-row-' + row + '" class="grid-row"></div>'
+      gridElem.append(gridRow)
+      for col in [0...numRowCells]
+        gridCell = '<div id="grid-cell-' + row + '-' + col + '" class="grid-cell"></div>'
+        $('#grid-row-' + row).append(gridCell)
+        $('#grid-cell-' + row + '-' + col).css(@gridCellStyle)
+
+  setGridStyling: (numRowCells) ->
+    gridSpacing = 15
+    fieldWidth = Math.min(Math.max($( window ).width(), 310), 500)
+    tileSize = (fieldWidth - gridSpacing * (numRowCells + 1)) / numRowCells
+    @gridCellStyle = { width: tileSize, height: tileSize }
 
   isMobile: () ->
     Android: () ->

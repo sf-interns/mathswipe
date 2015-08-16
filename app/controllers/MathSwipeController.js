@@ -49,6 +49,7 @@ MathSwipeController = (function() {
     } else {
       this.cursorToPointer();
     }
+    this.createBoard(20);
   }
 
   MathSwipeController.prototype.initialize = function() {
@@ -67,6 +68,39 @@ MathSwipeController = (function() {
     this.goalContainer = new GoalContainer(answers, Colors);
     this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
     return ResetButton.bindClick(this.board);
+  };
+
+  MathSwipeController.prototype.createBoard = function(numRowCells) {
+    var col, gridCell, gridElem, gridRow, i, ref, results, row;
+    this.setGridStyling(numRowCells);
+    gridElem = $('#grid-container');
+    results = [];
+    for (row = i = 0, ref = numRowCells; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+      gridRow = '<div id="grid-row-' + row + '" class="grid-row"></div>';
+      gridElem.append(gridRow);
+      results.push((function() {
+        var j, ref1, results1;
+        results1 = [];
+        for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+          gridCell = '<div id="grid-cell-' + row + '-' + col + '" class="grid-cell"></div>';
+          $('#grid-row-' + row).append(gridCell);
+          results1.push($('#grid-cell-' + row + '-' + col).css(this.gridCellStyle));
+        }
+        return results1;
+      }).call(this));
+    }
+    return results;
+  };
+
+  MathSwipeController.prototype.setGridStyling = function(numRowCells) {
+    var fieldWidth, gridSpacing, tileSize;
+    gridSpacing = 15;
+    fieldWidth = Math.min(Math.max($(window).width(), 310), 500);
+    tileSize = (fieldWidth - gridSpacing * (numRowCells + 1)) / numRowCells;
+    return this.gridCellStyle = {
+      width: tileSize,
+      height: tileSize
+    };
   };
 
   MathSwipeController.prototype.isMobile = function() {
