@@ -74,23 +74,57 @@ body {
     .game-button-wrapper .game-btn:active {
       background-color: #EFE8BE; }
 
-.grid-container {
+.game-container {
+  margin-top: 40px;
+  position: relative;
+  padding: 15px;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -ms-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -ms-touch-action: none;
+  touch-action: none;
+  background: #bbada0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+  .game-container .grid-container {
+    position: absolute;
+    z-index: 1; }
+    .game-container .grid-container .grid-row {
+      margin-bottom: 15px; }
+      .game-container .grid-container .grid-row:last-child {
+        margin-bottom: 0; }
+      .game-container .grid-container .grid-row:after {
+        content: "";
+        display: block;
+        clear: both; }
+      .game-container .grid-container .grid-row .grid-cell {
+        margin-right: 15px;
+        float: left;
+        background: rgba(238, 228, 218, 0.35); }
+        .game-container .grid-container .grid-row .grid-cell:last-child {
+          margin-right: 0; }
+
+.cell-container {
   position: absolute;
-  z-index: 1; }
-  .grid-container .grid-row {
+  z-index: 2; }
+  .cell-container .cell-row {
     margin-bottom: 15px; }
-    .grid-container .grid-row:last-child {
+    .cell-container .cell-row:last-child {
       margin-bottom: 0; }
-    .grid-container .grid-row:after {
+    .cell-container .cell-row:after {
       content: "";
       display: block;
       clear: both; }
-    .grid-container .grid-row .grid-cell {
+    .cell-container .cell-row .cell {
       margin-right: 15px;
       float: left;
-      border-radius: 3px;
-      background: rgba(238, 228, 218, 0.35); }
-      .grid-container .grid-row .grid-cell:last-child {
-        margin-right: 0; }
+      text-align: center;
+      vertical-align: middle;
+      font-family: ClearSans;
+      font-size: 90px; }
 
 /*# sourceMappingURL=GameBackground.css.map */

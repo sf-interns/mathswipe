@@ -99,18 +99,65 @@ $bright-text-color: #f9f6f2
 
 $tile-color: #eee4da
 $tile-gold-color: #edc22e
-$tile-gold-glow-color: lighten($tile-gold-color, 15%)
 
 $game-container-margin-top: 40px
 $game-container-background: #bbada0
 
 $transition-speed: 100ms
 
-.grid-container
-  position: absolute
-  z-index: 1
+.game-container
+  margin-top: $game-container-margin-top
+  position: relative
+  padding: $grid-spacing
 
-  .grid-row
+  cursor: default
+  -webkit-touch-callout: none
+  -ms-touch-callout: none
+
+  -webkit-user-select: none
+  -moz-user-select: none
+  -ms-user-select: none
+
+  -ms-touch-action: none
+  touch-action: none
+
+  background: $game-container-background
+  // border-radius: $tile-border-radius * 2
+  -webkit-box-sizing: border-box
+  -moz-box-sizing: border-box
+  box-sizing: border-box
+
+  .grid-container
+    position: absolute
+    z-index: 1
+
+    .grid-row
+      margin-bottom: $grid-spacing
+
+      &:last-child
+        margin-bottom: 0
+
+      &:after
+        content: ""
+        display: block
+        clear: both
+
+      .grid-cell
+        margin-right: $grid-spacing
+        float: left
+
+        // border-radius: $tile-border-radius
+
+        background: rgba($tile-color, .35)
+
+        &:last-child
+          margin-right: 0
+
+.cell-container
+  position: absolute
+  z-index: 2
+
+  .cell-row
     margin-bottom: $grid-spacing
 
     &:last-child
@@ -121,13 +168,11 @@ $transition-speed: 100ms
       display: block
       clear: both
 
-    .grid-cell
+    .cell
+      // padding: calc(#{$grid-spacing} + 5px)
       margin-right: $grid-spacing
       float: left
-
-      border-radius: $tile-border-radius
-
-      background: rgba($tile-color, .35)
-
-      &:last-child
-        margin-right: 0
+      text-align: center
+      vertical-align: middle
+      font-family: ClearSans
+      font-size: 90px

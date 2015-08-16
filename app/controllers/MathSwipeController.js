@@ -49,11 +49,12 @@ MathSwipeController = (function() {
     } else {
       this.cursorToPointer();
     }
-    this.createBoard(20);
+    this.createBoard(3);
+    this.bindCellsClick(3);
   }
 
   MathSwipeController.prototype.initialize = function() {
-    var answers, expression, gameModel, i, inputLengths, inputs, len, length;
+    var answers, expression, i, inputLengths, inputs, len, length;
     length = 3;
     inputs = [];
     answers = [];
@@ -64,32 +65,26 @@ MathSwipeController = (function() {
       console.log(expression);
     }
     console.log('\n');
-    gameModel = this.generateBoard(inputs, length);
+    this.gameModel = this.generateBoard(inputs, length);
     this.goalContainer = new GoalContainer(answers, Colors);
-    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
+    this.board = new Board(this.gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
     return ResetButton.bindClick(this.board);
   };
 
   MathSwipeController.prototype.createBoard = function(numRowCells) {
-    var col, gridCell, gridElem, gridRow, i, ref, results, row;
+    var col, gridCell, gridElem, gridRow, i, j, ref, ref1, row;
     this.setGridStyling(numRowCells);
     gridElem = $('#grid-container');
-    results = [];
     for (row = i = 0, ref = numRowCells; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
       gridRow = '<div id="grid-row-' + row + '" class="grid-row"></div>';
       gridElem.append(gridRow);
-      results.push((function() {
-        var j, ref1, results1;
-        results1 = [];
-        for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          gridCell = '<div id="grid-cell-' + row + '-' + col + '" class="grid-cell"></div>';
-          $('#grid-row-' + row).append(gridCell);
-          results1.push($('#grid-cell-' + row + '-' + col).css(this.gridCellStyle));
-        }
-        return results1;
-      }).call(this));
+      for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+        gridCell = '<div id="grid-cell-' + row + '-' + col + '" class="grid-cell"></div>';
+        $('#grid-row-' + row).append(gridCell);
+        $('#grid-cell-' + row + '-' + col).css(this.gridCellStyle);
+      }
     }
-    return results;
+    return this.createCells(numRowCells);
   };
 
   MathSwipeController.prototype.setGridStyling = function(numRowCells) {
@@ -97,10 +92,57 @@ MathSwipeController = (function() {
     gridSpacing = 15;
     fieldWidth = Math.min(Math.max($(window).width(), 310), 500);
     tileSize = (fieldWidth - gridSpacing * (numRowCells + 1)) / numRowCells;
-    return this.gridCellStyle = {
+    this.gridCellStyle = {
       width: tileSize,
-      height: tileSize
+      height: tileSize,
+      "line-height": tileSize + "px"
     };
+    return $('#game-container').css({
+      width: fieldWidth,
+      height: fieldWidth
+    });
+  };
+
+  MathSwipeController.prototype.createCells = function(numRowCells) {
+    var cell, cellRow, col, containerElem, i, ref, results, row;
+    containerElem = $('#cell-container');
+    results = [];
+    for (row = i = 0, ref = numRowCells; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+      cellRow = '<div id="cell-row-' + row + '" class="cell-row"></div>';
+      containerElem.append(cellRow);
+      results.push((function() {
+        var j, ref1, results1;
+        results1 = [];
+        for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+          cell = '<div id="cell-' + row + '-' + col + '" class="cell">' + this.gameModel[row][col] + '</div>';
+          $('#cell-row-' + row).append(cell);
+          results1.push($('#cell-' + row + '-' + col).css(this.gridCellStyle));
+        }
+        return results1;
+      }).call(this));
+    }
+    return results;
+  };
+
+  MathSwipeController.prototype.bindCellsClick = function(numRowCells) {
+    var col, i, ref, results, row;
+    results = [];
+    for (row = i = 0, ref = numRowCells; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
+      results.push((function() {
+        var j, ref1, results1;
+        results1 = [];
+        for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+          results1.push($('#cell-' + row + '-' + col).click((function(_this) {
+            return function(e) {
+              e.preventDefault();
+              return console.log($(e.currentTarget).text());
+            };
+          })(this)));
+        }
+        return results1;
+      }).call(this));
+    }
+    return results;
   };
 
   MathSwipeController.prototype.isMobile = function() {

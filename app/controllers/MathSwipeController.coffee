@@ -31,7 +31,8 @@ class MathSwipeController
       @cursorToPointer()
 
     # creating board without two.js
-    @createBoard(20)
+    @createBoard(3)
+    @bindCellsClick(3)
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
@@ -48,9 +49,9 @@ class MathSwipeController
     console.log expression for expression in inputs
     console.log '\n'
 
-    gameModel = @generateBoard inputs, length
+    @gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer answers, Colors
-    @board = new Board  gameModel, @gameScene, answers, @symbols,
+    @board = new Board  @gameModel, @gameScene, answers, @symbols,
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
@@ -70,11 +71,31 @@ class MathSwipeController
         $('#grid-row-' + row).append(gridCell)
         $('#grid-cell-' + row + '-' + col).css(@gridCellStyle)
 
+    @createCells numRowCells
+
   setGridStyling: (numRowCells) ->
     gridSpacing = 15
     fieldWidth = Math.min(Math.max($( window ).width(), 310), 500)
     tileSize = (fieldWidth - gridSpacing * (numRowCells + 1)) / numRowCells
-    @gridCellStyle = { width: tileSize, height: tileSize }
+    @gridCellStyle = { width: tileSize, height: tileSize, "line-height": "#{tileSize}px" }
+    $('#game-container').css({ width: fieldWidth, height: fieldWidth })
+
+  createCells: (numRowCells) ->
+    containerElem = $('#cell-container')
+    for row in [0...numRowCells]
+      cellRow = '<div id="cell-row-' + row + '" class="cell-row"></div>'
+      containerElem.append(cellRow)
+      for col in [0...numRowCells]
+        cell = '<div id="cell-' + row + '-' + col + '" class="cell">' + @gameModel[row][col] + '</div>'
+        $('#cell-row-' + row).append(cell)
+        $('#cell-' + row + '-' + col).css(@gridCellStyle)
+
+  bindCellsClick: (numRowCells) ->
+    for row in [0...numRowCells]
+      for col in [0...numRowCells]
+        $('#cell-' + row + '-' + col).click (e) =>
+          e.preventDefault()
+          console.log $(e.currentTarget).text()
 
   isMobile: () ->
     Android: () ->
@@ -142,6 +163,5 @@ class MathSwipeController
 
   randExpression: (length) ->
     ExpressionGenerator.generate length
-
 
 module.exports = MathSwipeController
