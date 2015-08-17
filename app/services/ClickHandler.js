@@ -27,6 +27,8 @@ ClickHandler = (function() {
       this.unselectAll();
       if (this.BoardSolvedService.isCleared(this.board)) {
         this.board.successAnimation();
+      } else if (this.goalContainer.isEmpty()) {
+        this.RunningSum.display('Try to get all the tiles off the board!');
       }
     }
     return this.mouseDown = false;

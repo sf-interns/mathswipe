@@ -8,16 +8,18 @@ RunningSum = (function() {
 
   RunningSum.display = function(solution, value) {
     var expression;
-    if (solution === '') {
-      expression = '';
-    } else if (isNaN(value)) {
-      expression = 'Invalid Expression';
-    } else if (this.isCompleteExpression(solution)) {
-      expression = (this.addParens(solution)) + '=' + value;
-    } else {
-      expression = solution;
+    if ($('#running-sum').html() !== 'Try to get all the tiles off the board!') {
+      if (solution === '' || solution === 'Try to get all the tiles off the board!') {
+        expression = solution;
+      } else if (isNaN(value)) {
+        expression = 'Invalid Expression';
+      } else if (this.isCompleteExpression(solution)) {
+        expression = (this.addParens(solution)) + '=' + value;
+      } else {
+        expression = solution;
+      }
+      return $('#running-sum').html(this.format(expression));
     }
-    return $('#running-sum').html(this.format(expression));
   };
 
   RunningSum.isCompleteExpression = function(solution) {

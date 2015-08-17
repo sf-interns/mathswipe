@@ -52,6 +52,7 @@ class MathSwipeController
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+    $('#running-sum').html('')
 
   isMobile: () ->
     Android: () ->

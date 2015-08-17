@@ -66,7 +66,8 @@ MathSwipeController = (function() {
     gameModel = this.generateBoard(inputs, length);
     this.goalContainer = new GoalContainer(answers, Colors);
     this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-    return ResetButton.bindClick(this.board);
+    ResetButton.bindClick(this.board);
+    return $('#running-sum').html('');
   };
 
   MathSwipeController.prototype.isMobile = function() {

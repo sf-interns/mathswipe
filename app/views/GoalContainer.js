@@ -28,6 +28,18 @@ GoalContainer = (function() {
     return this.container.empty();
   };
 
+  GoalContainer.prototype.isEmpty = function() {
+    var goal, i, len, ref;
+    ref = $(this.container.children());
+    for (i = 0, len = ref.length; i < len; i++) {
+      goal = ref[i];
+      if (!($(goal).css('color') === this.Colors.deletedGoalGrey)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   return GoalContainer;
 
 })();

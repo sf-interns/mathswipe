@@ -16,7 +16,9 @@ class ClickHandler
       @checkForSolution()
       @unselectAll()
       if @BoardSolvedService.isCleared @board
-          @board.successAnimation()
+        @board.successAnimation()
+      else if @goalContainer.isEmpty()
+        @RunningSum.display 'Try to get all the tiles off the board!'
     @mouseDown = false
 
   isMouseDown: ->

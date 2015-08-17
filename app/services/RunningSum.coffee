@@ -3,15 +3,16 @@ $ = require 'jquery'
 class RunningSum
 
   @display: (solution, value) ->
-    if solution is ''
-      expression = ''
-    else if isNaN value
-      expression = 'Invalid Expression'
-    else if @isCompleteExpression solution
-      expression = (@addParens solution) + '=' + value
-    else
-      expression = solution
-    $('#running-sum').html(@format expression)
+    unless $('#running-sum').html() is 'Try to get all the tiles off the board!'
+      if solution is '' or solution is 'Try to get all the tiles off the board!'
+        expression = solution
+      else if isNaN value
+        expression = 'Invalid Expression'
+      else if @isCompleteExpression solution
+        expression = (@addParens solution) + '=' + value
+      else
+        expression = solution
+      $('#running-sum').html(@format expression)
 
   @isCompleteExpression: (solution) ->
     return solution.search(/-?\d+[-+\*]\d+/g) is 0

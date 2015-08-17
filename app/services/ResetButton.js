@@ -9,7 +9,8 @@ ResetButton = (function() {
   ResetButton.bindClick = function(board) {
     return $('#reset-button').click((function(_this) {
       return function(e) {
-        return board.resetBoard();
+        board.resetBoard();
+        return $('#running-sum').html('');
       };
     })(this));
   };
