@@ -110,7 +110,9 @@ ClickHandler = (function() {
 
   ClickHandler.prototype.unselectAll = function() {
     var i, j, ref;
-    this.RunningSum.display('');
+    if ($('#running-sum').html() !== 'Solution must include an operator') {
+      this.RunningSum.display('');
+    }
     if (this.clicked.length < 1) {
       return;
     }
@@ -122,7 +124,6 @@ ClickHandler = (function() {
 
   ClickHandler.prototype.checkForSolution = function() {
     if (this.solutionService.isSolution()) {
-      this.RunningSum.display('');
       this.goalContainer.deleteGoal(this.solutionService.valueIndex);
       this.board.deleteCells(this.clickedToTuples());
       return true;

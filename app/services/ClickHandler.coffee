@@ -71,7 +71,8 @@ class ClickHandler
     false
 
   unselectAll: ->
-    @RunningSum.display ''
+    unless $('#running-sum').html() is 'Solution must include an operator'
+      @RunningSum.display ''
     return if @clicked.length < 1
     for i in [@clicked.length - 1..0]
       @clicked[i].unselect()
@@ -79,7 +80,6 @@ class ClickHandler
 
   checkForSolution: () ->
     if @solutionService.isSolution()
-      @RunningSum.display ''
       @goalContainer.deleteGoal @solutionService.valueIndex
       @board.deleteCells @clickedToTuples()
       return true

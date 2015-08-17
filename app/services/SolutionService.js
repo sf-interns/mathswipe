@@ -5,9 +5,10 @@ var InputSolver, SolutionService,
 InputSolver = require('./InputSolver');
 
 SolutionService = (function() {
-  function SolutionService(board, goals) {
+  function SolutionService(board, goals, RunningSum) {
     var g, i, len;
     this.board = board;
+    this.RunningSum = RunningSum;
     this.goals = [];
     for (i = 0, len = goals.length; i < len; i++) {
       g = goals[i];
@@ -21,19 +22,27 @@ SolutionService = (function() {
   };
 
   SolutionService.prototype.isSolution = function() {
-    var ref, ref1;
-    if (!(((ref = this.solution) != null ? ref.length : void 0) >= 3)) {
+    var ref;
+    if (this.solution == null) {
       return false;
     }
     if (this.solution[this.solution.length - 1] === '+' || this.solution[this.solution.length - 1] === '-' || this.solution[this.solution.length - 1] === '*') {
       return false;
     }
-    if (ref1 = this.value, indexOf.call(this.goals, ref1) < 0) {
+    if (ref = this.value, indexOf.call(this.goals, ref) < 0) {
+      return false;
+    }
+    if (!this.isCompleteExpression()) {
+      this.RunningSum.display('Solution must include an operator');
       return false;
     }
     this.valueIndex = this.goals.indexOf(this.value);
     this.goals[this.valueIndex] = ' ';
     return true;
+  };
+
+  SolutionService.prototype.isCompleteExpression = function() {
+    return this.solution.search(/-?\d+[-+\*]\d+/g) === 0;
   };
 
   SolutionService.prototype.setSolutionString = function(cells) {

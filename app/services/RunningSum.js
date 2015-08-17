@@ -9,7 +9,7 @@ RunningSum = (function() {
   RunningSum.display = function(solution, value) {
     var expression;
     if ($('#running-sum').html() !== 'Try to get all the tiles off the board!') {
-      if (solution === '' || solution === 'Try to get all the tiles off the board!') {
+      if (solution === '' || solution === 'Try to get all the tiles off the board!' || solution === 'Solution must include an operator') {
         expression = solution;
       } else if (isNaN(value)) {
         expression = 'Invalid Expression';

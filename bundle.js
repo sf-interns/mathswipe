@@ -9363,7 +9363,8 @@
 	    gameModel = this.generateBoard(inputs, length);
 	    this.goalContainer = new GoalContainer(answers, Colors);
 	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-	    return ResetButton.bindClick(this.board);
+	    ResetButton.bindClick(this.board);
+	    return $('#running-sum').html('');
 	  };
 	
 	  MathSwipeController.prototype.isMobile = function() {
@@ -9629,6 +9630,8 @@
 	      this.unselectAll();
 	      if (this.BoardSolvedService.isCleared(this.board)) {
 	        this.board.successAnimation();
+	      } else if (this.goalContainer.isEmpty()) {
+	        this.RunningSum.display('Try to get all the tiles off the board!');
 	      }
 	    }
 	    return this.mouseDown = false;
@@ -9710,7 +9713,9 @@
 	
 	  ClickHandler.prototype.unselectAll = function() {
 	    var i, j, ref;
-	    this.RunningSum.display('');
+	    if ($('#running-sum').html() !== 'Solution must include an operator') {
+	      this.RunningSum.display('');
+	    }
 	    if (this.clicked.length < 1) {
 	      return;
 	    }
@@ -9722,7 +9727,6 @@
 	
 	  ClickHandler.prototype.checkForSolution = function() {
 	    if (this.solutionService.isSolution()) {
-	      this.RunningSum.display('');
 	      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
 	      this.board.deleteCells(this.clickedToTuples());
 	      return true;
@@ -10184,7 +10188,8 @@
 	  ResetButton.bindClick = function(board) {
 	    return $('#reset-button').click((function(_this) {
 	      return function(e) {
-	        return board.resetBoard();
+	        board.resetBoard();
+	        return $('#running-sum').html('');
 	      };
 	    })(this));
 	  };
@@ -10216,16 +10221,18 @@
 	
 	  RunningSum.display = function(solution, value) {
 	    var expression;
-	    if (solution === '') {
-	      expression = '';
-	    } else if (isNaN(value)) {
-	      expression = 'Invalid Expression';
-	    } else if (this.isCompleteExpression(solution)) {
-	      expression = (this.addParens(solution)) + '=' + value;
-	    } else {
-	      expression = solution;
+	    if ($('#running-sum').html() !== 'Try to get all the tiles off the board!') {
+	      if (solution === '' || solution === 'Try to get all the tiles off the board!' || solution === 'Solution must include an operator') {
+	        expression = solution;
+	      } else if (isNaN(value)) {
+	        expression = 'Invalid Expression';
+	      } else if (this.isCompleteExpression(solution)) {
+	        expression = (this.addParens(solution)) + '=' + value;
+	      } else {
+	        expression = solution;
+	      }
+	      return $('#running-sum').html(this.format(expression));
 	    }
-	    return $('#running-sum').html(this.format(expression));
 	  };
 	
 	  RunningSum.isCompleteExpression = function(solution) {
@@ -10275,9 +10282,10 @@
 	InputSolver = __webpack_require__(/*! ./InputSolver */ 12);
 	
 	SolutionService = (function() {
-	  function SolutionService(board, goals) {
+	  function SolutionService(board, goals, RunningSum) {
 	    var g, i, len;
 	    this.board = board;
+	    this.RunningSum = RunningSum;
 	    this.goals = [];
 	    for (i = 0, len = goals.length; i < len; i++) {
 	      g = goals[i];
@@ -10291,19 +10299,27 @@
 	  };
 	
 	  SolutionService.prototype.isSolution = function() {
-	    var ref, ref1;
-	    if (!(((ref = this.solution) != null ? ref.length : void 0) >= 3)) {
+	    var ref;
+	    if (this.solution == null) {
 	      return false;
 	    }
 	    if (this.solution[this.solution.length - 1] === '+' || this.solution[this.solution.length - 1] === '-' || this.solution[this.solution.length - 1] === '*') {
 	      return false;
 	    }
-	    if (ref1 = this.value, indexOf.call(this.goals, ref1) < 0) {
+	    if (ref = this.value, indexOf.call(this.goals, ref) < 0) {
+	      return false;
+	    }
+	    if (!this.isCompleteExpression()) {
+	      this.RunningSum.display('Solution must include an operator');
 	      return false;
 	    }
 	    this.valueIndex = this.goals.indexOf(this.value);
 	    this.goals[this.valueIndex] = ' ';
 	    return true;
+	  };
+	
+	  SolutionService.prototype.isCompleteExpression = function() {
+	    return this.solution.search(/-?\d+[-+\*]\d+/g) === 0;
 	  };
 	
 	  SolutionService.prototype.setSolutionString = function(cells) {
@@ -10387,7 +10403,7 @@
 	
 	  Board.prototype.initializer = function() {
 	    var solutionService;
-	    solutionService = new this.SolutionService(this, this.goals);
+	    solutionService = new this.SolutionService(this, this.goals, this.RunningSum);
 	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum);
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
@@ -10792,7 +10808,7 @@
 	  board: '#294248',
 	  select: '#c7a579',
 	  symbol: 'black',
-	  deletedGoalGrey: '#2F4F4F'
+	  deletedGoalGrey: 'rgb(47, 79, 79)'
 	};
 	
 	module.exports = Colors;
@@ -10832,6 +10848,18 @@
 	
 	  GoalContainer.prototype.clearGoals = function() {
 	    return this.container.empty();
+	  };
+	
+	  GoalContainer.prototype.isEmpty = function() {
+	    var goal, i, len, ref;
+	    ref = $(this.container.children());
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      goal = ref[i];
+	      if (!($(goal).css('color') === this.Colors.deletedGoalGrey)) {
+	        return false;
+	      }
+	    }
+	    return true;
 	  };
 	
 	  return GoalContainer;

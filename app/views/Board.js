@@ -28,7 +28,7 @@ Board = (function() {
 
   Board.prototype.initializer = function() {
     var solutionService;
-    solutionService = new this.SolutionService(this, this.goals);
+    solutionService = new this.SolutionService(this, this.goals, this.RunningSum);
     this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum);
     this.createBoard();
     this.createEmptyCells(this.cellWidth - 5);

@@ -7,7 +7,7 @@ class Board
     @initializer()
 
   initializer: =>
-    solutionService = new @SolutionService this, @goals
+    solutionService = new @SolutionService this, @goals, @RunningSum
     @clickHandler = new @ClickHandler this, solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum
 
     @createBoard()

@@ -4,7 +4,8 @@ class RunningSum
 
   @display: (solution, value) ->
     unless $('#running-sum').html() is 'Try to get all the tiles off the board!'
-      if solution is '' or solution is 'Try to get all the tiles off the board!'
+      if solution is '' or solution is 'Try to get all the tiles off the board!' or
+          solution is 'Solution must include an operator'
         expression = solution
       else if isNaN value
         expression = 'Invalid Expression'
