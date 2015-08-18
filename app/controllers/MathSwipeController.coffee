@@ -30,10 +30,6 @@ class MathSwipeController
     else
       @cursorToPointer()
 
-    # creating board without two.js
-    @createBoard(3)
-    @bindCellsClick(3)
-
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
 
@@ -56,6 +52,10 @@ class MathSwipeController
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+
+    # creating board without two.js
+    @createBoard(3)
+    @bindCellsClick(3)
 
 # ---------------- no more two.js ------------------
 
@@ -97,19 +97,9 @@ class MathSwipeController
           e.preventDefault()
           console.log $(e.currentTarget).text()
 
-  isMobile: () ->
-    Android: () ->
-      return navigator.userAgent.match(/Android/i)
-    BlackBerry: () ->
-      return navigator.userAgent.match(/BlackBerry/i)
-    iOS: ()->
-      return navigator.userAgent.match(/iPhone|iPad|iPod/i)
-    Opera: () ->
-      return navigator.userAgent.match(/Opera Mini/i)
-    Windows: () ->
-      return navigator.userAgent.match(/IEMobile/i)
-    any: () ->
-      return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
+  clearBoardElem: ->
+    $('#grid-container').empty()
+    $('#cell-container').empty()
 
   # -------- Front-end -------- #
 
@@ -118,6 +108,9 @@ class MathSwipeController
       @gameScene.clear()
       @goalContainer.clearGoals()
       ResetButton.unbindClick()
+
+      @clearBoardElem()
+
       @initialize()
 
   createGameScene: ->
@@ -163,5 +156,19 @@ class MathSwipeController
 
   randExpression: (length) ->
     ExpressionGenerator.generate length
+
+  isMobile: () ->
+    Android: () ->
+      return navigator.userAgent.match(/Android/i)
+    BlackBerry: () ->
+      return navigator.userAgent.match(/BlackBerry/i)
+    iOS: ()->
+      return navigator.userAgent.match(/iPhone|iPad|iPod/i)
+    Opera: () ->
+      return navigator.userAgent.match(/Opera Mini/i)
+    Windows: () ->
+      return navigator.userAgent.match(/IEMobile/i)
+    any: () ->
+      return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
 
 module.exports = MathSwipeController
