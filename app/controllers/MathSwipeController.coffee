@@ -94,15 +94,18 @@ class MathSwipeController
         $('#cell-row-' + row).append(cell)
         $('#cell-' + row + '-' + col).css(@gridCellStyle)
 
-  pushCellToBottom: (row, col) ->
-    $( "#cell-#{row}-#{col}" ).css( "transform", "translate(0, #{@dropDownDistance}px)" )
+  pushCellToBottom: (row, col, num) ->
+    distance = num * @dropDownDistance
+    $( "#cell-#{row}-#{col}" ).css( "transform", "translate(0, #{distance}px)" )
 
   bindCellsClick: (numRowCells) ->
     for row in [0...numRowCells]
       for col in [0...numRowCells]
         $('#cell-' + row + '-' + col).click (e) =>
           e.preventDefault()
-          $(e.currentTarget).css( "transform", "translate(0, #{@dropDownDistance}px)" )
+          num = 2
+          distance = num * @dropDownDistance
+          $(e.currentTarget).css( "transform", "translate(0, #{distance}px)" )
           console.log $(e.currentTarget).text()
 
   clearBoardElem: ->

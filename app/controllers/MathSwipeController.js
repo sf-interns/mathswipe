@@ -129,8 +129,10 @@ MathSwipeController = (function() {
     return results;
   };
 
-  MathSwipeController.prototype.pushCellToBottom = function(row, col) {
-    return $("#cell-" + row + "-" + col).css("transform", "translate(0, " + this.dropDownDistance + "px)");
+  MathSwipeController.prototype.pushCellToBottom = function(row, col, num) {
+    var distance;
+    distance = num * this.dropDownDistance;
+    return $("#cell-" + row + "-" + col).css("transform", "translate(0, " + distance + "px)");
   };
 
   MathSwipeController.prototype.bindCellsClick = function(numRowCells) {
@@ -143,8 +145,11 @@ MathSwipeController = (function() {
         for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
           results1.push($('#cell-' + row + '-' + col).click((function(_this) {
             return function(e) {
+              var distance, num;
               e.preventDefault();
-              $(e.currentTarget).css("transform", "translate(0, " + _this.dropDownDistance + "px)");
+              num = 2;
+              distance = num * _this.dropDownDistance;
+              $(e.currentTarget).css("transform", "translate(0, " + distance + "px)");
               return console.log($(e.currentTarget).text());
             };
           })(this)));
