@@ -11,6 +11,7 @@ ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
 SolutionService         = require '../services/SolutionService'
 Title                   = require '../services/Title'
+TrackingService         = require '../services/TrackingService'
 Board                   = require '../views/Board'
 Cell                    = require '../views/Cell'
 Colors                  = require '../views/Colors'
@@ -26,10 +27,10 @@ class MathSwipeController
     @bindNewGameButton()
     HowToPlay.createHowToPlay @isMobile
     if @isMobile().any()?
-      ga 'send', 'pageview', 'Mobile'
+      TrackingService.mobileView()
       Title.mobileTitle()
     else
-      ga 'send', 'pageview', 'Desktop'
+      TrackingService.desktopView()
       @cursorToPointer()
 
     # # Uncomment the following line to perform general tests
@@ -39,8 +40,6 @@ class MathSwipeController
     length = 3
     inputs = []
     answers = []
-
-    ga 'send', 'event', 'board', 'initialize'
 
     inputLengths = RandomizedFitLength.generate length * length
 
@@ -75,6 +74,7 @@ class MathSwipeController
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
+      TrackingService.boardEvent 'new game'
       @gameScene.clear()
       @goalContainer.clearGoals()
       ResetButton.unbindClick()

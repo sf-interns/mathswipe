@@ -1,4 +1,5 @@
-$ = require 'jquery'
+$               = require 'jquery'
+TrackingService = require './TrackingService'
 
 class ResetButton
 
@@ -8,6 +9,5 @@ class ResetButton
 
   @unbindClick: ->
     $('#reset-button').unbind('click')
-    ga 'send', 'event', 'board', 'reset'
 
 module.exports = ResetButton

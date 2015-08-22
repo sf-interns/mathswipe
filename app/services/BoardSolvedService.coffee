@@ -1,4 +1,5 @@
-$ = require 'jquery'
+$               = require 'jquery'
+TrackingService = require './TrackingService'
 
 class BoardSolvedService
 
@@ -10,6 +11,5 @@ class BoardSolvedService
 
   @createNewBoard: ->
     $('#new-game-button').trigger('click')
-    ga 'event', 'board', 'new game'
 
 module.exports = BoardSolvedService
