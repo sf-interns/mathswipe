@@ -16,6 +16,7 @@ class ClickHandler
       @checkForSolution()
       @unselectAll()
       if @BoardSolvedService.isCleared @board
+          ga 'send', 'event', 'board', 'solved'
           @board.successAnimation()
     @mouseDown = false
 

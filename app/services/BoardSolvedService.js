@@ -20,7 +20,8 @@ BoardSolvedService = (function() {
   };
 
   BoardSolvedService.createNewBoard = function() {
-    return $('#new-game-button').trigger('click');
+    $('#new-game-button').trigger('click');
+    return ga('event', 'board', 'new game');
   };
 
   return BoardSolvedService;

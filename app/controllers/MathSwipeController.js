@@ -45,8 +45,10 @@ MathSwipeController = (function() {
     this.bindNewGameButton();
     HowToPlay.createHowToPlay(this.isMobile);
     if (this.isMobile().any() != null) {
+      ga('send', 'pageview', 'Mobile');
       Title.mobileTitle();
     } else {
+      ga('send', 'pageview', 'Desktop');
       this.cursorToPointer();
     }
   }
@@ -56,6 +58,7 @@ MathSwipeController = (function() {
     length = 3;
     inputs = [];
     answers = [];
+    ga('send', 'event', 'board', 'initialize');
     inputLengths = RandomizedFitLength.generate(length * length);
     this.generateInputs(inputLengths, inputs, answers);
     for (i = 0, len = inputs.length; i < len; i++) {

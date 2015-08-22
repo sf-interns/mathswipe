@@ -15,7 +15,8 @@ ResetButton = (function() {
   };
 
   ResetButton.unbindClick = function() {
-    return $('#reset-button').unbind('click');
+    $('#reset-button').unbind('click');
+    return ga('send', 'event', 'board', 'reset');
   };
 
   return ResetButton;

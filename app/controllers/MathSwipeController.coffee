@@ -26,8 +26,10 @@ class MathSwipeController
     @bindNewGameButton()
     HowToPlay.createHowToPlay @isMobile
     if @isMobile().any()?
+      ga 'send', 'pageview', 'Mobile'
       Title.mobileTitle()
     else
+      ga 'send', 'pageview', 'Desktop'
       @cursorToPointer()
 
     # # Uncomment the following line to perform general tests
@@ -37,6 +39,8 @@ class MathSwipeController
     length = 3
     inputs = []
     answers = []
+
+    ga 'send', 'event', 'board', 'initialize'
 
     inputLengths = RandomizedFitLength.generate length * length
 

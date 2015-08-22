@@ -26,6 +26,7 @@ ClickHandler = (function() {
       this.checkForSolution();
       this.unselectAll();
       if (this.BoardSolvedService.isCleared(this.board)) {
+        ga('send', 'event', 'board', 'solved');
         this.board.successAnimation();
       }
     }
