@@ -84,7 +84,12 @@ MathSwipeController = (function() {
         $('#grid-cell-' + row + '-' + col).css(this.gridCellStyle);
       }
     }
-    return this.createCells(numRowCells);
+    this.createCells(numRowCells);
+    return this.setDistance();
+  };
+
+  MathSwipeController.prototype.setDistance = function() {
+    return this.dropDownDistance = $('#cell-1-0').position().top;
   };
 
   MathSwipeController.prototype.setGridStyling = function(numRowCells) {
@@ -124,6 +129,10 @@ MathSwipeController = (function() {
     return results;
   };
 
+  MathSwipeController.prototype.pushCellToBottom = function(row, col) {
+    return $("#cell-" + row + "-" + col).css("transform", "translate(0, " + this.dropDownDistance + "px)");
+  };
+
   MathSwipeController.prototype.bindCellsClick = function(numRowCells) {
     var col, i, ref, results, row;
     results = [];
@@ -135,6 +144,7 @@ MathSwipeController = (function() {
           results1.push($('#cell-' + row + '-' + col).click((function(_this) {
             return function(e) {
               e.preventDefault();
+              $(e.currentTarget).css("transform", "translate(0, " + _this.dropDownDistance + "px)");
               return console.log($(e.currentTarget).text());
             };
           })(this)));

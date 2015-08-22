@@ -72,6 +72,10 @@ class MathSwipeController
         $('#grid-cell-' + row + '-' + col).css(@gridCellStyle)
 
     @createCells numRowCells
+    @setDistance()
+
+  setDistance: ->
+     @dropDownDistance = $( '#cell-1-0' ).position().top
 
   setGridStyling: (numRowCells) ->
     gridSpacing = 15
@@ -90,11 +94,15 @@ class MathSwipeController
         $('#cell-row-' + row).append(cell)
         $('#cell-' + row + '-' + col).css(@gridCellStyle)
 
+  pushCellToBottom: (row, col) ->
+    $( "#cell-#{row}-#{col}" ).css( "transform", "translate(0, #{@dropDownDistance}px)" )
+
   bindCellsClick: (numRowCells) ->
     for row in [0...numRowCells]
       for col in [0...numRowCells]
         $('#cell-' + row + '-' + col).click (e) =>
           e.preventDefault()
+          $(e.currentTarget).css( "transform", "translate(0, #{@dropDownDistance}px)" )
           console.log $(e.currentTarget).text()
 
   isMobile: () ->

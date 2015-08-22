@@ -125,6 +125,9 @@ body {
       text-align: center;
       vertical-align: middle;
       font-family: ClearSans;
-      font-size: 90px; }
+      font-size: 90px;
+      -webkit-transition: -webkit-transform 0.4s ease;
+      -moz-transition: -webkit-transform 0.4s ease;
+      transition: -webkit-transform 0.4s ease; }
 
 /*# sourceMappingURL=GameBackground.css.map */
