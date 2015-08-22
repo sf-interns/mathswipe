@@ -1,5 +1,4 @@
-$               = require 'jquery'
-TrackingService = require './TrackingService'
+$ = require 'jquery'
 
 class BoardSolvedService
 
