@@ -49,8 +49,6 @@ MathSwipeController = (function() {
     } else {
       this.cursorToPointer();
     }
-    this.createBoard(3);
-    this.bindCellsClick(3);
   }
 
   MathSwipeController.prototype.initialize = function() {
@@ -68,7 +66,9 @@ MathSwipeController = (function() {
     this.gameModel = this.generateBoard(inputs, length);
     this.goalContainer = new GoalContainer(answers, Colors);
     this.board = new Board(this.gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-    return ResetButton.bindClick(this.board);
+    ResetButton.bindClick(this.board);
+    this.createBoard(3);
+    return this.bindCellsClick(3);
   };
 
   MathSwipeController.prototype.createBoard = function(numRowCells) {
@@ -155,27 +155,9 @@ MathSwipeController = (function() {
     return results;
   };
 
-  MathSwipeController.prototype.isMobile = function() {
-    return {
-      Android: function() {
-        return navigator.userAgent.match(/Android/i);
-      },
-      BlackBerry: function() {
-        return navigator.userAgent.match(/BlackBerry/i);
-      },
-      iOS: function() {
-        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-      },
-      Opera: function() {
-        return navigator.userAgent.match(/Opera Mini/i);
-      },
-      Windows: function() {
-        return navigator.userAgent.match(/IEMobile/i);
-      },
-      any: function() {
-        return this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows();
-      }
-    };
+  MathSwipeController.prototype.clearBoardElem = function() {
+    $('#grid-container').empty();
+    return $('#cell-container').empty();
   };
 
   MathSwipeController.prototype.bindNewGameButton = function() {
@@ -184,6 +166,7 @@ MathSwipeController = (function() {
         _this.gameScene.clear();
         _this.goalContainer.clearGoals();
         ResetButton.unbindClick();
+        _this.clearBoardElem();
         return _this.initialize();
       };
     })(this));
@@ -247,6 +230,29 @@ MathSwipeController = (function() {
 
   MathSwipeController.prototype.randExpression = function(length) {
     return ExpressionGenerator.generate(length);
+  };
+
+  MathSwipeController.prototype.isMobile = function() {
+    return {
+      Android: function() {
+        return navigator.userAgent.match(/Android/i);
+      },
+      BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+      },
+      iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+      },
+      Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+      },
+      Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+      },
+      any: function() {
+        return this.Android() || this.BlackBerry() || this.iOS() || this.Opera() || this.Windows();
+      }
+    };
   };
 
   return MathSwipeController;
