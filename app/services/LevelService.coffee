@@ -1,19 +1,25 @@
 class LevelService
 
-  initialize: (@currLevel = 0, @numCorrect: 0, @settings) ->
-  	return unless @settings?
+  constructor: (@currLevel = 0, @numCorrect = 0, @settings) ->
+    console.log 'LevelService'
+    if @settings?
+      console.log 'settings Exists', @settings
+    else
+      console.log 'Settings doesnt'
 
   levelUp: () ->
-  	@currLevel++
-  	@numCorrect = 0
-  	@settings.level @currLevel
+    @currLevel++
+    @numCorrect = 0
 
   setLevel: (level) ->
-  	@currLevel = level
-  	@numCorrect = 0
-  	@settings.level level
+    @currLevel = level
+    @numCorrect = 0
 
-  checkLevelComplete: () ->
-  	@levelUp() if @numCorrect is @settings.numCorrectNeeded 
+  onCorrect: () ->
+    @numCorrect++
+    @levelUp() if @levelComplete()
 
-module.exports = LevelController
+  levelComplete: () ->
+    @levelUp() if @numCorrect is @settings.numCorrectNeeded @currLevel
+
+module.exports = LevelService

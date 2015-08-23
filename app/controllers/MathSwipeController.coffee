@@ -1,4 +1,5 @@
 $                       = require 'jquery'
+LevelSettings           = require '../models/LevelSettings'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 BoardSolvedService      = require '../services/BoardSolvedService'
 ClickHandler            = require '../services/ClickHandler'
@@ -6,6 +7,7 @@ DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 HowToPlay               = require '../services/HowToPlay'
 InputSolver             = require '../services/InputSolver'
+LevelService            = require '../services/LevelService'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
@@ -22,6 +24,8 @@ class MathSwipeController
   constructor: ->
     @gameScene = @createGameScene()
     @symbols = @getSymbols()
+    console.log 'LEVELER'
+    @leveler = new LevelService 0, 0, LevelSettings
     @initialize()
     @bindNewGameButton()
     HowToPlay.createHowToPlay @isMobile
@@ -50,7 +54,7 @@ class MathSwipeController
     @board = new Board  gameModel, @gameScene, answers, @symbols,
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
-                        BoardSolvedService, RunningSum
+                        BoardSolvedService, RunningSum, @leveler
     ResetButton.bindClick @board
 
   isMobile: () ->

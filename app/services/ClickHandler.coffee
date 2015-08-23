@@ -4,7 +4,7 @@ Tuple = require '../models/Tuple'
 class ClickHandler
 
   # @isMobile: False is DESKTOP, True is MOBILE
-  constructor: (@board, @solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum) ->
+  constructor: (@board, @solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum, @leveler) ->
     @clicked = []
     @mouseDown = false
 
@@ -16,7 +16,8 @@ class ClickHandler
       @checkForSolution()
       @unselectAll()
       if @BoardSolvedService.isCleared @board
-          @board.successAnimation()
+        @board.successAnimation()
+        @leveler.onCorrect()
     @mouseDown = false
 
   isMouseDown: ->
