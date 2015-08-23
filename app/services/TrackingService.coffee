@@ -18,5 +18,4 @@ class TrackingService
     else
       ga 'send', 'pageview'
 
-
 module.exports = TrackingService
