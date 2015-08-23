@@ -3,7 +3,7 @@ class LevelService
   constructor: (@currLevel = 0, @numCorrect = 0, @settings) ->
     console.log 'LevelService'
     if @settings?
-      console.log 'settings Exists', @settings
+      console.log 'Settings Exists', @settings
     else
       console.log 'Settings doesnt'
 
@@ -17,9 +17,9 @@ class LevelService
 
   onCorrect: () ->
     @numCorrect++
-    @levelUp() if @levelComplete()
+    @isLevelComplete()
 
-  levelComplete: () ->
+  isLevelComplete: () ->
     @levelUp() if @numCorrect is @settings.numCorrectNeeded @currLevel
 
 module.exports = LevelService

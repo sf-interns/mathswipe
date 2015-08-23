@@ -63,9 +63,9 @@
 	
 	MathSwipeController = __webpack_require__(/*! ./app/controllers/MathSwipeController */ 3);
 	
-	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 6);
 	
-	Two = __webpack_require__(/*! two.js */ 23);
+	Two = __webpack_require__(/*! two.js */ 25);
 	
 	game = new MathSwipeController;
 
@@ -9296,48 +9296,54 @@
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService, Title;
+	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, LevelService, LevelSettings, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService, Title;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 4);
+	LevelSettings = __webpack_require__(/*! ../models/LevelSettings */ 4);
 	
-	BoardSolvedService = __webpack_require__(/*! ../services/BoardSolvedService */ 6);
+	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 5);
 	
-	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 7);
+	BoardSolvedService = __webpack_require__(/*! ../services/BoardSolvedService */ 7);
 	
-	DFS = __webpack_require__(/*! ../services/DFS */ 8);
+	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 8);
 	
-	ExpressionGenerator = __webpack_require__(/*! ../services/ExpressionGenerator */ 10);
+	DFS = __webpack_require__(/*! ../services/DFS */ 9);
 	
-	HowToPlay = __webpack_require__(/*! ../services/HowToPlay */ 11);
+	ExpressionGenerator = __webpack_require__(/*! ../services/ExpressionGenerator */ 11);
 	
-	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 12);
+	HowToPlay = __webpack_require__(/*! ../services/HowToPlay */ 12);
 	
-	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 13);
+	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 13);
 	
-	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 14);
+	LevelService = __webpack_require__(/*! ../services/LevelService */ 14);
 	
-	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 15);
+	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 15);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 16);
+	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 16);
 	
-	Title = __webpack_require__(/*! ../services/Title */ 17);
+	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 17);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 18);
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 18);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 19);
+	Title = __webpack_require__(/*! ../services/Title */ 19);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 20);
+	Board = __webpack_require__(/*! ../views/Board */ 20);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 21);
+	Cell = __webpack_require__(/*! ../views/Cell */ 21);
 	
-	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 22);
+	Colors = __webpack_require__(/*! ../views/Colors */ 22);
+	
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 23);
+	
+	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 24);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
 	    this.gameScene = this.createGameScene();
 	    this.symbols = this.getSymbols();
+	    console.log('LEVELER');
+	    this.leveler = new LevelService(0, 0, LevelSettings);
 	    this.initialize();
 	    this.bindNewGameButton();
 	    HowToPlay.createHowToPlay(this.isMobile);
@@ -9362,7 +9368,7 @@
 	    console.log('\n');
 	    gameModel = this.generateBoard(inputs, length);
 	    this.goalContainer = new GoalContainer(answers, Colors);
-	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
+	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum, this.leveler);
 	    return ResetButton.bindClick(this.board);
 	  };
 	
@@ -9469,6 +9475,59 @@
 
 /***/ },
 /* 4 */
+/*!*****************************************!*\
+  !*** ./app/models/LevelSettings.coffee ***!
+  \*****************************************/
+/***/ function(module, exports) {
+
+	var LevelSettings;
+	
+	LevelSettings = (function() {
+	  function LevelSettings() {}
+	
+	  LevelSettings.numCorrectNeeded = function(level) {
+	    return [5, 5, 5, 4, 3, 3, 2][level];
+	  };
+	
+	  LevelSettings.boardSize = function(level) {
+	    return [2, 2, 3, 3, 4, 4, 4][level];
+	  };
+	
+	  LevelSettings.maxGoal = function(level) {
+	    return level * 75;
+	  };
+	
+	  LevelSettings.numGoals = function(level) {
+	    return [1, 1, 3, 2, 4, 3, 1][level];
+	  };
+	
+	  LevelSettings.useMultiplication = function(level) {
+	    return level > 2;
+	  };
+	
+	  LevelSettings.getAllSettings = function(level) {
+	    return {
+	      'numCorrectNeeded': this.numCorrectNeeded(level, {
+	        'boardSize': this.boardSize(level, {
+	          'maxGoal': this.maxGoal(level, {
+	            'numGoals': this.numGoals(level, {
+	              'useMultiplication': this.useMultiplication(level)
+	            })
+	          })
+	        })
+	      })
+	    };
+	  };
+	
+	  return LevelSettings;
+	
+	})();
+	
+	module.exports = LevelSettings;
+
+
+/***/ },
+/* 5 */
 /*!*****************************************************!*\
   !*** ./app/services/AdjacentCellsCalculator.coffee ***!
   \*****************************************************/
@@ -9476,7 +9535,7 @@
 
 	var AdjacentCellsCalculator, Tuple;
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
 	
 	AdjacentCellsCalculator = (function() {
 	  function AdjacentCellsCalculator() {}
@@ -9526,7 +9585,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /*!*********************************!*\
   !*** ./app/models/Tuple.coffee ***!
   \*********************************/
@@ -9557,7 +9616,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /*!************************************************!*\
   !*** ./app/services/BoardSolvedService.coffee ***!
   \************************************************/
@@ -9595,7 +9654,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /*!******************************************!*\
   !*** ./app/services/ClickHandler.coffee ***!
   \******************************************/
@@ -9605,16 +9664,17 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
 	
 	ClickHandler = (function() {
-	  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum) {
+	  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum, leveler) {
 	    this.board = board;
 	    this.solutionService = solutionService;
 	    this.goalContainer = goalContainer;
 	    this.isMobile = isMobile;
 	    this.BoardSolvedService = BoardSolvedService;
 	    this.RunningSum = RunningSum;
+	    this.leveler = leveler;
 	    this.clicked = [];
 	    this.mouseDown = false;
 	  }
@@ -9629,6 +9689,7 @@
 	      this.unselectAll();
 	      if (this.BoardSolvedService.isCleared(this.board)) {
 	        this.board.successAnimation();
+	        this.leveler.onCorrect();
 	      }
 	    }
 	    return this.mouseDown = false;
@@ -9758,7 +9819,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /*!*********************************!*\
   !*** ./app/services/DFS.coffee ***!
   \*********************************/
@@ -9766,9 +9827,9 @@
 
 	var DFS, GridCell, Tuple;
 	
-	GridCell = __webpack_require__(/*! ../models/GridCell */ 9);
+	GridCell = __webpack_require__(/*! ../models/GridCell */ 10);
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
 	
 	DFS = (function() {
 	  function DFS() {}
@@ -9942,7 +10003,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /*!************************************!*\
   !*** ./app/models/GridCell.coffee ***!
   \************************************/
@@ -9972,7 +10033,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /*!*************************************************!*\
   !*** ./app/services/ExpressionGenerator.coffee ***!
   \*************************************************/
@@ -10028,7 +10089,7 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /*!***************************************!*\
   !*** ./app/services/HowToPlay.coffee ***!
   \***************************************/
@@ -10064,7 +10125,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /*!*****************************************!*\
   !*** ./app/services/InputSolver.coffee ***!
   \*****************************************/
@@ -10128,7 +10189,59 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
+/*!******************************************!*\
+  !*** ./app/services/LevelService.coffee ***!
+  \******************************************/
+/***/ function(module, exports) {
+
+	var LevelService;
+	
+	LevelService = (function() {
+	  function LevelService(currLevel, numCorrect, settings) {
+	    this.currLevel = currLevel != null ? currLevel : 0;
+	    this.numCorrect = numCorrect != null ? numCorrect : 0;
+	    this.settings = settings;
+	    console.log('LevelService');
+	    if (this.settings != null) {
+	      console.log('settings Exists', this.settings);
+	    } else {
+	      console.log('Settings doesnt');
+	    }
+	  }
+	
+	  LevelService.prototype.levelUp = function() {
+	    this.currLevel++;
+	    return this.numCorrect = 0;
+	  };
+	
+	  LevelService.prototype.setLevel = function(level) {
+	    this.currLevel = level;
+	    return this.numCorrect = 0;
+	  };
+	
+	  LevelService.prototype.onCorrect = function() {
+	    this.numCorrect++;
+	    if (this.levelComplete()) {
+	      return this.levelUp();
+	    }
+	  };
+	
+	  LevelService.prototype.levelComplete = function() {
+	    if (this.numCorrect === this.settings.numCorrectNeeded(this.currLevel)) {
+	      return this.levelUp();
+	    }
+	  };
+	
+	  return LevelService;
+	
+	})();
+	
+	module.exports = LevelService;
+
+
+/***/ },
+/* 15 */
 /*!*************************************************!*\
   !*** ./app/services/RandomizedFitLength.coffee ***!
   \*************************************************/
@@ -10168,7 +10281,7 @@
 
 
 /***/ },
-/* 14 */
+/* 16 */
 /*!*****************************************!*\
   !*** ./app/services/ResetButton.coffee ***!
   \*****************************************/
@@ -10201,7 +10314,7 @@
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /*!****************************************!*\
   !*** ./app/services/RunningSum.coffee ***!
   \****************************************/
@@ -10263,7 +10376,7 @@
 
 
 /***/ },
-/* 16 */
+/* 18 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -10272,7 +10385,7 @@
 	var InputSolver, SolutionService,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
-	InputSolver = __webpack_require__(/*! ./InputSolver */ 12);
+	InputSolver = __webpack_require__(/*! ./InputSolver */ 13);
 	
 	SolutionService = (function() {
 	  function SolutionService(board, goals) {
@@ -10325,7 +10438,7 @@
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /*!***********************************!*\
   !*** ./app/services/Title.coffee ***!
   \***********************************/
@@ -10352,7 +10465,7 @@
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -10362,7 +10475,7 @@
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
 	Board = (function() {
-	  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum) {
+	  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum, leveler) {
 	    this.boardValues = boardValues;
 	    this.scene = scene;
 	    this.goals = goals;
@@ -10375,6 +10488,7 @@
 	    this.SolutionService = SolutionService;
 	    this.BoardSolvedService = BoardSolvedService;
 	    this.RunningSum = RunningSum;
+	    this.leveler = leveler;
 	    this.successAnimationCallback = bind(this.successAnimationCallback, this);
 	    this.createCells = bind(this.createCells, this);
 	    this.createEmptyCells = bind(this.createEmptyCells, this);
@@ -10388,7 +10502,7 @@
 	  Board.prototype.initializer = function() {
 	    var solutionService;
 	    solutionService = new this.SolutionService(this, this.goals);
-	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum);
+	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum, this.leveler);
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);
@@ -10568,7 +10682,7 @@
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -10578,7 +10692,7 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 20);
+	Colors = __webpack_require__(/*! ./Colors */ 22);
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
@@ -10776,7 +10890,7 @@
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
@@ -10799,7 +10913,7 @@
 
 
 /***/ },
-/* 21 */
+/* 23 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
@@ -10842,7 +10956,7 @@
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /*!***********************************************!*\
   !*** ./tests/controllers/GeneralTests.coffee ***!
   \***********************************************/
@@ -10850,17 +10964,17 @@
 
 	var AdjacentCellsCalculator, DFS, ExpressionGenerator, GeneralTests, InputSolver, RandomizedFitLength, Tuple;
 	
-	AdjacentCellsCalculator = __webpack_require__(/*! ../../app/services/AdjacentCellsCalculator */ 4);
+	AdjacentCellsCalculator = __webpack_require__(/*! ../../app/services/AdjacentCellsCalculator */ 5);
 	
-	DFS = __webpack_require__(/*! ../../app/services/DFS */ 8);
+	DFS = __webpack_require__(/*! ../../app/services/DFS */ 9);
 	
-	ExpressionGenerator = __webpack_require__(/*! ../../app/services/ExpressionGenerator */ 10);
+	ExpressionGenerator = __webpack_require__(/*! ../../app/services/ExpressionGenerator */ 11);
 	
-	InputSolver = __webpack_require__(/*! ../../app/services/InputSolver */ 12);
+	InputSolver = __webpack_require__(/*! ../../app/services/InputSolver */ 13);
 	
-	RandomizedFitLength = __webpack_require__(/*! ../../app/services/RandomizedFitLength */ 13);
+	RandomizedFitLength = __webpack_require__(/*! ../../app/services/RandomizedFitLength */ 15);
 	
-	Tuple = __webpack_require__(/*! ../../app/models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ../../app/models/Tuple */ 6);
 	
 	GeneralTests = (function() {
 	  function GeneralTests() {}
@@ -10941,7 +11055,7 @@
 
 
 /***/ },
-/* 23 */
+/* 25 */
 /*!*******************************!*\
   !*** ./~/two.js/build/two.js ***!
   \*******************************/
