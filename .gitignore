@@ -8,3 +8,7 @@ mycha.js
 *.map
 npm-debug.log
 .DS_Store
+*.js
+
+!bundle.js
+!webpack.config.js
