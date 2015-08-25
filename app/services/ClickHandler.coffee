@@ -36,6 +36,7 @@ class ClickHandler
       e.preventDefault()
     body.mouseup (e) =>
       e.preventDefault()
+      @unselectAll() unless @isMobile
       @mousedown = false
 
   onSelect: (cell) ->
