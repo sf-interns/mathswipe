@@ -12,3 +12,10 @@ npm-debug.log
 
 !bundle.js
 !webpack.config.js
+!webpack.dev.config.js
+!webpack.prod.config.js
+!webpack.staging.config.js
+!dev.js
+!preprocessor.js
+!mycha.js
+!./js/
