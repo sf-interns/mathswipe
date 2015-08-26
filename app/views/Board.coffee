@@ -1,4 +1,5 @@
-$ = require 'jquery'
+$               = require 'jquery'
+TrackingService = require '../services/TrackingService'
 
 class Board
 
@@ -112,6 +113,7 @@ class Board
     dest
 
   resetBoard: ->
+    TrackingService.boardEvent 'reset'
     @clearBoardElem()
     @boardValues = @copyValues @initialValues
     @goalContainer.resetGoals()
