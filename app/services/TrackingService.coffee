@@ -1,6 +1,7 @@
 class TrackingService
 
   @boardEvent: (label) ->
+    return unless (typeof ga)?
     if label?
       ga 'send', 'event', 'board', label
     else
@@ -13,6 +14,7 @@ class TrackingService
     @pageview 'Desktop'
 
   @pageview: (label) ->
+    return unless (typeof ga)?
     if label?
       ga 'send', 'pageview', label
     else
