@@ -8,14 +8,13 @@ Note that the other services, when run locally, expect the frontend to be served
 
 The codebase is primarily written in CoffeeScript using the Node package manager to install most of the dependencies. The entire project (including its dependencies) is bundled by `Webpack` into a single bundle.js file which can be served locally or staticlly with GitHub pages.
 
-Animation and functionality of the game is implemented using `jQuery`, `Two.js` and Scalable Vector Graphics (SVGs). 
+Animation and functionality of the game is implemented using `jQuery`.
 
 The styling is written in `SASS` and compiled down to CSS before use. If you plan to clone this repository and try building the game locally, we recommend using the Sublime plugin `SASS Build` to compile down to CSS.
 
 ### Stack
 
 - [CoffeeScript](http://coffeescript.org/)
-- [TwoJS](https://jonobr1.github.io/two.js/)
 - [Webpack](http://webpack.github.io/docs/)
 - [Mycha](https://github.com/Originate/mycha) for `CoffeeScript` tests
 

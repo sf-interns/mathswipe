@@ -73,32 +73,12 @@ class MathSwipeController
 
       @initialize()
 
-  createGameScene: ->
-    gameDom = document.getElementById('game')
-    size = Math.min(Math.max($( window ).width(), 310), 500)
-    scene = new Two(
-      fullscreen: false
-      autostart: true
-      width: size
-      height: size
-    ).appendTo(gameDom);
-    return scene
-
   createGoalsScene: ->
     goalsDom = document.getElementById('goals')
 
   cursorToPointer: ->
     $('#game').addClass('pointer')
     $('#game-button-wrapper').addClass('pointer')
-
-  getSymbols: ->
-    scene = new Two()
-    svgs = $('#assets svg')
-    symbols = []
-    for svg, index in svgs
-      symbols.push (scene.interpret svg)
-      symbols[index].visible = false
-    symbols
 
   # -------- Back-end -------- #
 

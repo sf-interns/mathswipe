@@ -23,7 +23,6 @@
     "coffee-script": "^1.9.3",
     "jquery": "^2.1.4",
     "node-libs-browser": "^0.5.2",
-    "two.js": "^0.4.0",
     "webpack": "^1.10.1",
     "webpack-dev-server": "^1.10.1"
   },
