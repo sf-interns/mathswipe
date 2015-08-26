@@ -51,7 +51,11 @@ class Cell
       @col = col
 
   shiftTo: (row, col) ->
+    transform = document.getElementById("cell-#{@row}-#{@col}").style.transform
+    transform = transform.split(' ')[1]?.match( /[-+]?[0-9]*\.?[0-9]*/g, '')
     distance = @board.dropDownDistance * (row - @row)
+    if transform? and not isNaN parseFloat transform[0]
+      distance += parseFloat transform[0]
     $( "#cell-#{@row}-#{@col}" ).css( "transform", "translate(0, #{distance}px)" )
     @setIndices row, col
 

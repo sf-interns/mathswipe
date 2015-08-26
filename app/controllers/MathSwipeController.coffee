@@ -65,7 +65,6 @@ class MathSwipeController
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       TrackingService.boardEvent 'new game'
-      @gameScene.clear()
       @goalContainer.clearGoals()
       ResetButton.unbindClick()
 
