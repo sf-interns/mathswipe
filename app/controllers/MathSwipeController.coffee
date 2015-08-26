@@ -20,8 +20,8 @@ GeneralTests            = require '../../tests/controllers/GeneralTests'
 class MathSwipeController
 
   constructor: ->
-    @gameScene = @createGameScene()
-    @symbols = @getSymbols()
+    # @gameScene = @createGameScene()
+    # @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
     HowToPlay.createHowToPlay @isMobile
@@ -47,66 +47,23 @@ class MathSwipeController
 
     @gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer answers, Colors
-    @board = new Board  @gameModel, @gameScene, answers, @symbols,
+    @board = new Board  @gameModel, answers,
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
 
-    # creating board without two.js
-    @createBoard(3)
-    @bindCellsClick(3)
-
 # ---------------- no more two.js ------------------
 
-  createBoard: (numRowCells) ->
-    @setGridStyling numRowCells
 
-    gridElem = $('#grid-container')
-    for row in [0...numRowCells]
-      gridRow = '<div id="grid-row-' + row + '" class="grid-row"></div>'
-      gridElem.append(gridRow)
-      for col in [0...numRowCells]
-        gridCell = '<div id="grid-cell-' + row + '-' + col + '" class="grid-cell"></div>'
-        $('#grid-row-' + row).append(gridCell)
-        $('#grid-cell-' + row + '-' + col).css(@gridCellStyle)
-
-    @createCells numRowCells
-    @setDistance()
 
   setDistance: ->
      @dropDownDistance = $( '#cell-1-0' ).position().top
-
-  setGridStyling: (numRowCells) ->
-    gridSpacing = 15
-    fieldWidth = Math.min(Math.max($( window ).width(), 310), 500)
-    tileSize = (fieldWidth - gridSpacing * (numRowCells + 1)) / numRowCells
-    @gridCellStyle = { width: tileSize, height: tileSize, "line-height": "#{tileSize}px" }
-    $('#game-container').css({ width: fieldWidth, height: fieldWidth })
-
-  createCells: (numRowCells) ->
-    containerElem = $('#cell-container')
-    for row in [0...numRowCells]
-      cellRow = '<div id="cell-row-' + row + '" class="cell-row"></div>'
-      containerElem.append(cellRow)
-      for col in [0...numRowCells]
-        cell = '<div id="cell-' + row + '-' + col + '" class="cell">' + @gameModel[row][col] + '</div>'
-        $('#cell-row-' + row).append(cell)
-        $('#cell-' + row + '-' + col).css(@gridCellStyle)
 
   pushCellToBottom: (row, col, num) ->
     distance = num * @dropDownDistance
     $( "#cell-#{row}-#{col}" ).css( "transform", "translate(0, #{distance}px)" )
 
-  bindCellsClick: (numRowCells) ->
-    for row in [0...numRowCells]
-      for col in [0...numRowCells]
-        $('#cell-' + row + '-' + col).click (e) =>
-          e.preventDefault()
-          num = 2
-          distance = num * @dropDownDistance
-          $(e.currentTarget).css( "transform", "translate(0, #{distance}px)" )
-          console.log $(e.currentTarget).text()
 
   clearBoardElem: ->
     $('#grid-container').empty()
@@ -116,7 +73,6 @@ class MathSwipeController
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
-      @gameScene.clear()
       @goalContainer.clearGoals()
       ResetButton.unbindClick()
 

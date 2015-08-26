@@ -39,8 +39,6 @@ GeneralTests = require('../../tests/controllers/GeneralTests');
 
 MathSwipeController = (function() {
   function MathSwipeController() {
-    this.gameScene = this.createGameScene();
-    this.symbols = this.getSymbols();
     this.initialize();
     this.bindNewGameButton();
     HowToPlay.createHowToPlay(this.isMobile);
@@ -65,99 +63,18 @@ MathSwipeController = (function() {
     console.log('\n');
     this.gameModel = this.generateBoard(inputs, length);
     this.goalContainer = new GoalContainer(answers, Colors);
-    this.board = new Board(this.gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-    ResetButton.bindClick(this.board);
-    this.createBoard(3);
-    return this.bindCellsClick(3);
-  };
-
-  MathSwipeController.prototype.createBoard = function(numRowCells) {
-    var col, gridCell, gridElem, gridRow, i, j, ref, ref1, row;
-    this.setGridStyling(numRowCells);
-    gridElem = $('#grid-container');
-    for (row = i = 0, ref = numRowCells; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
-      gridRow = '<div id="grid-row-' + row + '" class="grid-row"></div>';
-      gridElem.append(gridRow);
-      for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-        gridCell = '<div id="grid-cell-' + row + '-' + col + '" class="grid-cell"></div>';
-        $('#grid-row-' + row).append(gridCell);
-        $('#grid-cell-' + row + '-' + col).css(this.gridCellStyle);
-      }
-    }
-    this.createCells(numRowCells);
-    return this.setDistance();
+    this.board = new Board(this.gameModel, answers, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
+    return ResetButton.bindClick(this.board);
   };
 
   MathSwipeController.prototype.setDistance = function() {
     return this.dropDownDistance = $('#cell-1-0').position().top;
   };
 
-  MathSwipeController.prototype.setGridStyling = function(numRowCells) {
-    var fieldWidth, gridSpacing, tileSize;
-    gridSpacing = 15;
-    fieldWidth = Math.min(Math.max($(window).width(), 310), 500);
-    tileSize = (fieldWidth - gridSpacing * (numRowCells + 1)) / numRowCells;
-    this.gridCellStyle = {
-      width: tileSize,
-      height: tileSize,
-      "line-height": tileSize + "px"
-    };
-    return $('#game-container').css({
-      width: fieldWidth,
-      height: fieldWidth
-    });
-  };
-
-  MathSwipeController.prototype.createCells = function(numRowCells) {
-    var cell, cellRow, col, containerElem, i, ref, results, row;
-    containerElem = $('#cell-container');
-    results = [];
-    for (row = i = 0, ref = numRowCells; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
-      cellRow = '<div id="cell-row-' + row + '" class="cell-row"></div>';
-      containerElem.append(cellRow);
-      results.push((function() {
-        var j, ref1, results1;
-        results1 = [];
-        for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          cell = '<div id="cell-' + row + '-' + col + '" class="cell">' + this.gameModel[row][col] + '</div>';
-          $('#cell-row-' + row).append(cell);
-          results1.push($('#cell-' + row + '-' + col).css(this.gridCellStyle));
-        }
-        return results1;
-      }).call(this));
-    }
-    return results;
-  };
-
   MathSwipeController.prototype.pushCellToBottom = function(row, col, num) {
     var distance;
     distance = num * this.dropDownDistance;
     return $("#cell-" + row + "-" + col).css("transform", "translate(0, " + distance + "px)");
-  };
-
-  MathSwipeController.prototype.bindCellsClick = function(numRowCells) {
-    var col, i, ref, results, row;
-    results = [];
-    for (row = i = 0, ref = numRowCells; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
-      results.push((function() {
-        var j, ref1, results1;
-        results1 = [];
-        for (col = j = 0, ref1 = numRowCells; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          results1.push($('#cell-' + row + '-' + col).click((function(_this) {
-            return function(e) {
-              var distance, num;
-              e.preventDefault();
-              num = 2;
-              distance = num * _this.dropDownDistance;
-              $(e.currentTarget).css("transform", "translate(0, " + distance + "px)");
-              return console.log($(e.currentTarget).text());
-            };
-          })(this)));
-        }
-        return results1;
-      }).call(this));
-    }
-    return results;
   };
 
   MathSwipeController.prototype.clearBoardElem = function() {
@@ -168,7 +85,6 @@ MathSwipeController = (function() {
   MathSwipeController.prototype.bindNewGameButton = function() {
     return $('#new-game-button').click((function(_this) {
       return function(e) {
-        _this.gameScene.clear();
         _this.goalContainer.clearGoals();
         ResetButton.unbindClick();
         _this.clearBoardElem();

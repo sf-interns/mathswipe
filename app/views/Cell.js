@@ -6,28 +6,17 @@ $ = require('jquery');
 Colors = require('./Colors');
 
 Cell = (function() {
-  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
-    var hitboxSize;
+  function Cell(col1, row1, board, clickHandler, value, gridCellStyle) {
+    var cell;
     this.col = col1;
     this.row = row1;
-    this.size = size;
-    this.scene = scene;
     this.board = board;
     this.clickHandler = clickHandler;
+    this.gridCellStyle = gridCellStyle;
     this.isDeleted = this.isSelected = false;
-    this.rect = this.scene.makeRectangle(this.getX(), this.getY(), this.size, this.size);
-    if (!((symbolBlueprint != null) && (this.clickHandler != null))) {
-      this.cell = this.rect;
-      this.scene.update();
-      return;
-    }
-    hitboxSize = 0.7 * this.size;
-    this.hitbox = this.scene.makeRectangle(this.getX(), this.getY(), hitboxSize, hitboxSize);
-    this.hitbox.noStroke();
-    this.cloneSymbol(symbolBlueprint);
-    this.hitboxGroup = this.scene.makeGroup(this.hitbox, this.symbol);
-    this.cell = this.scene.makeGroup(this.rect, this.hitboxGroup);
-    this.scene.update();
+    cell = '<div id="cell-' + this.row + '-' + this.col + '" class="cell">' + value + '</div>';
+    $('#cell-row-' + this.row).append(cell);
+    $('#cell-' + this.row + '-' + this.col).css(this.gridCellStyle);
     if (!this.clickHandler.isOnMobile()) {
       this.bindMouseOver();
       this.bindMouseUp();
@@ -37,47 +26,18 @@ Cell = (function() {
     }
   }
 
-  Cell.prototype.cloneSymbol = function(blueprint) {
-    var offset;
-    offset = -this.size * 4 / 10;
-    this.symbol = blueprint.clone();
-    this.symbol.translation.set(this.getX() + offset, this.getY() + offset);
-    this.symbol.scale = (this.size / 100) * 0.4;
-    return this.symbol.noStroke().fill = Colors.symbol;
-  };
-
   Cell.prototype.setColor = function(c) {
     this.color = c;
-    this.rect.fill = c;
-    if (this.hitbox != null) {
-      this.hitbox.fill = c;
-    }
-    return this.scene.update();
+    return $('#cell-' + this.row + '-' + this.col).css('color', c);
   };
 
   Cell.prototype.setBorder = function(c) {
     this.rect.stroke = c;
-    this.rect.linewidth = 6;
-    return this.scene.update();
+    return this.rect.linewidth = 6;
   };
 
   Cell.prototype.hide = function() {
-    this.cell.visible = false;
-    return this.scene.update();
-  };
-
-  Cell.prototype.getX = function(col) {
-    if (col == null) {
-      col = this.col;
-    }
-    return this.board.x - (this.board.size + this.size) / 2 + (col + 1) * this.board.change;
-  };
-
-  Cell.prototype.getY = function(row) {
-    if (row == null) {
-      row = this.row;
-    }
-    return this.board.y - (this.board.size + this.size) / 2 + (row + 1) * this.board.change;
+    return this.cell.visible = false;
   };
 
   Cell.prototype.setIndices = function(row, col) {
@@ -114,7 +74,7 @@ Cell = (function() {
   };
 
   Cell.prototype.bindClick = function() {
-    return $('#' + this.hitboxGroup.id).click((function(_this) {
+    return $('#cell-' + this.row + '-' + this.col).click((function(_this) {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -131,7 +91,7 @@ Cell = (function() {
   };
 
   Cell.prototype.bindMouseOver = function() {
-    return $('#' + this.hitboxGroup.id).mouseover((function(_this) {
+    return $('#cell-' + this.row + '-' + this.col).mouseover((function(_this) {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -146,7 +106,7 @@ Cell = (function() {
   };
 
   Cell.prototype.bindMouseUp = function() {
-    return $('#' + this.hitboxGroup.id).mouseup((function(_this) {
+    return $('#cell-' + this.row + '-' + this.col).mouseup((function(_this) {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -156,7 +116,7 @@ Cell = (function() {
   };
 
   Cell.prototype.bindMouseDown = function() {
-    return $('#' + this.hitboxGroup.id).mousedown((function(_this) {
+    return $('#cell-' + this.row + '-' + this.col).mousedown((function(_this) {
       return function(e) {
         e.preventDefault();
         e.stopPropagation();

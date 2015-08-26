@@ -3,23 +3,26 @@ Colors = require './Colors'
 
 class Cell
 
-  constructor: (@col, @row, @size, @scene, @board, @clickHandler, symbolBlueprint) ->
+  constructor: (@col, @row, @board, @clickHandler, value, @gridCellStyle) ->
     @isDeleted = @isSelected = false
-    @rect = @scene.makeRectangle @getX(), @getY(), @size, @size
+    cell = '<div id="cell-' + @row + '-' + @col + '" class="cell">' + value + '</div>'
+    $('#cell-row-' + @row).append(cell)
+    $('#cell-' + @row + '-' + @col).css(@gridCellStyle)
+    # @rect = @scene.makeRectangle @getX(), @getY(), @size, @size
 
-    unless symbolBlueprint? and @clickHandler?
-      @cell = @rect
-      @scene.update()
-      return
+    # unless symbolBlueprint? and @clickHandler?
+    #   @cell = @rect
+    #   @scene.update()
+    #   return
 
-    hitboxSize = 0.7 * @size
-    @hitbox = @scene.makeRectangle @getX(), @getY(), hitboxSize, hitboxSize
-    @hitbox.noStroke()
+    # hitboxSize = 0.7 * @size
+    # @hitbox = @scene.makeRectangle @getX(), @getY(), hitboxSize, hitboxSize
+    # @hitbox.noStroke()
 
-    @cloneSymbol symbolBlueprint
-    @hitboxGroup = @scene.makeGroup @hitbox, @symbol
-    @cell = @scene.makeGroup @rect, @hitboxGroup
-    @scene.update()
+    # @cloneSymbol symbolBlueprint
+    # @hitboxGroup = @scene.makeGroup @hitbox, @symbol
+    # @cell = @scene.makeGroup @rect, @hitboxGroup
+    # @scene.update()
 
     unless @clickHandler.isOnMobile()
       @bindMouseOver()
@@ -28,33 +31,17 @@ class Cell
     else
       @bindClick()
 
-  cloneSymbol: (blueprint)->
-    offset = - @size * 4 / 10
-    @symbol = blueprint.clone()
-    @symbol.translation.set @getX() + offset, @getY() + offset
-    @symbol.scale = (@size / 100) * 0.4
-    @symbol.noStroke().fill = Colors.symbol
-
   setColor: (c) ->
     @color = c
-    @rect.fill = c
-    if @hitbox? then @hitbox.fill = c
-    @scene.update()
+    $('#cell-' + @row + '-' + @col).css( 'color', c )
+    # if @hitbox? then @hitbox.fill = c
 
   setBorder: (c) ->
     @rect.stroke = c
     @rect.linewidth = 6
-    @scene.update()
 
   hide: ->
     @cell.visible = false
-    @scene.update()
-
-  getX: (col = @col) ->
-    @board.x - (@board.size + @size) / 2 + (col + 1) * @board.change
-
-  getY: (row = @row) ->
-    @board.y - (@board.size + @size) / 2 + (row + 1) * @board.change
 
   setIndices: (row, col) ->
     if row? and col?
@@ -85,7 +72,7 @@ class Cell
     @setIndices row, col
 
   bindClick: ->
-    $('#' + @hitboxGroup.id).click (e) =>
+    $('#cell-' + @row + '-' + @col).click (e) =>
       e.preventDefault()
       e.stopPropagation()
       return if @isDeleted
@@ -95,7 +82,7 @@ class Cell
         @clickHandler.onUnselect this
 
   bindMouseOver: ->
-    $('#' + @hitboxGroup.id).mouseover (e) =>
+    $('#cell-' + @row + '-' + @col).mouseover (e) =>
       e.preventDefault()
       e.stopPropagation()
       return if @isDeleted
@@ -103,13 +90,13 @@ class Cell
           @clickHandler.onSelect this
 
   bindMouseUp: ->
-    $('#' + @hitboxGroup.id).mouseup (e) =>
+    $('#cell-' + @row + '-' + @col).mouseup (e) =>
       e.preventDefault()
       e.stopPropagation()
       @clickHandler.setMouseAsUp()
 
   bindMouseDown: ->
-    $('#' + @hitboxGroup.id).mousedown (e) =>
+    $('#cell-' + @row + '-' + @col).mousedown (e) =>
       e.preventDefault()
       e.stopPropagation()
       return if @isDeleted
