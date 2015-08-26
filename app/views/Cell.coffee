@@ -8,6 +8,7 @@ class Cell
     cell = '<div id="cell-' + @row + '-' + @col + '" class="cell">' + value + '</div>'
     $('#cell-row-' + @row).append(cell)
     $('#cell-' + @row + '-' + @col).css(@gridCellStyle)
+    @setColor Colors.cell
     # @rect = @scene.makeRectangle @getX(), @getY(), @size, @size
 
     # unless symbolBlueprint? and @clickHandler?
@@ -41,34 +42,17 @@ class Cell
     @rect.linewidth = 6
 
   hide: ->
-    @cell.visible = false
+    $('#cell-' + @row + '-' + @col).empty()
 
   setIndices: (row, col) ->
     if row? and col?
+      $('#cell-' + @row + '-' + @col).attr( 'id', 'cell-' + row + '-' + col )
       @row = row
       @col = col
 
   shiftTo: (row, col) ->
-    end = new Two.Vector @getX(col), @getY(row)
-    start = new Two.Vector @getX(), @getY()
-    goingDown = end.y > start.y
-
-    @scene.bind('update', (frameCount) =>
-      dist = start.distanceTo end
-
-      if dist < .00001
-        @cell.translation.clone end
-        @scene.unbind 'update'
-
-      delta = new Two.Vector 0, (dist * .125)
-      if goingDown
-        @cell.translation.addSelf delta
-        start = start.addSelf delta
-      else
-        @cell.translation.subSelf delta
-        start = start.subSelf delta
-    ).play()
-
+    distance = @board.dropDownDistance * (row - @row)
+    $( "#cell-#{@row}-#{@col}" ).css( "transform", "translate(0, #{distance}px)" )
     @setIndices row, col
 
   bindClick: ->

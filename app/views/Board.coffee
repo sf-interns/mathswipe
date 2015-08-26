@@ -8,7 +8,6 @@ class Board
     @initialValues = @copyValues @boardValues
     @initializer()
 
-
 # --------------jquery------------- #
   createBoard: ->
     gridElem = $('#grid-container')
@@ -20,8 +19,7 @@ class Board
         $('#grid-row-' + row).append(gridCell)
         $('#grid-cell-' + row + '-' + col).css(@gridCellStyle)
 
-    @createCells @dimension
-    # @setDistance()
+
 
   setGridStyling: ->
     gridSpacing = 15
@@ -29,17 +27,6 @@ class Board
     tileSize = (fieldWidth - gridSpacing * (@dimension + 1)) / @dimension
     @gridCellStyle = { width: tileSize, height: tileSize, "line-height": "#{tileSize}px" }
     $('#game-container').css({ width: fieldWidth, height: fieldWidth })
-
-  bindCellsClick: ->
-    for row in [0...@dimension]
-      for col in [0...@dimension]
-        $('#cell-' + row + '-' + col).click (e) =>
-          e.preventDefault()
-          num = 2
-          distance = num * @dropDownDistance
-          # $(e.currentTarget).css( "transform", "translate(0, #{distance}px)" )
-          $(e.currentTarget).css( "color", "blue" )
-          console.log $(e.currentTarget).text()
 
   createCells: ->
     @cells = []
@@ -56,23 +43,22 @@ class Board
   clearBoardElem: ->
     $('#grid-container').empty()
     $('#cell-container').empty()
+
+  setDistance: ->
+     @dropDownDistance = $( '#cell-1-0' ).position().top
+
 # --------------jquery------------- #
 
   initializer: =>
     solutionService = new @SolutionService this, @goals
     @clickHandler = new @ClickHandler this, solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum
 
-
-
     @setGridStyling()
     @createBoard()
-    # @bindCellsClick()
-
-
-
+    @createCells()
+    @setDistance()
 
     @clickHandler.bindDefaultMouseEvents()
-
 
   createEmptyCells: (width) =>
     @empty_cells = []
@@ -83,16 +69,6 @@ class Board
         cell.setColor @Colors.emptyCell
         cell.setBorder @Colors.emptyCellBorder
         @empty_cells[row].push cell
-
-  # createCells: (size) =>
-  #   @cells = []
-  #   for row in [0...@dimension]
-  #     @cells.push []
-  #     for col in [0...@dimension]
-  #       cell = new @Cell col, row, size, @scene, this, @clickHandler, @symbols[@toIdx @boardValues[row][col]]
-  #       cell.setColor @Colors.cell
-  #       cell.setBorder @Colors.cellBorder
-  #       @cells[row].push cell
 
   deleteCells: (solution) ->
     for tuple in solution
@@ -111,7 +87,6 @@ class Board
             unless @cells[up][col].isDeleted
               @swapCells row, col, up, col
               break
-    @scene.update()
 
   swapCells: (r1, c1, r2, c2) ->
     # Move locations

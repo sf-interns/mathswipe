@@ -50,7 +50,7 @@ MathSwipeController = (function() {
   }
 
   MathSwipeController.prototype.initialize = function() {
-    var answers, expression, i, inputLengths, inputs, len, length;
+    var answers, expression, gameModel, i, inputLengths, inputs, len, length;
     length = 3;
     inputs = [];
     answers = [];
@@ -61,20 +61,10 @@ MathSwipeController = (function() {
       console.log(expression);
     }
     console.log('\n');
-    this.gameModel = this.generateBoard(inputs, length);
+    gameModel = this.generateBoard(inputs, length);
     this.goalContainer = new GoalContainer(answers, Colors);
-    this.board = new Board(this.gameModel, answers, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
+    this.board = new Board(gameModel, answers, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
     return ResetButton.bindClick(this.board);
-  };
-
-  MathSwipeController.prototype.setDistance = function() {
-    return this.dropDownDistance = $('#cell-1-0').position().top;
-  };
-
-  MathSwipeController.prototype.pushCellToBottom = function(row, col, num) {
-    var distance;
-    distance = num * this.dropDownDistance;
-    return $("#cell-" + row + "-" + col).css("transform", "translate(0, " + distance + "px)");
   };
 
   MathSwipeController.prototype.clearBoardElem = function() {

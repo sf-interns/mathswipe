@@ -17,6 +17,7 @@ Cell = (function() {
     cell = '<div id="cell-' + this.row + '-' + this.col + '" class="cell">' + value + '</div>';
     $('#cell-row-' + this.row).append(cell);
     $('#cell-' + this.row + '-' + this.col).css(this.gridCellStyle);
+    this.setColor(Colors.cell);
     if (!this.clickHandler.isOnMobile()) {
       this.bindMouseOver();
       this.bindMouseUp();
@@ -37,39 +38,21 @@ Cell = (function() {
   };
 
   Cell.prototype.hide = function() {
-    return this.cell.visible = false;
+    return $('#cell-' + this.row + '-' + this.col).empty();
   };
 
   Cell.prototype.setIndices = function(row, col) {
     if ((row != null) && (col != null)) {
+      $('#cell-' + this.row + '-' + this.col).attr('id', 'cell-' + row + '-' + col);
       this.row = row;
       return this.col = col;
     }
   };
 
   Cell.prototype.shiftTo = function(row, col) {
-    var end, goingDown, start;
-    end = new Two.Vector(this.getX(col), this.getY(row));
-    start = new Two.Vector(this.getX(), this.getY());
-    goingDown = end.y > start.y;
-    this.scene.bind('update', (function(_this) {
-      return function(frameCount) {
-        var delta, dist;
-        dist = start.distanceTo(end);
-        if (dist < .00001) {
-          _this.cell.translation.clone(end);
-          _this.scene.unbind('update');
-        }
-        delta = new Two.Vector(0, dist * .125);
-        if (goingDown) {
-          _this.cell.translation.addSelf(delta);
-          return start = start.addSelf(delta);
-        } else {
-          _this.cell.translation.subSelf(delta);
-          return start = start.subSelf(delta);
-        }
-      };
-    })(this)).play();
+    var distance;
+    distance = this.board.dropDownDistance * (row - this.row);
+    $("#cell-" + this.row + "-" + this.col).css("transform", "translate(0, " + distance + "px)");
     return this.setIndices(row, col);
   };
 

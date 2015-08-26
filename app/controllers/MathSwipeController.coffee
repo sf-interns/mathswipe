@@ -20,8 +20,6 @@ GeneralTests            = require '../../tests/controllers/GeneralTests'
 class MathSwipeController
 
   constructor: ->
-    # @gameScene = @createGameScene()
-    # @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
     HowToPlay.createHowToPlay @isMobile
@@ -45,25 +43,15 @@ class MathSwipeController
     console.log expression for expression in inputs
     console.log '\n'
 
-    @gameModel = @generateBoard inputs, length
+    gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer answers, Colors
-    @board = new Board  @gameModel, answers,
+    @board = new Board  gameModel, answers,
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
 
 # ---------------- no more two.js ------------------
-
-
-
-  setDistance: ->
-     @dropDownDistance = $( '#cell-1-0' ).position().top
-
-  pushCellToBottom: (row, col, num) ->
-    distance = num * @dropDownDistance
-    $( "#cell-#{row}-#{col}" ).css( "transform", "translate(0, #{distance}px)" )
-
 
   clearBoardElem: ->
     $('#grid-container').empty()

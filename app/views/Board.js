@@ -24,18 +24,24 @@ Board = (function() {
   }
 
   Board.prototype.createBoard = function() {
-    var col, gridCell, gridElem, gridRow, i, j, ref, ref1, row;
+    var col, gridCell, gridElem, gridRow, i, ref, results, row;
     gridElem = $('#grid-container');
+    results = [];
     for (row = i = 0, ref = this.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
       gridRow = '<div id="grid-row-' + row + '" class="grid-row"></div>';
       gridElem.append(gridRow);
-      for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-        gridCell = '<div id="grid-cell-' + row + '-' + col + '" class="grid-cell"></div>';
-        $('#grid-row-' + row).append(gridCell);
-        $('#grid-cell-' + row + '-' + col).css(this.gridCellStyle);
-      }
+      results.push((function() {
+        var j, ref1, results1;
+        results1 = [];
+        for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
+          gridCell = '<div id="grid-cell-' + row + '-' + col + '" class="grid-cell"></div>';
+          $('#grid-row-' + row).append(gridCell);
+          results1.push($('#grid-cell-' + row + '-' + col).css(this.gridCellStyle));
+        }
+        return results1;
+      }).call(this));
     }
-    return this.createCells(this.dimension);
+    return results;
   };
 
   Board.prototype.setGridStyling = function() {
@@ -52,31 +58,6 @@ Board = (function() {
       width: fieldWidth,
       height: fieldWidth
     });
-  };
-
-  Board.prototype.bindCellsClick = function() {
-    var col, i, ref, results, row;
-    results = [];
-    for (row = i = 0, ref = this.dimension; 0 <= ref ? i < ref : i > ref; row = 0 <= ref ? ++i : --i) {
-      results.push((function() {
-        var j, ref1, results1;
-        results1 = [];
-        for (col = j = 0, ref1 = this.dimension; 0 <= ref1 ? j < ref1 : j > ref1; col = 0 <= ref1 ? ++j : --j) {
-          results1.push($('#cell-' + row + '-' + col).click((function(_this) {
-            return function(e) {
-              var distance, num;
-              e.preventDefault();
-              num = 2;
-              distance = num * _this.dropDownDistance;
-              $(e.currentTarget).css("color", "blue");
-              return console.log($(e.currentTarget).text());
-            };
-          })(this)));
-        }
-        return results1;
-      }).call(this));
-    }
-    return results;
   };
 
   Board.prototype.createCells = function() {
@@ -106,12 +87,18 @@ Board = (function() {
     return $('#cell-container').empty();
   };
 
+  Board.prototype.setDistance = function() {
+    return this.dropDownDistance = $('#cell-1-0').position().top;
+  };
+
   Board.prototype.initializer = function() {
     var solutionService;
     solutionService = new this.SolutionService(this, this.goals);
     this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum);
     this.setGridStyling();
     this.createBoard();
+    this.createCells();
+    this.setDistance();
     return this.clickHandler.bindDefaultMouseEvents();
   };
 
@@ -151,20 +138,35 @@ Board = (function() {
   };
 
   Board.prototype.pushAllCellsToBottom = function() {
-    var col, i, j, k, ref, ref1, ref2, row, up;
+    var col, i, ref, results, row, up;
+    results = [];
     for (row = i = ref = this.dimension - 1; ref <= 1 ? i <= 1 : i >= 1; row = ref <= 1 ? ++i : --i) {
-      for (col = j = ref1 = this.dimension - 1; ref1 <= 0 ? j <= 0 : j >= 0; col = ref1 <= 0 ? ++j : --j) {
-        if (this.cells[row][col].isDeleted) {
-          for (up = k = ref2 = row - 1; ref2 <= 0 ? k <= 0 : k >= 0; up = ref2 <= 0 ? ++k : --k) {
-            if (!this.cells[up][col].isDeleted) {
-              this.swapCells(row, col, up, col);
-              break;
-            }
+      results.push((function() {
+        var j, ref1, results1;
+        results1 = [];
+        for (col = j = ref1 = this.dimension - 1; ref1 <= 0 ? j <= 0 : j >= 0; col = ref1 <= 0 ? ++j : --j) {
+          if (this.cells[row][col].isDeleted) {
+            results1.push((function() {
+              var k, ref2, results2;
+              results2 = [];
+              for (up = k = ref2 = row - 1; ref2 <= 0 ? k <= 0 : k >= 0; up = ref2 <= 0 ? ++k : --k) {
+                if (!this.cells[up][col].isDeleted) {
+                  this.swapCells(row, col, up, col);
+                  break;
+                } else {
+                  results2.push(void 0);
+                }
+              }
+              return results2;
+            }).call(this));
+          } else {
+            results1.push(void 0);
           }
         }
-      }
+        return results1;
+      }).call(this));
     }
-    return this.scene.update();
+    return results;
   };
 
   Board.prototype.swapCells = function(r1, c1, r2, c2) {
