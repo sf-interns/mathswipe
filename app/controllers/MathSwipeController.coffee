@@ -9,6 +9,7 @@ InputSolver             = require '../services/InputSolver'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
+ShareGameService        = require '../services/ShareGameService'
 SolutionService         = require '../services/SolutionService'
 Title                   = require '../services/Title'
 Board                   = require '../views/Board'
@@ -24,6 +25,7 @@ class MathSwipeController
     @symbols = @getSymbols()
     @initialize()
     @bindNewGameButton()
+    @bindShareGameButton()
     HowToPlay.createHowToPlay @isMobile
     if @isMobile().any()?
       Title.mobileTitle()
@@ -68,6 +70,11 @@ class MathSwipeController
       return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
 
   # -------- Front-end -------- #
+
+  bindShareGameButton: ->
+    $('#share-game-button').click (e) =>
+      ShareGameService.reloadPageWithHash @board
+      ShareGameService.isSharedGame()
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
