@@ -60,14 +60,12 @@ class MathSwipeController
     ShareGameService.reloadPageWithHash @board
 
   initializeSharedGame: ->
-    # length = 3
     answers = []
 
     hashString = window.location.hash.slice 1, window.location.hash.length
     values = hashString.split "_"
     length = Math.sqrt values[0].length
-    console.log length
-    for i in [2...values.length]
+    for i in [1...values.length]
       answers.push values[i]
     gameModel = @createSharedGrid values[0], length
     gameModel.length = length
