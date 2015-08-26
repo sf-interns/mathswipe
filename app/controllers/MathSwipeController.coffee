@@ -62,11 +62,12 @@ class MathSwipeController
     length = 3
     answers = []
 
-    hashString = window.location.hash
+    hashString = window.location.hash.slice 1, window.location.hash.length
+    console.log hashString
     values = hashString.split "_"
     for i in [2...values.length]
       answers.push values[i]
-    gameModel = @createSharedGrid values[1], length
+    gameModel = @createSharedGrid values[0], length
     gameModel.length = length
     @goalContainer = new GoalContainer answers, Colors
     @board = new Board  gameModel, @gameScene, answers, @symbols,

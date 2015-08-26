@@ -3,7 +3,7 @@ $ = require 'jquery'
 class ShareGameService
 
   @reloadPageWithHash: (board) ->
-    hashVal = '_'
+    hashVal = ''
     for row in board.initialValues
       for col in row
         hashVal += col.toString()
