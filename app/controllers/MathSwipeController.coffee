@@ -23,7 +23,6 @@ class MathSwipeController
   constructor: ->
     @gameScene = @createGameScene()
     @symbols = @getSymbols()
-    @initialize()
     @bindNewGameButton()
     @bindShareGameButton()
     HowToPlay.createHowToPlay @isMobile
@@ -31,6 +30,10 @@ class MathSwipeController
       Title.mobileTitle()
     else
       @cursorToPointer()
+    if ShareGameService.isSharedGame()
+      @initializeSharedGame()
+    else
+      @initialize()
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
@@ -54,6 +57,34 @@ class MathSwipeController
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
+
+  initializeSharedGame: ->
+    length = 3
+    answers = []
+
+    hashString = window.location.hash
+    values = hashString.split "_"
+    for i in [2...values.length]
+      answers.push values[i]
+    gameModel = @createSharedGrid values[1], length
+    gameModel.length = length
+    @goalContainer = new GoalContainer answers, Colors
+    @board = new Board  gameModel, @gameScene, answers, @symbols,
+                        @goalContainer, @isMobile().any()?, Cell,
+                        Colors, ClickHandler, SolutionService,
+                        BoardSolvedService, RunningSum
+    ResetButton.bindClick @board
+
+
+  createSharedGrid: (gridValues, length) ->
+    grid = []
+    index = 0
+    for row in [0...length]
+      grid.push []
+      for col in [0...length]
+        grid[row].push gridValues[index]
+        index++
+    grid
 
   isMobile: () ->
     Android: () ->
