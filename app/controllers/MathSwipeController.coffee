@@ -36,14 +36,22 @@ class MathSwipeController
 
   initialize: (hash) ->
     answers = []
+    solutionPlacements = []
 
     if hash? and hash isnt ''
       hashString = window.location.hash.slice 1, window.location.hash.length
       values = hashString.split '_'
-      length = Math.sqrt values[0].length
-      for i in [1...values.length]
+      gridValues = values[0]
+      length = Math.sqrt gridValues.length
+      for i in [1...values.length - 1]
         answers.push parseInt values[i]
-      gameModel = @createSharedGrid values[0], length
+      placements = values[values.length - 1].split '&'
+      for coord in placements
+        coord = coord.split ','
+        row = parseInt coord[0]
+        col = parseInt coord[1]
+        solutionPlacements.push {row, col}
+      gameModel = @createSharedGrid gridValues, length
     else
       length = 3
       inputs = []
@@ -51,9 +59,9 @@ class MathSwipeController
       @generateInputs inputLengths, inputs, answers
       console.log expression for expression in inputs
       console.log '\n'
-      solutionPlacements = []
       gameModel = @generateBoard inputs, length, solutionPlacements
 
+    console.log solutionPlacements
     @goalContainer = new GoalContainer answers, Colors
     @board = new Board  gameModel, @gameScene, answers, @symbols,
                         @goalContainer, @isMobile().any()?, Cell,

@@ -11,6 +11,9 @@ class ShareGameService
         hashVal += col
     for goal in board.goals
       hashVal += '_' + goal
+    hashVal += '_'
+    for expression in solutionPlacements
+      hashVal += '&' + expression.row + ',' + expression.col
     window.location.hash = hashVal
 
   @checkSolutionPlacements: (board, solutionPlacements, inputs) ->
@@ -32,17 +35,16 @@ class ShareGameService
         @tempBoard.boardValues[solutionPlacements[temp].row][solutionPlacements[temp].col] = ' '
       @pushDownTempBoard()
 
-      if not @solutionService.isSolution()
+      unless @solutionService.isSolution()
         return false
     true
-
 
   @pushDownTempBoard: ->
     for row in [@tempBoard.boardValues.length-1..1]
       for col in [@tempBoard.boardValues.length-1..0]
-        if @tempBoard.boardValues[row][col] == ' '
+        if @tempBoard.boardValues[row][col] is ' '
           for up in [row-1..0]
-            unless @tempBoard.boardValues[up][col] == ' '
+            unless @tempBoard.boardValues[up][col] is ' '
               @swapCells row, col, up, col
               break
 
