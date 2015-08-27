@@ -53,7 +53,6 @@ class MathSwipeController
       console.log '\n'
       solutionPlacements = []
       gameModel = @generateBoard inputs, length, solutionPlacements
-    console.log each for each in solutionPlacements
 
     @goalContainer = new GoalContainer answers, Colors
     @board = new Board  gameModel, @gameScene, answers, @symbols,
@@ -61,7 +60,7 @@ class MathSwipeController
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
-    ShareGameService.reloadPageWithHash @board
+    ShareGameService.reloadPageWithHash @board, solutionPlacements, inputs
 
   createSharedGrid: (gridValues, length) ->
     grid = []
