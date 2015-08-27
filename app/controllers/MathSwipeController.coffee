@@ -30,27 +30,31 @@ class MathSwipeController
       Title.mobileTitle()
     else
       @cursorToPointer()
-    if ShareGameService.isSharedGame()
-      @initializeSharedGame()
-    else
-      @initialize()
+    @initialize window.location.hash
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
 
-  initialize: ->
-    length = 3
-    inputs = []
+  initialize: (hash) ->
     answers = []
 
-    inputLengths = RandomizedFitLength.generate length * length
+    if hash? and hash isnt ''
+      hashString = window.location.hash.slice 1, window.location.hash.length
+      values = hashString.split "_"
+      length = Math.sqrt values[0].length
+      for i in [1...values.length]
+        answers.push values[i]
+      gameModel = @createSharedGrid values[0], length
+      gameModel.length = length
+    else
+      length = 3
+      inputs = []
+      inputLengths = RandomizedFitLength.generate length * length
+      @generateInputs inputLengths, inputs, answers
+      console.log expression for expression in inputs
+      console.log '\n'
+      gameModel = @generateBoard inputs, length
 
-    @generateInputs inputLengths, inputs, answers
-
-    console.log expression for expression in inputs
-    console.log '\n'
-
-    gameModel = @generateBoard inputs, length
     @goalContainer = new GoalContainer answers, Colors
     @board = new Board  gameModel, @gameScene, answers, @symbols,
                         @goalContainer, @isMobile().any()?, Cell,
@@ -58,24 +62,6 @@ class MathSwipeController
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
     ShareGameService.reloadPageWithHash @board
-
-  initializeSharedGame: ->
-    answers = []
-
-    hashString = window.location.hash.slice 1, window.location.hash.length
-    values = hashString.split "_"
-    length = Math.sqrt values[0].length
-    for i in [1...values.length]
-      answers.push values[i]
-    gameModel = @createSharedGrid values[0], length
-    gameModel.length = length
-    @goalContainer = new GoalContainer answers, Colors
-    @board = new Board  gameModel, @gameScene, answers, @symbols,
-                        @goalContainer, @isMobile().any()?, Cell,
-                        Colors, ClickHandler, SolutionService,
-                        BoardSolvedService, RunningSum
-    ResetButton.bindClick @board
-
 
   createSharedGrid: (gridValues, length) ->
     grid = []
@@ -106,14 +92,13 @@ class MathSwipeController
   bindShareGameButton: ->
     $('#share-game-button').click (e) =>
       ShareGameService.reloadPageWithHash @board
-      ShareGameService.isSharedGame()
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       @gameScene.clear()
       @goalContainer.clearGoals()
       ResetButton.unbindClick()
-      @initialize()
+      @initialize (window.location.hash = '')
 
   createGameScene: ->
     gameDom = document.getElementById('game')

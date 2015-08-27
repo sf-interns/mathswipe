@@ -11,7 +11,4 @@ class ShareGameService
       hashVal += '_' + goal
     window.location.hash = hashVal
 
-  @isSharedGame: ->
-    return window.location.hash isnt ''
-
 module.exports = ShareGameService
