@@ -51,7 +51,9 @@ class MathSwipeController
       @generateInputs inputLengths, inputs, answers
       console.log expression for expression in inputs
       console.log '\n'
-      gameModel = @generateBoard inputs, length
+      solutionPlacements = []
+      gameModel = @generateBoard inputs, length, solutionPlacements
+    console.log each for each in solutionPlacements
 
     @goalContainer = new GoalContainer answers, Colors
     @board = new Board  gameModel, @gameScene, answers, @symbols,
@@ -122,8 +124,8 @@ class MathSwipeController
 
   # -------- Back-end -------- #
 
-  generateBoard: (inputs, length) ->
-    DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator
+  generateBoard: (inputs, length, solutionPlacements) ->
+    DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator, solutionPlacements
 
   generateInputs: (inputLengths, inputs, answers) ->
     for inputSize in inputLengths
