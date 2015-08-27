@@ -24,11 +24,14 @@ class ShareGameService
     index = 0
     for expression in inputs
       clickedCells = []
+      temp = index
       for value in expression
-        @tempBoard.boardValues[solutionPlacements[index].row][solutionPlacements[index].col].value = ' '
         clickedCells.push solutionPlacements[index++]
-      @pushDownTempBoard()
       @solutionService.initialize clickedCells
+      for temp in [temp...index]
+        @tempBoard.boardValues[solutionPlacements[temp].row][solutionPlacements[temp].col] = ' '
+      @pushDownTempBoard()
+
       if not @solutionService.isSolution()
         return false
     true
@@ -37,9 +40,9 @@ class ShareGameService
   @pushDownTempBoard: ->
     for row in [@tempBoard.boardValues.length-1..1]
       for col in [@tempBoard.boardValues.length-1..0]
-        if @tempBoard.boardValues[row][col].value != ' '
+        if @tempBoard.boardValues[row][col] == ' '
           for up in [row-1..0]
-            unless @tempBoard.boardValues[up][col].value != ' '
+            unless @tempBoard.boardValues[up][col] == ' '
               @swapCells row, col, up, col
               break
 
