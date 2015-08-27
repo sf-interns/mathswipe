@@ -24,7 +24,6 @@ class MathSwipeController
     @gameScene = @createGameScene()
     @symbols = @getSymbols()
     @bindNewGameButton()
-    @bindShareGameButton()
     HowToPlay.createHowToPlay @isMobile
     if @isMobile().any()?
       Title.mobileTitle()
@@ -86,10 +85,6 @@ class MathSwipeController
       return (@Android() || @BlackBerry() || @iOS() || @Opera() || @Windows())
 
   # -------- Front-end -------- #
-
-  bindShareGameButton: ->
-    $('#share-game-button').click (e) =>
-      ShareGameService.reloadPageWithHash @board
 
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
