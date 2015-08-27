@@ -40,12 +40,11 @@ class MathSwipeController
 
     if hash? and hash isnt ''
       hashString = window.location.hash.slice 1, window.location.hash.length
-      values = hashString.split "_"
+      values = hashString.split '_'
       length = Math.sqrt values[0].length
       for i in [1...values.length]
         answers.push values[i]
       gameModel = @createSharedGrid values[0], length
-      gameModel.length = length
     else
       length = 3
       inputs = []
@@ -69,8 +68,7 @@ class MathSwipeController
     for row in [0...length]
       grid.push []
       for col in [0...length]
-        grid[row].push gridValues[index]
-        index++
+        grid[row].push gridValues[index++]
     grid
 
   isMobile: () ->
