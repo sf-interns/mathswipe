@@ -43,7 +43,7 @@ class MathSwipeController
       values = hashString.split '_'
       length = Math.sqrt values[0].length
       for i in [1...values.length]
-        answers.push values[i]
+        answers.push parseInt values[i]
       gameModel = @createSharedGrid values[0], length
     else
       length = 3
