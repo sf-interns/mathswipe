@@ -1,3 +1,5 @@
+TrackingService = require '../services/TrackingService'
+
 class Board
 
   # @boardValues is a 2D array of characters
@@ -110,6 +112,7 @@ class Board
     dest
 
   resetBoard: ->
+    TrackingService.boardEvent 'reset'
     @boardValues = @copyValues @initialValues
     @goalContainer.resetGoals()
     @initializer()
