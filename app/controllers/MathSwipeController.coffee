@@ -24,7 +24,6 @@ class MathSwipeController
   constructor: ->
     @gameScene = @createGameScene()
     @symbols = @getSymbols()
-    console.log 'LEVELER'
     @leveler = new LevelService 0, 0, LevelSettings
     @initialize()
     @bindNewGameButton()
@@ -38,11 +37,11 @@ class MathSwipeController
     # GeneralTests.tests @board
 
   initialize: ->
-    length = 3
+    length = @leveler.boardSize()
     inputs = []
     answers = []
 
-    inputLengths = RandomizedFitLength.generate length * length
+    inputLengths = RandomizedFitLength.generate (length * length)
 
     @generateInputs inputLengths, inputs, answers
 
@@ -116,13 +115,14 @@ class MathSwipeController
     for inputSize in inputLengths
       value = -1
       while value < 1 or value > 300
-        expression = ExpressionGenerator.generate inputSize
+        console.log @leveler
+        expression = ExpressionGenerator.generate inputSize, @leveler
         value = InputSolver.compute expression
       answers.push (InputSolver.compute expression)
       inputs.push expression.split('')
 
-  randExpression: (length) ->
-    ExpressionGenerator.generate length
+  # randExpression: (length) ->
+  #   ExpressionGenerator.generate length, @leveler
 
 
 module.exports = MathSwipeController

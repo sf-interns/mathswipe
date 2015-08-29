@@ -1,14 +1,10 @@
 class LevelService
 
   constructor: (@currLevel = 0, @numCorrect = 0, @settings) ->
-    console.log 'LevelService'
-    if @settings?
-      console.log 'Settings Exists', @settings
-    else
-      console.log 'Settings doesnt'
 
   levelUp: () ->
     @currLevel++
+    console.log 'Level Up!'
     @numCorrect = 0
 
   setLevel: (level) ->
@@ -17,9 +13,16 @@ class LevelService
 
   onCorrect: () ->
     @numCorrect++
+    console.log 'Correct!'
     @isLevelComplete()
 
   isLevelComplete: () ->
     @levelUp() if @numCorrect is @settings.numCorrectNeeded @currLevel
+
+# Settings accessors
+  boardSize: () ->
+    size = @settings.boardSize @currLevel
+    console.log size
+    return Number size
 
 module.exports = LevelService

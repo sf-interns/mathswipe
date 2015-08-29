@@ -11,13 +11,16 @@ class ClickHandler
   setMouseAsDown: ->
     @mouseDown = true
 
+  @cleared = false
+
   setMouseAsUp: ->
     unless @isMobile
       @checkForSolution()
       @unselectAll()
       if @BoardSolvedService.isCleared @board
         @board.successAnimation()
-        @leveler.onCorrect()
+        @leveler.onCorrect() unless @cleared
+        cleared = true
     @mouseDown = false
 
   isMouseDown: ->
