@@ -13,7 +13,7 @@ class LevelService
 
   onCorrect: () ->
     @numCorrect++
-    console.log 'Correct!'
+    console.log 'Correct!', @numCorrect
     @isLevelComplete()
 
   isLevelComplete: () ->
@@ -22,7 +22,12 @@ class LevelService
 # Settings accessors
   boardSize: () ->
     size = @settings.boardSize @currLevel
-    console.log size
     return Number size
+
+  multiply: () ->
+    @settings.useMultiplication @currLevel
+
+  maxGoal: () ->
+    @settings.maxGoal @currLevel
 
 module.exports = LevelService

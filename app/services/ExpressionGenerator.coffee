@@ -23,7 +23,7 @@ class ExpressionGenerator
       (@genRandomDigit 1, 9) + (@genRandomDigit 0, 9)
     else if length is 3
       (@genRandomDigit 1, 9) +
-      @genRandomOperator(leveler.settings.useMultiplication()) +
+      @genRandomOperator(leveler.multiply()) +
       (@genRandomDigit 1, 9)
     else
       # Pick a number between 2 and length - 1
@@ -36,7 +36,7 @@ class ExpressionGenerator
       # _ _ _ Generate an expression of length 3
       # 1 (Expression) + 1 (Operator) + 3 (Expression) = 5
       (@generate opIndex - 1, leveler) +
-      @genRandomOperator(leveler.settings.useMultiplication()) +
+      @genRandomOperator(leveler.multiply()) +
       (@generate length - opIndex, leveler)
 
 module.exports = ExpressionGenerator

@@ -118,7 +118,7 @@ class MathSwipeController
   generateInputs: (inputLengths, inputs, answers) ->
     for inputSize in inputLengths
       value = -1
-      while value < 1 or value > 300
+      while value < 1 or value > @leveler.maxGoal()
         console.log @leveler
         expression = ExpressionGenerator.generate inputSize, @leveler
         value = InputSolver.compute expression
