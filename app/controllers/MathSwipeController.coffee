@@ -54,7 +54,7 @@ class MathSwipeController
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
-    ResetButton.bindClick @board
+    ResetButton.bindClick @board, RunningSum
     RunningSum.empty()
 
   isMobile: () ->
