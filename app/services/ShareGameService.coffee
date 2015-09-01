@@ -12,8 +12,9 @@ class ShareGameService
     for goal in board.goals
       hashVal += '_' + goal
     hashVal += '_'
-    for expression in solutionPlacements
-      hashVal += '&' + expression.row + ',' + expression.col
+    for placementList in solutionPlacements
+      for expression in placementList
+        hashVal += '&' + expression[0] + ',' + expression[1]
     window.location.hash = hashVal
 
   @checkSolutionPlacements: (board, solutionPlacements, inputLengths) ->
@@ -30,7 +31,8 @@ class ShareGameService
       clickedCells = []
       temp = index
       for value in [0...expression.length]
-        clickedCells.push solutionPlacements[index++]
+        cell = solutionPlacements[index++]
+        clickedCells.push {row: cell[0], col: cell[1]}
       @solutionService.initialize clickedCells
       for temp in [temp...index]
         @tempBoard.boardValues[solutionPlacements[temp].row][solutionPlacements[temp].col] = ' '

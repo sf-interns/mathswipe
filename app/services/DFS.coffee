@@ -9,10 +9,14 @@ class DFS
     for i in [0...10000]
       if @hasFoundSolution inputList
         index = 0
+        for input in inputList
+          placementList = []
+          for idx in [0...input.length]
+            placementList.push @solutionPlacements[index++]
+          solutionPlacements.push placementList
         for row in [0...@solutionGrid.length]
           for col in [0...@solutionGrid.length]
             grid[@solutionGrid[row][col].y][@solutionGrid[row][col].x] = @solutionGrid[row][col].value
-            solutionPlacements.push @solutionPlacements[index++]
         return grid
       @clearSolutionGrid()
     null
@@ -51,7 +55,7 @@ class DFS
     curr = toVisit.pop()
     while curr != undefined
       @solutionGrid[curr.y][curr.x].value = input[0]
-      @solutionPlacements.push {row: curr.y, col: curr.x}
+      @solutionPlacements.push [curr.y, curr.x]
       unless @search curr.x, curr.y, input.slice(1, input.length), @solutionPlacements
         @solutionGrid[curr.y][curr.x].value = ' '
         @solutionPlacements.pop()

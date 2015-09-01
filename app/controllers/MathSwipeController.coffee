@@ -53,7 +53,7 @@ class MathSwipeController
         coord = coord.split ','
         row = parseInt coord[0]
         col = parseInt coord[1]
-        solutionPlacements.push {row, col}
+        solutionPlacements.push [row, col]
       gameModel = @createSharedGrid gridValues, length
     else
       length = 3
