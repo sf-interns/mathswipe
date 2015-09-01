@@ -68,7 +68,7 @@ class MathSwipeController
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
-    ShareGameService.reloadPageWithHash @board, solutionPlacements, inputs
+    ShareGameService.reloadPageWithHash @board, solutionPlacements, inputLengths
 
   createSharedGrid: (gridValues, length) ->
     grid = []

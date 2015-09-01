@@ -3,8 +3,8 @@ SolutionService = require './SolutionService'
 
 class ShareGameService
 
-  @reloadPageWithHash: (board, solutionPlacements, inputs) ->
-    console.log @checkSolutionPlacements board, solutionPlacements, inputs
+  @reloadPageWithHash: (board, solutionPlacements, inputLengths) ->
+    console.log @checkSolutionPlacements board, solutionPlacements, inputLengths
     hashVal = ''
     for row in board.initialValues
       for col in row
@@ -16,7 +16,7 @@ class ShareGameService
       hashVal += '&' + expression.row + ',' + expression.col
     window.location.hash = hashVal
 
-  @checkSolutionPlacements: (board, solutionPlacements, inputs) ->
+  @checkSolutionPlacements: (board, solutionPlacements, inputLengths) ->
     @tempBoard = {}
     @tempBoard.boardValues = []
     for row, i in board.initialValues
@@ -25,10 +25,11 @@ class ShareGameService
         @tempBoard.boardValues[i].push col
     @solutionService = new SolutionService @tempBoard, board.goals
     index = 0
-    for expression in inputs
+    console.log inputLengths
+    for expression in inputLengths
       clickedCells = []
       temp = index
-      for value in expression
+      for value in [0...expression.length]
         clickedCells.push solutionPlacements[index++]
       @solutionService.initialize clickedCells
       for temp in [temp...index]
