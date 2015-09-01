@@ -1,5 +1,6 @@
-$     = require 'jquery'
-Tuple = require '../models/Tuple'
+$               = require 'jquery'
+Tuple           = require '../models/Tuple'
+TrackingService = require './TrackingService'
 
 class ClickHandler
 
@@ -16,6 +17,7 @@ class ClickHandler
       @checkForSolution()
       @unselectAll()
       if @BoardSolvedService.isCleared @board
+          TrackingService.boardEvent 'solved'
           @board.successAnimation()
     @mouseDown = false
 
@@ -34,7 +36,8 @@ class ClickHandler
       e.preventDefault()
     body.mouseup (e) =>
       e.preventDefault()
-      @setMouseAsUp()
+      @unselectAll() unless @isMobile
+      @mousedown = false
 
   onSelect: (cell) ->
     unless @isSelected cell
