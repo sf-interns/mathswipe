@@ -1,5 +1,6 @@
-$     = require 'jquery'
-Tuple = require '../models/Tuple'
+$               = require 'jquery'
+Tuple           = require '../models/Tuple'
+TrackingService = require './TrackingService'
 
 class ClickHandler
 
@@ -16,6 +17,7 @@ class ClickHandler
       @checkForSolution()
       @unselectAll()
       if @BoardSolvedService.isCleared @board
+        TrackingService.boardEvent 'solved'
         @board.successAnimation()
       else if @goalContainer.isEmpty()
         @RunningSum.display @RunningSum.tilesEmptyString
@@ -36,7 +38,8 @@ class ClickHandler
       e.preventDefault()
     body.mouseup (e) =>
       e.preventDefault()
-      @setMouseAsUp()
+      @unselectAll() unless @isMobile
+      @mousedown = false
 
   onSelect: (cell) ->
     unless @isSelected cell
@@ -71,8 +74,8 @@ class ClickHandler
     false
 
   unselectAll: ->
-    unless $('#running-sum').html() is 'Solution must include an operator'
-      @RunningSum.display ''
+    unless $('#running-sum').html() is @RunningSum.solutionOperatorString
+      @RunningSum.display @RunningSum.emptyString
     return if @clicked.length < 1
     for i in [@clicked.length - 1..0]
       @clicked[i].unselect()

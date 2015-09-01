@@ -43,6 +43,6 @@ class RunningSum
   @format: (input) ->
     input.replace(/\*/g, ' &times; ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ')
 
-  @empty: -> $('#running-sum').html('')
+  @empty: -> $('#running-sum').html(@emptyString)
 
 module.exports = RunningSum

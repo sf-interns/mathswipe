@@ -18,7 +18,7 @@ class GoalContainer
 
   isEmpty: ->
     for goal in $(@container.children())
-      return false if not ($(goal).css('color') is @Colors.deletedGoalGrey)
+      return false if $(goal).css('color') isnt @Colors.deletedGoalGrey
     true
 
 module.exports = GoalContainer
