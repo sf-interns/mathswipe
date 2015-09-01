@@ -18,7 +18,7 @@ class SolutionService
       @solution[@solution.length - 1] is '*'
     return false unless @value in @goals
     if not @isCompleteExpression()
-      @RunningSum.display 'Solution must include an operator'
+      @RunningSum.display @RunningSum.solutionOperatorString
       return false
     @valueIndex = @goals.indexOf @value
     @goals[@valueIndex] = ' '

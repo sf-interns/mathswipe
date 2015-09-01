@@ -2,18 +2,26 @@ $ = require 'jquery'
 
 class RunningSum
 
+  @tilesEmptyString = 'Try to get all the tiles off the board!'
+  @solutionOperatorString = 'Solution must include an operator'
+  @invalidString = 'Invalid Expression'
+  @emptyString = ''
+
   @display: (solution, value) ->
-    unless $('#running-sum').html() is 'Try to get all the tiles off the board!'
-      if solution is '' or solution is 'Try to get all the tiles off the board!' or
-          solution is 'Solution must include an operator'
+    unless $('#running-sum').html() is @tilesEmptyString
+      if @isSpecialString solution
         expression = solution
       else if isNaN value
-        expression = 'Invalid Expression'
+        expression = @invalidString
       else if @isCompleteExpression solution
         expression = (@addParens solution) + '=' + value
       else
         expression = solution
       $('#running-sum').html(@format expression)
+
+  @isSpecialString: (solution) ->
+    strings = [@emptyString, @tilesEmptyString, @solutionOperatorString]
+    strings.indexOf(solution) isnt -1
 
   @isCompleteExpression: (solution) ->
     return solution.search(/-?\d+[-+\*]\d+/g) is 0
@@ -34,5 +42,7 @@ class RunningSum
 
   @format: (input) ->
     input.replace(/\*/g, ' &times; ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ')
+
+  @empty: -> $('#running-sum').html('')
 
 module.exports = RunningSum

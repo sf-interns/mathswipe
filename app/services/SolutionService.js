@@ -33,7 +33,7 @@ SolutionService = (function() {
       return false;
     }
     if (!this.isCompleteExpression()) {
-      this.RunningSum.display('Solution must include an operator');
+      this.RunningSum.display(this.RunningSum.solutionOperatorString);
       return false;
     }
     this.valueIndex = this.goals.indexOf(this.value);

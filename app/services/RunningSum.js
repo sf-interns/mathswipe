@@ -6,13 +6,21 @@ $ = require('jquery');
 RunningSum = (function() {
   function RunningSum() {}
 
+  RunningSum.tilesEmptyString = 'Try to get all the tiles off the board!';
+
+  RunningSum.solutionOperatorString = 'Solution must include an operator';
+
+  RunningSum.invalidString = 'Invalid Expression';
+
+  RunningSum.emptyString = '';
+
   RunningSum.display = function(solution, value) {
     var expression;
-    if ($('#running-sum').html() !== 'Try to get all the tiles off the board!') {
-      if (solution === '' || solution === 'Try to get all the tiles off the board!' || solution === 'Solution must include an operator') {
+    if ($('#running-sum').html() !== this.tilesEmptyString) {
+      if (this.isSpecialString(solution)) {
         expression = solution;
       } else if (isNaN(value)) {
-        expression = 'Invalid Expression';
+        expression = this.invalidString;
       } else if (this.isCompleteExpression(solution)) {
         expression = (this.addParens(solution)) + '=' + value;
       } else {
@@ -20,6 +28,12 @@ RunningSum = (function() {
       }
       return $('#running-sum').html(this.format(expression));
     }
+  };
+
+  RunningSum.isSpecialString = function(solution) {
+    var strings;
+    strings = [this.emptyString, this.tilesEmptyString, this.solutionOperatorString];
+    return strings.indexOf(solution) !== -1;
   };
 
   RunningSum.isCompleteExpression = function(solution) {
@@ -47,6 +61,10 @@ RunningSum = (function() {
 
   RunningSum.format = function(input) {
     return input.replace(/\*/g, ' &times; ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
+  };
+
+  RunningSum.empty = function() {
+    return $('#running-sum').html('');
   };
 
   return RunningSum;
