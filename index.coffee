@@ -1,6 +1,6 @@
 $                   = require 'jquery'
-MathSwipeController = require './app/controllers/MathSwipeController'
+MathBrainController = require './app/controllers/MathBrainController'
 Tuple               = require './app/models/Tuple'
 Two                 = require 'two.js'
 
-game = new MathSwipeController
+game = new MathBrainController

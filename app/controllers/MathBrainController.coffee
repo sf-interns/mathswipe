@@ -18,7 +18,7 @@ Colors                  = require '../views/Colors'
 GoalContainer           = require '../views/GoalContainer'
 GeneralTests            = require '../../tests/controllers/GeneralTests'
 
-class MathSwipeController
+class MathBrainController
 
   constructor: ->
     @gameScene = @createGameScene()
@@ -125,4 +125,4 @@ class MathSwipeController
     ExpressionGenerator.generate length
 
 
-module.exports = MathSwipeController
+module.exports = MathBrainController
