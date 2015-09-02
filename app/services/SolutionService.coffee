@@ -4,8 +4,7 @@ class SolutionService
 
   constructor: (@board, goals, @RunningSum) ->
     @goals = []
-    for g in goals
-      @goals.push g
+    @goals.push g for g in goals
 
   initialize: (clickedCells) ->
     @setSolutionString clickedCells
@@ -22,10 +21,9 @@ class SolutionService
       return false
     @valueIndex = @goals.indexOf @value
     @goals[@valueIndex] = ' '
-    return true
+    true
 
-  isCompleteExpression: ->
-    return @solution.search(/-?\d+[-+\*]\d+/g) is 0
+  isCompleteExpression: -> @solution.search(/-?\d+[-+\*]\d+/g) is 0
 
   setSolutionString: (cells) ->
     @solution = ''

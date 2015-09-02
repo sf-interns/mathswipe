@@ -9304,7 +9304,7 @@
 	
 	BoardSolvedService = __webpack_require__(/*! ../services/BoardSolvedService */ 6);
 	
-	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 8);
+	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 7);
 	
 	DFS = __webpack_require__(/*! ../services/DFS */ 9);
 	
@@ -9324,7 +9324,7 @@
 	
 	Title = __webpack_require__(/*! ../services/Title */ 18);
 	
-	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 7);
+	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
 	
 	Board = __webpack_require__(/*! ../views/Board */ 19);
 	
@@ -9367,8 +9367,8 @@
 	    gameModel = this.generateBoard(inputs, length);
 	    this.goalContainer = new GoalContainer(answers, Colors);
 	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-	    ResetButton.bindClick(this.board);
-	    return $('#running-sum').html('');
+	    ResetButton.bindClick(this.board, RunningSum);
+	    return RunningSum.empty();
 	  };
 	
 	  MathSwipeController.prototype.isMobile = function() {
@@ -9569,11 +9569,9 @@
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, BoardSolvedService, TrackingService;
+	var $, BoardSolvedService;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
-	
-	TrackingService = __webpack_require__(/*! ./TrackingService */ 7);
 	
 	BoardSolvedService = (function() {
 	  function BoardSolvedService() {}
@@ -9604,49 +9602,6 @@
 
 /***/ },
 /* 7 */
-/*!*********************************************!*\
-  !*** ./app/services/TrackingService.coffee ***!
-  \*********************************************/
-/***/ function(module, exports) {
-
-	var TrackingService;
-	
-	TrackingService = (function() {
-	  function TrackingService() {}
-	
-	  TrackingService.boardEvent = function(label) {
-	    if (label != null) {
-	      return ga('send', 'event', 'board', label);
-	    } else {
-	      return ga('send', 'event', 'board');
-	    }
-	  };
-	
-	  TrackingService.mobileView = function() {
-	    return this.pageview('Mobile');
-	  };
-	
-	  TrackingService.desktopView = function() {
-	    return this.pageview('Desktop');
-	  };
-	
-	  TrackingService.pageview = function(label) {
-	    if (label != null) {
-	      return ga('send', 'pageview', label);
-	    } else {
-	      return ga('send', 'pageview');
-	    }
-	  };
-	
-	  return TrackingService;
-	
-	})();
-	
-	module.exports = TrackingService;
-
-
-/***/ },
-/* 8 */
 /*!******************************************!*\
   !*** ./app/services/ClickHandler.coffee ***!
   \******************************************/
@@ -9658,7 +9613,7 @@
 	
 	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
-	TrackingService = __webpack_require__(/*! ./TrackingService */ 7);
+	TrackingService = __webpack_require__(/*! ./TrackingService */ 8);
 	
 	ClickHandler = (function() {
 	  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum) {
@@ -9684,7 +9639,7 @@
 	        TrackingService.boardEvent('solved');
 	        this.board.successAnimation();
 	      } else if (this.goalContainer.isEmpty()) {
-	        this.RunningSum.display('Try to get all the tiles off the board!');
+	        this.RunningSum.display(this.RunningSum.tilesEmptyString);
 	      }
 	    }
 	    return this.mouseDown = false;
@@ -9715,6 +9670,9 @@
 	    return body.mouseup((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
+	        if (!_this.isMobile) {
+	          _this.unselectAll();
+	        }
 	        return _this.mousedown = false;
 	      };
 	    })(this));
@@ -9766,8 +9724,8 @@
 	
 	  ClickHandler.prototype.unselectAll = function() {
 	    var i, j, ref;
-	    if ($('#running-sum').html() !== 'Solution must include an operator') {
-	      this.RunningSum.display('');
+	    if (this.RunningSum.runningSumElem.html() !== this.RunningSum.solutionOperatorString) {
+	      this.RunningSum.display(this.RunningSum.emptyString);
 	    }
 	    if (this.clicked.length < 1) {
 	      return;
@@ -9812,6 +9770,55 @@
 	})();
 	
 	module.exports = ClickHandler;
+
+
+/***/ },
+/* 8 */
+/*!*********************************************!*\
+  !*** ./app/services/TrackingService.coffee ***!
+  \*********************************************/
+/***/ function(module, exports) {
+
+	var TrackingService;
+	
+	TrackingService = (function() {
+	  function TrackingService() {}
+	
+	  TrackingService.boardEvent = function(label) {
+	    if ((typeof ga) == null) {
+	      return;
+	    }
+	    if (label != null) {
+	      return ga('send', 'event', 'board', label);
+	    } else {
+	      return ga('send', 'event', 'board');
+	    }
+	  };
+	
+	  TrackingService.mobileView = function() {
+	    return this.pageview('Mobile');
+	  };
+	
+	  TrackingService.desktopView = function() {
+	    return this.pageview('Desktop');
+	  };
+	
+	  TrackingService.pageview = function(label) {
+	    if ((typeof ga) == null) {
+	      return;
+	    }
+	    if (label != null) {
+	      return ga('send', 'pageview', label);
+	    } else {
+	      return ga('send', 'pageview');
+	    }
+	  };
+	
+	  return TrackingService;
+	
+	})();
+	
+	module.exports = TrackingService;
 
 
 /***/ },
@@ -10231,20 +10238,18 @@
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, ResetButton, TrackingService;
+	var $, ResetButton;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
-	
-	TrackingService = __webpack_require__(/*! ./TrackingService */ 7);
 	
 	ResetButton = (function() {
 	  function ResetButton() {}
 	
-	  ResetButton.bindClick = function(board) {
+	  ResetButton.bindClick = function(board, RunningSum) {
 	    return $('#reset-button').click((function(_this) {
 	      return function(e) {
 	        board.resetBoard();
-	        return $('#running-sum').html('');
+	        return RunningSum.empty();
 	      };
 	    })(this));
 	  };
@@ -10274,20 +10279,36 @@
 	RunningSum = (function() {
 	  function RunningSum() {}
 	
+	  RunningSum.runningSumElem = $('#running-sum');
+	
+	  RunningSum.tilesEmptyString = 'Try to get all the tiles off the board!';
+	
+	  RunningSum.solutionOperatorString = 'Solution must include an operator';
+	
+	  RunningSum.invalidString = 'Invalid Expression';
+	
+	  RunningSum.emptyString = '';
+	
 	  RunningSum.display = function(solution, value) {
 	    var expression;
-	    if ($('#running-sum').html() !== 'Try to get all the tiles off the board!') {
-	      if (solution === '' || solution === 'Try to get all the tiles off the board!' || solution === 'Solution must include an operator') {
+	    if (this.runningSumElem.html() !== this.tilesEmptyString) {
+	      if (this.isSpecialString(solution)) {
 	        expression = solution;
 	      } else if (isNaN(value)) {
-	        expression = 'Invalid Expression';
+	        expression = this.invalidString;
 	      } else if (this.isCompleteExpression(solution)) {
 	        expression = (this.addParens(solution)) + '=' + value;
 	      } else {
 	        expression = solution;
 	      }
-	      return $('#running-sum').html(this.format(expression));
+	      return this.runningSumElem.html(this.format(expression));
 	    }
+	  };
+	
+	  RunningSum.isSpecialString = function(solution) {
+	    var strings;
+	    strings = [this.emptyString, this.tilesEmptyString, this.solutionOperatorString];
+	    return strings.indexOf(solution) !== -1;
 	  };
 	
 	  RunningSum.isCompleteExpression = function(solution) {
@@ -10315,6 +10336,10 @@
 	
 	  RunningSum.format = function(input) {
 	    return input.replace(/\*/g, ' &times; ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
+	  };
+	
+	  RunningSum.empty = function() {
+	    return this.runningSumElem.html(this.emptyString);
 	  };
 	
 	  return RunningSum;
@@ -10365,7 +10390,7 @@
 	      return false;
 	    }
 	    if (!this.isCompleteExpression()) {
-	      this.RunningSum.display('Solution must include an operator');
+	      this.RunningSum.display(this.RunningSum.solutionOperatorString);
 	      return false;
 	    }
 	    this.valueIndex = this.goals.indexOf(this.value);
@@ -10432,7 +10457,7 @@
 	var Board, TrackingService,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
-	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 7);
+	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
 	
 	Board = (function() {
 	  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum) {
@@ -10913,7 +10938,7 @@
 	    ref = $(this.container.children());
 	    for (i = 0, len = ref.length; i < len; i++) {
 	      goal = ref[i];
-	      if (!($(goal).css('color') === this.Colors.deletedGoalGrey)) {
+	      if ($(goal).css('color') !== this.Colors.deletedGoalGrey) {
 	        return false;
 	      }
 	    }

@@ -74,7 +74,7 @@ class ClickHandler
     false
 
   unselectAll: ->
-    unless $('#running-sum').html() is @RunningSum.solutionOperatorString
+    unless @RunningSum.runningSumElem.html() is @RunningSum.solutionOperatorString
       @RunningSum.display @RunningSum.emptyString
     return if @clicked.length < 1
     for i in [@clicked.length - 1..0]
