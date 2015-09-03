@@ -1,9 +1,6 @@
 $ = require 'jquery'
 SolutionService = require './SolutionService'
 
-# btoa('{"a":"9677*1+8*","b":[135,102],"c":[[2,2,1,1,0],[7,8,9,4]]}');
-# "eyJhIjoiOTY3NyoxKzgqIiwiYiI6WzEzNSwxMDJdLCJjIjpbWzIsMiwxLDEsMF0sWzcsOCw5LDRdXX0="
-
 class ShareGameService
 
   @reloadPageWithHash: (board, solutionPlacements) ->
@@ -22,7 +19,9 @@ class ShareGameService
     btoa(JSON.stringify {b: boardValues, g: goals, p: slnPlacements})
 
   @decode: (boardValues, goals, slnPlacements) ->
-    decoded = JSON.parse atob window.location.hash.substr(1, window.location.hash.length)
+    decoded = JSON.parse atob window.location.hash
+    return false if not decoded?
+    decoded.substr(1, window.location.hash.length)
     length = Math.sqrt decoded.b.length
     index = 0
 
@@ -32,9 +31,14 @@ class ShareGameService
         row.push decoded.b[index++]
       boardValues.push row
 
-    goals = decoded.g
+    for goal in decoded.g
+      goals.push goal
 
-    console.log decoded.p
+    for placement in [0...decoded.p.length]
+      expression = []
+      for coord in [0...decoded.p[placement].length]
+        expression.push [(Math.floor decoded.p[placement][coord] / length), (decoded.p[placement][coord] % length)]
+      slnPlacements.push expression
 
   @checkSolutionPlacements: (board, solutionPlacements) ->
     @tempBoard = {}

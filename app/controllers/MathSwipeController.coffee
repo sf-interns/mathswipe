@@ -43,11 +43,7 @@ class MathSwipeController
 
     if hash? and hash isnt ''
       boardValues = []
-      goals = []
-      placements = []
-      ShareGameService.decode boardValues, goals, placements
-      console.log goals
-      gameModel = @createSharedGrid boardValues, length
+      ShareGameService.decode boardValues, goals, solutionPlacements
     else
       length = 3
       inputs = []
@@ -55,24 +51,15 @@ class MathSwipeController
       @generateInputs inputLengths, inputs, goals
       console.log expression for expression in inputs
       console.log '\n'
-      gameModel = @generateBoard inputs, length, solutionPlacements
+      boardValues = @generateBoard inputs, length, solutionPlacements
 
     @goalContainer = new GoalContainer goals, Colors
-    @board = new Board  gameModel, @gameScene, goals, @symbols,
+    @board = new Board  boardValues, @gameScene, goals, @symbols,
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
-    # ShareGameService.reloadPageWithHash @board, solutionPlacements
-
-  createSharedGrid: (boardValues, length) ->
-    grid = []
-    index = 0
-    for row in [0...length]
-      grid.push []
-      for col in [0...length]
-        grid[row].push boardValues[index++]
-    grid
+    ShareGameService.reloadPageWithHash @board, solutionPlacements
 
   isMobile: () ->
     Android: () ->
