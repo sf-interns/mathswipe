@@ -4,7 +4,10 @@ SolutionService = require './SolutionService'
 class ShareGameService
 
   @reloadPageWithHash: (board, solutionPlacements) ->
-    console.log @checkSolutionPlacements board, solutionPlacements
+    unless @checkSolutionPlacements board, solutionPlacements
+      window.location.hash = ''
+      console.log window.location.hash
+      return false
     hash = @encode board.initialValues, board.goals, solutionPlacements
     window.location.hash = hash
 
@@ -19,9 +22,13 @@ class ShareGameService
     btoa(JSON.stringify {b: boardValues, g: goals, p: slnPlacements})
 
   @decode: (boardValues, goals, slnPlacements) ->
-    decoded = JSON.parse atob window.location.hash
-    return false if not decoded?
-    decoded.substr(1, window.location.hash.length)
+    try
+      decoded = atob window.location.hash.substr(1, window.location.hash.length)
+      decoded = JSON.parse decoded
+    catch e
+      return false
+    return false unless decoded? and @isValidDecode decoded
+    return false unless decoded.b? and decoded.g? and decoded.p?
     length = Math.sqrt decoded.b.length
     index = 0
 
@@ -39,6 +46,17 @@ class ShareGameService
       for coord in [0...decoded.p[placement].length]
         expression.push [(Math.floor decoded.p[placement][coord] / length), (decoded.p[placement][coord] % length)]
       slnPlacements.push expression
+
+    true
+
+  @isValidDecode: (decoded) ->
+    alphabet = ['"', '{', '}', '[', ']', ',', ':',
+                'b', 'g', 'p', '1', '2', '3', '4',
+                '5', '6', '7', '8', '9', '0',
+                '+', '-', '*']
+    for char in decoded
+      return false if alphabet.indexOf(char) is -1
+    true
 
   @checkSolutionPlacements: (board, solutionPlacements) ->
     @tempBoard = {}

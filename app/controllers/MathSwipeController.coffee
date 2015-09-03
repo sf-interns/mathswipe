@@ -32,20 +32,23 @@ class MathSwipeController
     else
       TrackingService.desktopView()
       @cursorToPointer()
-    @initialize window.location.hash
+    while not @initialize window.location.hash
+      continue
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
 
   initialize: (hash) ->
-    goals = []
-    solutionPlacements = []
-
+    hasCompleteBoard = false
     if hash? and hash isnt ''
+      solutionPlacements = []
+      goals = []
       boardValues = []
-      ShareGameService.decode boardValues, goals, solutionPlacements
-    else
+      hasCompleteBoard = ShareGameService.decode boardValues, goals, solutionPlacements
+    unless hasCompleteBoard
       length = 3
+      goals = []
+      solutionPlacements = []
       inputs = []
       inputLengths = RandomizedFitLength.generate length * length
       @generateInputs inputLengths, inputs, goals
@@ -59,7 +62,10 @@ class MathSwipeController
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
-    ShareGameService.reloadPageWithHash @board, solutionPlacements
+    unless ShareGameService.reloadPageWithHash @board, solutionPlacements
+      @goalContainer.clearGoals()
+      return false
+    true
 
   isMobile: () ->
     Android: () ->
