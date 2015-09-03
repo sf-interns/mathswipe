@@ -38,47 +38,40 @@ class MathSwipeController
     # GeneralTests.tests @board
 
   initialize: (hash) ->
-    answers = []
+    goals = []
     solutionPlacements = []
 
     if hash? and hash isnt ''
-      hashString = window.location.hash.slice 1, window.location.hash.length
-      values = hashString.split '_'
-      gridValues = values[0]
-      length = Math.sqrt gridValues.length
-      for i in [1...values.length - 1]
-        answers.push parseInt values[i]
-      placements = values[values.length - 1].split '&'
-      for coord in placements
-        coord = coord.split ','
-        row = parseInt coord[0]
-        col = parseInt coord[1]
-        solutionPlacements.push [row, col]
-      gameModel = @createSharedGrid gridValues, length
+      boardValues = []
+      goals = []
+      placements = []
+      ShareGameService.decode boardValues, goals, placements
+      console.log goals
+      gameModel = @createSharedGrid boardValues, length
     else
       length = 3
       inputs = []
       inputLengths = RandomizedFitLength.generate length * length
-      @generateInputs inputLengths, inputs, answers
+      @generateInputs inputLengths, inputs, goals
       console.log expression for expression in inputs
       console.log '\n'
       gameModel = @generateBoard inputs, length, solutionPlacements
 
-    @goalContainer = new GoalContainer answers, Colors
-    @board = new Board  gameModel, @gameScene, answers, @symbols,
+    @goalContainer = new GoalContainer goals, Colors
+    @board = new Board  gameModel, @gameScene, goals, @symbols,
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
-    ShareGameService.reloadPageWithHash @board, solutionPlacements
+    # ShareGameService.reloadPageWithHash @board, solutionPlacements
 
-  createSharedGrid: (gridValues, length) ->
+  createSharedGrid: (boardValues, length) ->
     grid = []
     index = 0
     for row in [0...length]
       grid.push []
       for col in [0...length]
-        grid[row].push gridValues[index++]
+        grid[row].push boardValues[index++]
     grid
 
   isMobile: () ->
@@ -137,13 +130,13 @@ class MathSwipeController
   generateBoard: (inputs, length, solutionPlacements) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator, solutionPlacements
 
-  generateInputs: (inputLengths, inputs, answers) ->
+  generateInputs: (inputLengths, inputs, goals) ->
     for inputSize in inputLengths
       value = -1
       while value < 1 or value > 300
         expression = ExpressionGenerator.generate inputSize
         value = InputSolver.compute expression
-      answers.push (InputSolver.compute expression)
+      goals.push (InputSolver.compute expression)
       inputs.push expression.split('')
 
   randExpression: (length) ->

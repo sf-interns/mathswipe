@@ -12,7 +12,7 @@ class ShareGameService
     window.location.hash = hash
 
   @encode: (boardValues, goals, slnPlacements) ->
-    boardValues = (JSON.stringify boardValues).replace(/(\[|\]|"|,)*/g, '')
+    boardValues = (JSON.stringify boardValues).replace(/(\[|\]|"|,|{|})*/g, '')
 
     length = Math.sqrt boardValues.length
     for placement in [0...slnPlacements.length]
@@ -20,6 +20,21 @@ class ShareGameService
         slnPlacements[placement][coord] = slnPlacements[placement][coord][0] * length + slnPlacements[placement][coord][1]
 
     btoa(JSON.stringify {b: boardValues, g: goals, p: slnPlacements})
+
+  @decode: (boardValues, goals, slnPlacements) ->
+    decoded = JSON.parse atob window.location.hash.substr(1, window.location.hash.length)
+    length = Math.sqrt decoded.b.length
+    index = 0
+
+    for i in [0...length]
+      row = []
+      for j in [0...length]
+        row.push decoded.b[index++]
+      boardValues.push row
+
+    goals = decoded.g
+
+    console.log decoded.p
 
   @checkSolutionPlacements: (board, solutionPlacements) ->
     @tempBoard = {}
