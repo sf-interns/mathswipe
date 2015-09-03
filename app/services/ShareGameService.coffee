@@ -1,23 +1,27 @@
 $ = require 'jquery'
 SolutionService = require './SolutionService'
 
+# btoa('{"a":"9677*1+8*","b":[135,102],"c":[[2,2,1,1,0],[7,8,9,4]]}');
+# "eyJhIjoiOTY3NyoxKzgqIiwiYiI6WzEzNSwxMDJdLCJjIjpbWzIsMiwxLDEsMF0sWzcsOCw5LDRdXX0="
+
 class ShareGameService
 
-  @reloadPageWithHash: (board, solutionPlacements, inputLengths) ->
-    console.log @checkSolutionPlacements board, solutionPlacements, inputLengths
-    hashVal = ''
-    for row in board.initialValues
-      for col in row
-        hashVal += col
-    for goal in board.goals
-      hashVal += '_' + goal
-    hashVal += '_'
-    for placementList in solutionPlacements
-      for expression in placementList
-        hashVal += '&' + expression[0] + ',' + expression[1]
-    window.location.hash = hashVal
+  @reloadPageWithHash: (board, solutionPlacements) ->
+    console.log @checkSolutionPlacements board, solutionPlacements
+    hash = @encode board.initialValues, board.goals, solutionPlacements
+    window.location.hash = hash
 
-  @checkSolutionPlacements: (board, solutionPlacements, inputLengths) ->
+  @encode: (boardValues, goals, slnPlacements) ->
+    boardValues = (JSON.stringify boardValues).replace(/(\[|\]|"|,)*/g, '')
+
+    length = Math.sqrt boardValues.length
+    for placement in [0...slnPlacements.length]
+      for coord in [0...slnPlacements[placement].length]
+        slnPlacements[placement][coord] = slnPlacements[placement][coord][0] * length + slnPlacements[placement][coord][1]
+
+    btoa(JSON.stringify {b: boardValues, g: goals, p: slnPlacements})
+
+  @checkSolutionPlacements: (board, solutionPlacements) ->
     @tempBoard = {}
     @tempBoard.boardValues = []
     for row, i in board.initialValues
@@ -25,17 +29,14 @@ class ShareGameService
       for col in row
         @tempBoard.boardValues[i].push col
     @solutionService = new SolutionService @tempBoard, board.goals
-    index = 0
-    console.log inputLengths
-    for expression in inputLengths
+    for expression in solutionPlacements
       clickedCells = []
-      temp = index
-      for value in [0...expression.length]
-        cell = solutionPlacements[index++]
+      for index in [0...expression.length]
+        cell = expression[index]
         clickedCells.push {row: cell[0], col: cell[1]}
       @solutionService.initialize clickedCells
-      for temp in [temp...index]
-        @tempBoard.boardValues[solutionPlacements[temp].row][solutionPlacements[temp].col] = ' '
+      for cell in clickedCells
+        @tempBoard.boardValues[cell.row][cell.col] = ' '
       @pushDownTempBoard()
 
       unless @solutionService.isSolution()
