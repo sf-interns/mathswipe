@@ -60,7 +60,9 @@ class MathSwipeController
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
-    ResetButton.bindClick @board
+
+    ResetButton.bindClick @board, RunningSum
+    RunningSum.empty()
     @createNewGame() unless ShareGameService.reloadPageWithHash(@board,
                                     solutionPlacements, SolutionService)
 

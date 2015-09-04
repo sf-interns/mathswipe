@@ -65,7 +65,7 @@
 	
 	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
 	
-	Two = __webpack_require__(/*! two.js */ 24);
+	Two = __webpack_require__(/*! two.js */ 25);
 	
 	game = new MathSwipeController;
 
@@ -9296,7 +9296,7 @@
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService, Title, TrackingService;
+	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, ShareGameService, SolutionService, Title, TrackingService;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
@@ -9304,7 +9304,7 @@
 	
 	BoardSolvedService = __webpack_require__(/*! ../services/BoardSolvedService */ 6);
 	
-	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 8);
+	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 7);
 	
 	DFS = __webpack_require__(/*! ../services/DFS */ 9);
 	
@@ -9320,27 +9320,28 @@
 	
 	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 16);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 17);
+	ShareGameService = __webpack_require__(/*! ../services/ShareGameService */ 17);
 	
-	Title = __webpack_require__(/*! ../services/Title */ 18);
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 18);
 	
-	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 7);
+	Title = __webpack_require__(/*! ../services/Title */ 19);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 19);
+	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 20);
+	Board = __webpack_require__(/*! ../views/Board */ 20);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 21);
+	Cell = __webpack_require__(/*! ../views/Cell */ 21);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 22);
+	Colors = __webpack_require__(/*! ../views/Colors */ 22);
 	
-	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 23);
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 23);
+	
+	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 24);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
 	    this.gameScene = this.createGameScene();
 	    this.symbols = this.getSymbols();
-	    this.initialize();
 	    this.bindNewGameButton();
 	    HowToPlay.createHowToPlay(this.isMobile);
 	    if (this.isMobile().any() != null) {
@@ -9350,24 +9351,39 @@
 	      TrackingService.desktopView();
 	      this.cursorToPointer();
 	    }
+	    this.initialize(window.location.hash);
 	  }
 	
-	  MathSwipeController.prototype.initialize = function() {
-	    var answers, expression, gameModel, i, inputLengths, inputs, len, length;
-	    length = 3;
-	    inputs = [];
-	    answers = [];
-	    inputLengths = RandomizedFitLength.generate(length * length);
-	    this.generateInputs(inputLengths, inputs, answers);
-	    for (i = 0, len = inputs.length; i < len; i++) {
-	      expression = inputs[i];
-	      console.log(expression);
+	  MathSwipeController.prototype.initialize = function(hash) {
+	    var boardValues, expression, goals, hasCompleteBoard, i, inputLengths, inputs, len, length, solutionPlacements;
+	    solutionPlacements = [];
+	    goals = [];
+	    boardValues = [];
+	    hasCompleteBoard = false;
+	    if ((hash != null) && hash !== '') {
+	      hasCompleteBoard = ShareGameService.decode(boardValues, goals, solutionPlacements);
 	    }
-	    console.log('\n');
-	    gameModel = this.generateBoard(inputs, length);
-	    this.goalContainer = new GoalContainer(answers, Colors);
-	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-	    return ResetButton.bindClick(this.board);
+	    if (!hasCompleteBoard) {
+	      length = 3;
+	      goals = [];
+	      solutionPlacements = [];
+	      inputs = [];
+	      inputLengths = RandomizedFitLength.generate(length * length);
+	      this.generateInputs(inputLengths, inputs, goals);
+	      for (i = 0, len = inputs.length; i < len; i++) {
+	        expression = inputs[i];
+	        console.log(expression);
+	      }
+	      console.log('\n');
+	      boardValues = this.generateBoard(inputs, length, solutionPlacements);
+	    }
+	    this.goalContainer = new GoalContainer(goals, Colors);
+	    this.board = new Board(boardValues, this.gameScene, goals, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
+	    ResetButton.bindClick(this.board, RunningSum);
+	    RunningSum.empty();
+	    if (!ShareGameService.reloadPageWithHash(this.board, solutionPlacements, SolutionService)) {
+	      return this.createNewGame();
+	    }
 	  };
 	
 	  MathSwipeController.prototype.isMobile = function() {
@@ -9397,12 +9413,16 @@
 	    return $('#new-game-button').click((function(_this) {
 	      return function(e) {
 	        TrackingService.boardEvent('new game');
-	        _this.gameScene.clear();
-	        _this.goalContainer.clearGoals();
-	        ResetButton.unbindClick();
-	        return _this.initialize();
+	        return _this.createNewGame();
 	      };
 	    })(this));
+	  };
+	
+	  MathSwipeController.prototype.createNewGame = function() {
+	    this.gameScene.clear();
+	    this.goalContainer.clearGoals();
+	    ResetButton.unbindClick();
+	    return this.initialize((window.location.hash = ''));
 	  };
 	
 	  MathSwipeController.prototype.createGameScene = function() {
@@ -9441,11 +9461,11 @@
 	    return symbols;
 	  };
 	
-	  MathSwipeController.prototype.generateBoard = function(inputs, length) {
-	    return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator);
+	  MathSwipeController.prototype.generateBoard = function(inputs, length, solutionPlacements) {
+	    return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator, solutionPlacements);
 	  };
 	
-	  MathSwipeController.prototype.generateInputs = function(inputLengths, inputs, answers) {
+	  MathSwipeController.prototype.generateInputs = function(inputLengths, inputs, goals) {
 	    var expression, i, inputSize, len, results, value;
 	    results = [];
 	    for (i = 0, len = inputLengths.length; i < len; i++) {
@@ -9455,7 +9475,7 @@
 	        expression = ExpressionGenerator.generate(inputSize);
 	        value = InputSolver.compute(expression);
 	      }
-	      answers.push(InputSolver.compute(expression));
+	      goals.push(InputSolver.compute(expression));
 	      results.push(inputs.push(expression.split('')));
 	    }
 	    return results;
@@ -9568,11 +9588,9 @@
   \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, BoardSolvedService, TrackingService;
+	var $, BoardSolvedService;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
-	
-	TrackingService = __webpack_require__(/*! ./TrackingService */ 7);
 	
 	BoardSolvedService = (function() {
 	  function BoardSolvedService() {}
@@ -9603,49 +9621,6 @@
 
 /***/ },
 /* 7 */
-/*!*********************************************!*\
-  !*** ./app/services/TrackingService.coffee ***!
-  \*********************************************/
-/***/ function(module, exports) {
-
-	var TrackingService;
-	
-	TrackingService = (function() {
-	  function TrackingService() {}
-	
-	  TrackingService.boardEvent = function(label) {
-	    if (label != null) {
-	      return ga('send', 'event', 'board', label);
-	    } else {
-	      return ga('send', 'event', 'board');
-	    }
-	  };
-	
-	  TrackingService.mobileView = function() {
-	    return this.pageview('Mobile');
-	  };
-	
-	  TrackingService.desktopView = function() {
-	    return this.pageview('Desktop');
-	  };
-	
-	  TrackingService.pageview = function(label) {
-	    if (label != null) {
-	      return ga('send', 'pageview', label);
-	    } else {
-	      return ga('send', 'pageview');
-	    }
-	  };
-	
-	  return TrackingService;
-	
-	})();
-	
-	module.exports = TrackingService;
-
-
-/***/ },
-/* 8 */
 /*!******************************************!*\
   !*** ./app/services/ClickHandler.coffee ***!
   \******************************************/
@@ -9657,7 +9632,7 @@
 	
 	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
 	
-	TrackingService = __webpack_require__(/*! ./TrackingService */ 7);
+	TrackingService = __webpack_require__(/*! ./TrackingService */ 8);
 	
 	ClickHandler = (function() {
 	  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum) {
@@ -9682,6 +9657,8 @@
 	      if (this.BoardSolvedService.isCleared(this.board)) {
 	        TrackingService.boardEvent('solved');
 	        this.board.successAnimation();
+	      } else if (this.goalContainer.isEmpty()) {
+	        this.RunningSum.display(this.RunningSum.tilesEmptyString);
 	      }
 	    }
 	    return this.mouseDown = false;
@@ -9712,6 +9689,9 @@
 	    return body.mouseup((function(_this) {
 	      return function(e) {
 	        e.preventDefault();
+	        if (!_this.isMobile) {
+	          _this.unselectAll();
+	        }
 	        return _this.mousedown = false;
 	      };
 	    })(this));
@@ -9763,7 +9743,9 @@
 	
 	  ClickHandler.prototype.unselectAll = function() {
 	    var i, j, ref;
-	    this.RunningSum.display('');
+	    if (this.RunningSum.runningSumElem.html() !== this.RunningSum.solutionOperatorString) {
+	      this.RunningSum.display(this.RunningSum.emptyString);
+	    }
 	    if (this.clicked.length < 1) {
 	      return;
 	    }
@@ -9775,7 +9757,6 @@
 	
 	  ClickHandler.prototype.checkForSolution = function() {
 	    if (this.solutionService.isSolution()) {
-	      this.RunningSum.display('');
 	      this.goalContainer.deleteGoal(this.solutionService.valueIndex);
 	      this.board.deleteCells(this.clickedToTuples());
 	      return true;
@@ -9811,6 +9792,55 @@
 
 
 /***/ },
+/* 8 */
+/*!*********************************************!*\
+  !*** ./app/services/TrackingService.coffee ***!
+  \*********************************************/
+/***/ function(module, exports) {
+
+	var TrackingService;
+	
+	TrackingService = (function() {
+	  function TrackingService() {}
+	
+	  TrackingService.boardEvent = function(label) {
+	    if ((typeof ga) == null) {
+	      return;
+	    }
+	    if (label != null) {
+	      return ga('send', 'event', 'board', label);
+	    } else {
+	      return ga('send', 'event', 'board');
+	    }
+	  };
+	
+	  TrackingService.mobileView = function() {
+	    return this.pageview('Mobile');
+	  };
+	
+	  TrackingService.desktopView = function() {
+	    return this.pageview('Desktop');
+	  };
+	
+	  TrackingService.pageview = function(label) {
+	    if ((typeof ga) == null) {
+	      return;
+	    }
+	    if (label != null) {
+	      return ga('send', 'pageview', label);
+	    } else {
+	      return ga('send', 'pageview');
+	    }
+	  };
+	
+	  return TrackingService;
+	
+	})();
+	
+	module.exports = TrackingService;
+
+
+/***/ },
 /* 9 */
 /*!*********************************!*\
   !*** ./app/services/DFS.coffee ***!
@@ -9826,16 +9856,25 @@
 	DFS = (function() {
 	  function DFS() {}
 	
-	  DFS.setEquationsOnGrid = function(size, inputList, AdjacentCells) {
-	    var col, grid, i, j, k, l, ref, ref1, row;
+	  DFS.setEquationsOnGrid = function(size, inputList, AdjacentCells, solutionPlacements) {
+	    var col, grid, i, idx, index, input, j, k, l, len, n, o, placementList, ref, ref1, ref2, row;
 	    this.size = size;
 	    this.AdjacentCells = AdjacentCells;
 	    this.clearSolutionGrid();
 	    grid = this.createEmptyGrid();
 	    for (i = j = 0; j < 10000; i = ++j) {
 	      if (this.hasFoundSolution(inputList)) {
-	        for (row = k = 0, ref = this.solutionGrid.length; 0 <= ref ? k < ref : k > ref; row = 0 <= ref ? ++k : --k) {
-	          for (col = l = 0, ref1 = this.solutionGrid.length; 0 <= ref1 ? l < ref1 : l > ref1; col = 0 <= ref1 ? ++l : --l) {
+	        index = 0;
+	        for (k = 0, len = inputList.length; k < len; k++) {
+	          input = inputList[k];
+	          placementList = [];
+	          for (idx = l = 0, ref = input.length; 0 <= ref ? l < ref : l > ref; idx = 0 <= ref ? ++l : --l) {
+	            placementList.push(this.solutionPlacements[index++]);
+	          }
+	          solutionPlacements.push(placementList);
+	        }
+	        for (row = n = 0, ref1 = this.solutionGrid.length; 0 <= ref1 ? n < ref1 : n > ref1; row = 0 <= ref1 ? ++n : --n) {
+	          for (col = o = 0, ref2 = this.solutionGrid.length; 0 <= ref2 ? o < ref2 : o > ref2; col = 0 <= ref2 ? ++o : --o) {
 	            grid[this.solutionGrid[row][col].y][this.solutionGrid[row][col].x] = this.solutionGrid[row][col].value;
 	          }
 	        }
@@ -9866,6 +9905,7 @@
 	
 	  DFS.hasFoundSolution = function(inputList) {
 	    var cloneGrid, hasPlaced, i, index, j, k, ref, seedX, seedY;
+	    this.solutionPlacements = [];
 	    for (i = j = 0, ref = inputList.length; 0 <= ref ? j < ref : j > ref; i = 0 <= ref ? ++j : --j) {
 	      hasPlaced = false;
 	      for (index = k = 0; k < 20; index = ++k) {
@@ -9873,7 +9913,7 @@
 	          cloneGrid = this.cloneSolutionGrid();
 	          seedX = Math.floor(Math.random() * this.size);
 	          seedY = Math.floor(Math.random() * this.size);
-	          if (this.search(seedX, seedY, inputList[i])) {
+	          if (this.search(seedX, seedY, inputList[i], this.solutionPlacements)) {
 	            hasPlaced = true;
 	          } else {
 	            this.solutionGrid = cloneGrid;
@@ -9889,8 +9929,9 @@
 	    return true;
 	  };
 	
-	  DFS.search = function(seedX, seedY, input) {
+	  DFS.search = function(seedX, seedY, input, solutionPlacements1) {
 	    var curr, toVisit;
+	    this.solutionPlacements = solutionPlacements1;
 	    if (input.length === 0) {
 	      return true;
 	    }
@@ -9901,8 +9942,10 @@
 	    curr = toVisit.pop();
 	    while (curr !== void 0) {
 	      this.solutionGrid[curr.y][curr.x].value = input[0];
-	      if (!this.search(curr.x, curr.y, input.slice(1, input.length))) {
+	      this.solutionPlacements.push([curr.y, curr.x]);
+	      if (!this.search(curr.x, curr.y, input.slice(1, input.length), this.solutionPlacements)) {
 	        this.solutionGrid[curr.y][curr.x].value = ' ';
+	        this.solutionPlacements.pop();
 	        curr = toVisit.pop();
 	      } else {
 	        return true;
@@ -10227,19 +10270,18 @@
   \*****************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, ResetButton, TrackingService;
+	var $, ResetButton;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
-	
-	TrackingService = __webpack_require__(/*! ./TrackingService */ 7);
 	
 	ResetButton = (function() {
 	  function ResetButton() {}
 	
-	  ResetButton.bindClick = function(board) {
+	  ResetButton.bindClick = function(board, RunningSum) {
 	    return $('#reset-button').click((function(_this) {
 	      return function(e) {
-	        return board.resetBoard();
+	        board.resetBoard();
+	        return RunningSum.empty();
 	      };
 	    })(this));
 	  };
@@ -10269,18 +10311,36 @@
 	RunningSum = (function() {
 	  function RunningSum() {}
 	
+	  RunningSum.runningSumElem = $('#running-sum');
+	
+	  RunningSum.tilesEmptyString = 'Try to get all the tiles off the board!';
+	
+	  RunningSum.solutionOperatorString = 'Solution must include an operator';
+	
+	  RunningSum.invalidString = 'Invalid Expression';
+	
+	  RunningSum.emptyString = '';
+	
 	  RunningSum.display = function(solution, value) {
 	    var expression;
-	    if (solution === '') {
-	      expression = '';
-	    } else if (isNaN(value)) {
-	      expression = 'Invalid Expression';
-	    } else if (this.isCompleteExpression(solution)) {
-	      expression = (this.addParens(solution)) + '=' + value;
-	    } else {
-	      expression = solution;
+	    if (this.runningSumElem.html() !== this.tilesEmptyString) {
+	      if (this.isSpecialString(solution)) {
+	        expression = solution;
+	      } else if (isNaN(value)) {
+	        expression = this.invalidString;
+	      } else if (this.isCompleteExpression(solution)) {
+	        expression = (this.addParens(solution)) + '=' + value;
+	      } else {
+	        expression = solution;
+	      }
+	      return this.runningSumElem.html(this.format(expression));
 	    }
-	    return $('#running-sum').html(this.format(expression));
+	  };
+	
+	  RunningSum.isSpecialString = function(solution) {
+	    var strings;
+	    strings = [this.emptyString, this.tilesEmptyString, this.solutionOperatorString];
+	    return strings.indexOf(solution) !== -1;
 	  };
 	
 	  RunningSum.isCompleteExpression = function(solution) {
@@ -10310,6 +10370,10 @@
 	    return input.replace(/\*/g, ' &times; ').replace(/\+/g, ' + ').replace(/(\d+|\))-/g, '$1 - ').replace(/\=/g, ' = ');
 	  };
 	
+	  RunningSum.empty = function() {
+	    return this.runningSumElem.html(this.emptyString);
+	  };
+	
 	  return RunningSum;
 	
 	})();
@@ -10319,6 +10383,209 @@
 
 /***/ },
 /* 17 */
+/*!**********************************************!*\
+  !*** ./app/services/ShareGameService.coffee ***!
+  \**********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var $, ShareGameService;
+	
+	$ = __webpack_require__(/*! jquery */ 2);
+	
+	ShareGameService = (function() {
+	  function ShareGameService() {}
+	
+	  ShareGameService.reloadPageWithHash = function(board, solutionPlacements, SolutionService) {
+	    var hash;
+	    if (!this.checkSolutionPlacements(board, solutionPlacements, SolutionService)) {
+	      window.location.hash = '';
+	      return false;
+	    }
+	    hash = this.encode(board.initialValues, board.goals, solutionPlacements);
+	    return window.location.hash = hash;
+	  };
+	
+	  ShareGameService.encode = function(boardValues, goals, solutionPlacements) {
+	    var k, l, length, list, pos, ref, ref1;
+	    boardValues = (JSON.stringify(boardValues)).replace(/(\[|\]|"|,|{|})*/g, '');
+	    length = Math.sqrt(boardValues.length);
+	    for (list = k = 0, ref = solutionPlacements.length; 0 <= ref ? k < ref : k > ref; list = 0 <= ref ? ++k : --k) {
+	      for (pos = l = 0, ref1 = solutionPlacements[list].length; 0 <= ref1 ? l < ref1 : l > ref1; pos = 0 <= ref1 ? ++l : --l) {
+	        solutionPlacements[list][pos] = solutionPlacements[list][pos][0] * length + solutionPlacements[list][pos][1];
+	      }
+	    }
+	    return btoa(JSON.stringify({
+	      b: boardValues,
+	      g: goals,
+	      p: solutionPlacements
+	    }));
+	  };
+	
+	  ShareGameService.decode = function(boardValues, goals, solutionPlacements) {
+	    var decoded, e, length;
+	    try {
+	      decoded = atob(window.location.hash.substr(1, window.location.hash.length));
+	      decoded = JSON.parse(decoded);
+	    } catch (_error) {
+	      e = _error;
+	      decoded = null;
+	    }
+	    if (!((decoded != null) && (decoded.b != null) && (decoded.g != null) && (decoded.p != null) && this.isValidDecode(decoded))) {
+	      return false;
+	    }
+	    length = Math.sqrt(decoded.b.length);
+	    this.decodeBoardValues(decoded.b, boardValues, length);
+	    this.decodeGoals(decoded.g, goals);
+	    this.decodeSolutionPlacements(decoded.p, solutionPlacements, length);
+	    return true;
+	  };
+	
+	  ShareGameService.isValidDecode = function(decoded) {
+	    var alphabet, char, k, len;
+	    alphabet = ['"', '{', '}', '[', ']', ',', ':', 'b', 'g', 'p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*'];
+	    for (k = 0, len = decoded.length; k < len; k++) {
+	      char = decoded[k];
+	      if (alphabet.indexOf(char) === -1) {
+	        return false;
+	      }
+	    }
+	    return true;
+	  };
+	
+	  ShareGameService.decodeBoardValues = function(copy, boardValues, length) {
+	    var i, index, j, k, l, ref, ref1, results, row;
+	    index = 0;
+	    results = [];
+	    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+	      row = [];
+	      for (j = l = 0, ref1 = length; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
+	        row.push(copy[index++]);
+	      }
+	      results.push(boardValues.push(row));
+	    }
+	    return results;
+	  };
+	
+	  ShareGameService.decodeGoals = function(copy, goals) {
+	    var goal, k, len, results;
+	    results = [];
+	    for (k = 0, len = copy.length; k < len; k++) {
+	      goal = copy[k];
+	      results.push(goals.push(goal));
+	    }
+	    return results;
+	  };
+	
+	  ShareGameService.decodeSolutionPlacements = function(copy, solutionPlacements, length) {
+	    var coord, expression, k, l, list, ref, ref1, results;
+	    results = [];
+	    for (list = k = 0, ref = copy.length; 0 <= ref ? k < ref : k > ref; list = 0 <= ref ? ++k : --k) {
+	      expression = [];
+	      for (coord = l = 0, ref1 = copy[list].length; 0 <= ref1 ? l < ref1 : l > ref1; coord = 0 <= ref1 ? ++l : --l) {
+	        expression.push([Math.floor(copy[list][coord] / length), copy[list][coord] % length]);
+	      }
+	      results.push(solutionPlacements.push(expression));
+	    }
+	    return results;
+	  };
+	
+	  ShareGameService.checkSolutionPlacements = function(board, solutionPlacements, SolutionService) {
+	    var cell, clickedCells, expression, index, k, l, len, len1, m, ref;
+	    this.initializeTempBoard(board);
+	    this.solutionService = new SolutionService(this.tempBoard, board.goals);
+	    for (k = 0, len = solutionPlacements.length; k < len; k++) {
+	      expression = solutionPlacements[k];
+	      clickedCells = [];
+	      for (index = l = 0, ref = expression.length; 0 <= ref ? l < ref : l > ref; index = 0 <= ref ? ++l : --l) {
+	        cell = expression[index];
+	        clickedCells.push({
+	          row: cell[0],
+	          col: cell[1]
+	        });
+	      }
+	      this.solutionService.initialize(clickedCells);
+	      for (m = 0, len1 = clickedCells.length; m < len1; m++) {
+	        cell = clickedCells[m];
+	        this.tempBoard.boardValues[cell.row][cell.col] = ' ';
+	      }
+	      this.pushDownTempBoard();
+	      if (!this.solutionService.isSolution()) {
+	        return false;
+	      }
+	    }
+	    return true;
+	  };
+	
+	  ShareGameService.initializeTempBoard = function(board) {
+	    var col, i, k, len, ref, results, row;
+	    this.tempBoard = {};
+	    this.tempBoard.boardValues = [];
+	    ref = board.initialValues;
+	    results = [];
+	    for (i = k = 0, len = ref.length; k < len; i = ++k) {
+	      row = ref[i];
+	      this.tempBoard.boardValues.push([]);
+	      results.push((function() {
+	        var l, len1, results1;
+	        results1 = [];
+	        for (l = 0, len1 = row.length; l < len1; l++) {
+	          col = row[l];
+	          results1.push(this.tempBoard.boardValues[i].push(col));
+	        }
+	        return results1;
+	      }).call(this));
+	    }
+	    return results;
+	  };
+	
+	  ShareGameService.pushDownTempBoard = function() {
+	    var col, k, ref, results, row, up;
+	    results = [];
+	    for (row = k = ref = this.tempBoard.boardValues.length - 1; ref <= 1 ? k <= 1 : k >= 1; row = ref <= 1 ? ++k : --k) {
+	      results.push((function() {
+	        var l, ref1, results1;
+	        results1 = [];
+	        for (col = l = ref1 = this.tempBoard.boardValues.length - 1; ref1 <= 0 ? l <= 0 : l >= 0; col = ref1 <= 0 ? ++l : --l) {
+	          if (this.tempBoard.boardValues[row][col] === ' ') {
+	            results1.push((function() {
+	              var m, ref2, results2;
+	              results2 = [];
+	              for (up = m = ref2 = row - 1; ref2 <= 0 ? m <= 0 : m >= 0; up = ref2 <= 0 ? ++m : --m) {
+	                if (this.tempBoard.boardValues[up][col] !== ' ') {
+	                  this.swapCells(row, col, up, col);
+	                  break;
+	                } else {
+	                  results2.push(void 0);
+	                }
+	              }
+	              return results2;
+	            }).call(this));
+	          } else {
+	            results1.push(void 0);
+	          }
+	        }
+	        return results1;
+	      }).call(this));
+	    }
+	    return results;
+	  };
+	
+	  ShareGameService.swapCells = function(r1, c1, r2, c2) {
+	    var temp;
+	    temp = this.tempBoard.boardValues[r1][c1];
+	    this.tempBoard.boardValues[r1][c1] = this.tempBoard.boardValues[r2][c2];
+	    return this.tempBoard.boardValues[r2][c2] = temp;
+	  };
+	
+	  return ShareGameService;
+	
+	})();
+	
+	module.exports = ShareGameService;
+
+
+/***/ },
+/* 18 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -10330,9 +10597,10 @@
 	InputSolver = __webpack_require__(/*! ./InputSolver */ 13);
 	
 	SolutionService = (function() {
-	  function SolutionService(board, goals) {
+	  function SolutionService(board, goals, RunningSum) {
 	    var g, i, len;
 	    this.board = board;
+	    this.RunningSum = RunningSum;
 	    this.goals = [];
 	    for (i = 0, len = goals.length; i < len; i++) {
 	      g = goals[i];
@@ -10346,19 +10614,27 @@
 	  };
 	
 	  SolutionService.prototype.isSolution = function() {
-	    var ref, ref1;
-	    if (!(((ref = this.solution) != null ? ref.length : void 0) >= 3)) {
+	    var ref;
+	    if (this.solution == null) {
 	      return false;
 	    }
 	    if (this.solution[this.solution.length - 1] === '+' || this.solution[this.solution.length - 1] === '-' || this.solution[this.solution.length - 1] === '*') {
 	      return false;
 	    }
-	    if (ref1 = this.value, indexOf.call(this.goals, ref1) < 0) {
+	    if (ref = this.value, indexOf.call(this.goals, ref) < 0) {
+	      return false;
+	    }
+	    if (!this.isCompleteExpression()) {
+	      this.RunningSum.display(this.RunningSum.solutionOperatorString);
 	      return false;
 	    }
 	    this.valueIndex = this.goals.indexOf(this.value);
 	    this.goals[this.valueIndex] = ' ';
 	    return true;
+	  };
+	
+	  SolutionService.prototype.isCompleteExpression = function() {
+	    return this.solution.search(/-?\d+[-+\*]\d+/g) === 0;
 	  };
 	
 	  SolutionService.prototype.setSolutionString = function(cells) {
@@ -10380,7 +10656,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /*!***********************************!*\
   !*** ./app/services/Title.coffee ***!
   \***********************************/
@@ -10407,7 +10683,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -10416,7 +10692,7 @@
 	var Board, TrackingService,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
-	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 7);
+	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
 	
 	Board = (function() {
 	  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum) {
@@ -10444,7 +10720,7 @@
 	
 	  Board.prototype.initializer = function() {
 	    var solutionService;
-	    solutionService = new this.SolutionService(this, this.goals);
+	    solutionService = new this.SolutionService(this, this.goals, this.RunningSum);
 	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum);
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
@@ -10626,7 +10902,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -10636,7 +10912,7 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 21);
+	Colors = __webpack_require__(/*! ./Colors */ 22);
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
@@ -10834,7 +11110,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
@@ -10850,14 +11126,14 @@
 	  board: '#294248',
 	  select: '#c7a579',
 	  symbol: 'black',
-	  deletedGoalGrey: '#2F4F4F'
+	  deletedGoalGrey: 'rgb(47, 79, 79)'
 	};
 	
 	module.exports = Colors;
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
@@ -10892,6 +11168,18 @@
 	    return this.container.empty();
 	  };
 	
+	  GoalContainer.prototype.isEmpty = function() {
+	    var goal, i, len, ref;
+	    ref = $(this.container.children());
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      goal = ref[i];
+	      if ($(goal).css('color') !== this.Colors.deletedGoalGrey) {
+	        return false;
+	      }
+	    }
+	    return true;
+	  };
+	
 	  return GoalContainer;
 	
 	})();
@@ -10900,7 +11188,7 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /*!***********************************************!*\
   !*** ./tests/controllers/GeneralTests.coffee ***!
   \***********************************************/
@@ -10999,7 +11287,7 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /*!*******************************!*\
   !*** ./~/two.js/build/two.js ***!
   \*******************************/
