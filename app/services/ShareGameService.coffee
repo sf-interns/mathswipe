@@ -1,52 +1,38 @@
 $ = require 'jquery'
-SolutionService = require './SolutionService'
 
 class ShareGameService
 
-  @reloadPageWithHash: (board, solutionPlacements) ->
-    unless @checkSolutionPlacements board, solutionPlacements
+  @reloadPageWithHash: (board, solutionPlacements, SolutionService) ->
+    unless @checkSolutionPlacements board, solutionPlacements, SolutionService
       window.location.hash = ''
-      console.log window.location.hash
       return false
     hash = @encode board.initialValues, board.goals, solutionPlacements
     window.location.hash = hash
 
-  @encode: (boardValues, goals, slnPlacements) ->
+  @encode: (boardValues, goals, solutionPlacements) ->
     boardValues = (JSON.stringify boardValues).replace(/(\[|\]|"|,|{|})*/g, '')
 
     length = Math.sqrt boardValues.length
-    for placement in [0...slnPlacements.length]
-      for coord in [0...slnPlacements[placement].length]
-        slnPlacements[placement][coord] = slnPlacements[placement][coord][0] * length + slnPlacements[placement][coord][1]
+    for list in [0...solutionPlacements.length]
+      for pos in [0...solutionPlacements[list].length]
+        solutionPlacements[list][pos] = solutionPlacements[list][pos][0] * length +
+                                               solutionPlacements[list][pos][1]
 
-    btoa(JSON.stringify {b: boardValues, g: goals, p: slnPlacements})
+    btoa(JSON.stringify {b: boardValues, g: goals, p: solutionPlacements})
 
-  @decode: (boardValues, goals, slnPlacements) ->
+  @decode: (boardValues, goals, solutionPlacements) ->
     try
       decoded = atob window.location.hash.substr(1, window.location.hash.length)
       decoded = JSON.parse decoded
     catch e
-      return false
-    return false unless decoded? and @isValidDecode decoded
-    return false unless decoded.b? and decoded.g? and decoded.p?
+      decoded = null
+    return false unless decoded? and decoded.b? and decoded.g? and
+                        decoded.p? and @isValidDecode decoded
+
     length = Math.sqrt decoded.b.length
-    index = 0
-
-    for i in [0...length]
-      row = []
-      for j in [0...length]
-        row.push decoded.b[index++]
-      boardValues.push row
-
-    for goal in decoded.g
-      goals.push goal
-
-    for placement in [0...decoded.p.length]
-      expression = []
-      for coord in [0...decoded.p[placement].length]
-        expression.push [(Math.floor decoded.p[placement][coord] / length), (decoded.p[placement][coord] % length)]
-      slnPlacements.push expression
-
+    @decodeBoardValues decoded.b, boardValues, length
+    @decodeGoals decoded.g, goals
+    @decodeSolutionPlacements decoded.p, solutionPlacements, length
     true
 
   @isValidDecode: (decoded) ->
@@ -58,27 +44,52 @@ class ShareGameService
       return false if alphabet.indexOf(char) is -1
     true
 
-  @checkSolutionPlacements: (board, solutionPlacements) ->
-    @tempBoard = {}
-    @tempBoard.boardValues = []
-    for row, i in board.initialValues
-      @tempBoard.boardValues.push []
-      for col in row
-        @tempBoard.boardValues[i].push col
+  @decodeBoardValues: (copy, boardValues, length) ->
+    index = 0
+    for i in [0...length]
+      row = []
+      for j in [0...length]
+        row.push copy[index++]
+      boardValues.push row
+
+  @decodeGoals: (copy, goals) ->
+    goals.push goal for goal in copy
+
+  @decodeSolutionPlacements: (copy, solutionPlacements, length) ->
+    for list in [0...copy.length]
+      expression = []
+      for coord in [0...copy[list].length]
+        expression.push [(Math.floor copy[list][coord] / length),
+                         (copy[list][coord] % length)]
+      solutionPlacements.push expression
+
+  @checkSolutionPlacements: (board, solutionPlacements, SolutionService) ->
+    @initializeTempBoard board
     @solutionService = new SolutionService @tempBoard, board.goals
+
     for expression in solutionPlacements
       clickedCells = []
       for index in [0...expression.length]
         cell = expression[index]
         clickedCells.push {row: cell[0], col: cell[1]}
       @solutionService.initialize clickedCells
+
       for cell in clickedCells
         @tempBoard.boardValues[cell.row][cell.col] = ' '
       @pushDownTempBoard()
 
       unless @solutionService.isSolution()
         return false
+
     true
+
+  @initializeTempBoard: (board) ->
+    @tempBoard = {}
+    @tempBoard.boardValues = []
+    for row, i in board.initialValues
+      @tempBoard.boardValues.push []
+      for col in row
+        @tempBoard.boardValues[i].push col
 
   @pushDownTempBoard: ->
     for row in [@tempBoard.boardValues.length-1..1]

@@ -32,18 +32,17 @@ class MathSwipeController
     else
       TrackingService.desktopView()
       @cursorToPointer()
-    while not @initialize window.location.hash
-      continue
+    @initialize window.location.hash
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
 
   initialize: (hash) ->
+    solutionPlacements = []
+    goals = []
+    boardValues = []
     hasCompleteBoard = false
     if hash? and hash isnt ''
-      solutionPlacements = []
-      goals = []
-      boardValues = []
       hasCompleteBoard = ShareGameService.decode boardValues, goals, solutionPlacements
     unless hasCompleteBoard
       length = 3
@@ -62,10 +61,8 @@ class MathSwipeController
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
     ResetButton.bindClick @board
-    unless ShareGameService.reloadPageWithHash @board, solutionPlacements
-      @goalContainer.clearGoals()
-      return false
-    true
+    @createNewGame() unless ShareGameService.reloadPageWithHash(@board,
+                                    solutionPlacements, SolutionService)
 
   isMobile: () ->
     Android: () ->
@@ -86,10 +83,13 @@ class MathSwipeController
   bindNewGameButton: ->
     $('#new-game-button').click (e) =>
       TrackingService.boardEvent 'new game'
-      @gameScene.clear()
-      @goalContainer.clearGoals()
-      ResetButton.unbindClick()
-      @initialize (window.location.hash = '')
+      @createNewGame()
+
+  createNewGame: ->
+    @gameScene.clear()
+    @goalContainer.clearGoals()
+    ResetButton.unbindClick()
+    @initialize (window.location.hash = '')
 
   createGameScene: ->
     gameDom = document.getElementById('game')
