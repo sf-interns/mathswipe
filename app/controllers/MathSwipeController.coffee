@@ -32,6 +32,7 @@ class MathSwipeController
     else
       TrackingService.desktopView()
       @cursorToPointer()
+    ShareGameService.setMessage()
     @initialize window.location.hash
 
     # # Uncomment the following line to perform general tests

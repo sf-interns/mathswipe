@@ -111,4 +111,11 @@ class ShareGameService
     @tempBoard.boardValues[r1][c1] = @tempBoard.boardValues[r2][c2]
     @tempBoard.boardValues[r2][c2] = temp
 
+  @setMessage: ->
+    possible = ['Play MathSwipe with me! Try to beat my score at',
+                'Play MathSwipe with me! Try to solve my board at',
+                'Play MathSwipe with me! Solve my puzzle at']
+    text = possible[Math.floor(Math.random() * 3)]
+    $( '#tweet' ).attr( 'data-text' , text )
+
 module.exports = ShareGameService
