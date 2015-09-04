@@ -51,8 +51,6 @@ class MathSwipeController
       inputs = []
       inputLengths = RandomizedFitLength.generate length * length
       @generateInputs inputLengths, inputs, goals
-      console.log expression for expression in inputs
-      console.log '\n'
       boardValues = @generateBoard inputs, length, solutionPlacements
 
     @goalContainer = new GoalContainer goals, Colors

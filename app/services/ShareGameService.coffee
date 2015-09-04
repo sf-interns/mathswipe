@@ -67,6 +67,7 @@ class ShareGameService
     @initializeTempBoard board
     @solutionService = new SolutionService @tempBoard, board.goals
 
+    inputs = []
     for expression in solutionPlacements
       clickedCells = []
       for index in [0...expression.length]
@@ -74,13 +75,18 @@ class ShareGameService
         clickedCells.push {row: cell[0], col: cell[1]}
       @solutionService.initialize clickedCells
 
+      solution = []
       for cell in clickedCells
+        solution.push @tempBoard.boardValues[cell.row][cell.col]
         @tempBoard.boardValues[cell.row][cell.col] = ' '
       @pushDownTempBoard()
 
       unless @solutionService.isSolution()
         return false
+      inputs.push solution
 
+    console.log expression for expression in inputs
+    console.log '\n'
     true
 
   @initializeTempBoard: (board) ->

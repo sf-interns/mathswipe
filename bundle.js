@@ -9355,7 +9355,7 @@
 	  }
 	
 	  MathSwipeController.prototype.initialize = function(hash) {
-	    var boardValues, expression, goals, hasCompleteBoard, i, inputLengths, inputs, len, length, solutionPlacements;
+	    var boardValues, goals, hasCompleteBoard, inputLengths, inputs, length, solutionPlacements;
 	    solutionPlacements = [];
 	    goals = [];
 	    boardValues = [];
@@ -9370,11 +9370,6 @@
 	      inputs = [];
 	      inputLengths = RandomizedFitLength.generate(length * length);
 	      this.generateInputs(inputLengths, inputs, goals);
-	      for (i = 0, len = inputs.length; i < len; i++) {
-	        expression = inputs[i];
-	        console.log(expression);
-	      }
-	      console.log('\n');
 	      boardValues = this.generateBoard(inputs, length, solutionPlacements);
 	    }
 	    this.goalContainer = new GoalContainer(goals, Colors);
@@ -10490,9 +10485,10 @@
 	  };
 	
 	  ShareGameService.checkSolutionPlacements = function(board, solutionPlacements, SolutionService) {
-	    var cell, clickedCells, expression, index, k, l, len, len1, m, ref;
+	    var cell, clickedCells, expression, index, inputs, k, l, len, len1, len2, m, n, ref, solution;
 	    this.initializeTempBoard(board);
 	    this.solutionService = new SolutionService(this.tempBoard, board.goals);
+	    inputs = [];
 	    for (k = 0, len = solutionPlacements.length; k < len; k++) {
 	      expression = solutionPlacements[k];
 	      clickedCells = [];
@@ -10504,15 +10500,23 @@
 	        });
 	      }
 	      this.solutionService.initialize(clickedCells);
+	      solution = [];
 	      for (m = 0, len1 = clickedCells.length; m < len1; m++) {
 	        cell = clickedCells[m];
+	        solution.push(this.tempBoard.boardValues[cell.row][cell.col]);
 	        this.tempBoard.boardValues[cell.row][cell.col] = ' ';
 	      }
 	      this.pushDownTempBoard();
 	      if (!this.solutionService.isSolution()) {
 	        return false;
 	      }
+	      inputs.push(solution);
 	    }
+	    for (n = 0, len2 = inputs.length; n < len2; n++) {
+	      expression = inputs[n];
+	      console.log(expression);
+	    }
+	    console.log('\n');
 	    return true;
 	  };
 	
