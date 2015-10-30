@@ -9456,7 +9456,7 @@
 	    for (i = 0, len = inputLengths.length; i < len; i++) {
 	      inputSize = inputLengths[i];
 	      value = -1;
-	      while (value < 1 || value > 300) {
+	      while (value < 1 || value > this.leveler.maxGoal()) {
 	        console.log(this.leveler);
 	        expression = ExpressionGenerator.generate(inputSize, this.leveler);
 	        value = InputSolver.compute(expression);
@@ -9487,7 +9487,7 @@
 	  function LevelSettings() {}
 	
 	  LevelSettings.numCorrectNeeded = function(level) {
-	    return [5, 5, 5, 4, 3, 3, 2][level];
+	    return [2, 2, 2, 2, 2, 2, 2][level];
 	  };
 	
 	  LevelSettings.boardSize = function(level) {
@@ -9495,11 +9495,7 @@
 	  };
 	
 	  LevelSettings.maxGoal = function(level) {
-	    return level * 75;
-	  };
-	
-	  LevelSettings.numGoals = function(level) {
-	    return [1, 1, 3, 2, 4, 3, 1][level];
+	    return (level + 1) * 75;
 	  };
 	
 	  LevelSettings.useMultiplication = function(level) {
@@ -9511,9 +9507,7 @@
 	      'numCorrectNeeded': this.numCorrectNeeded(level, {
 	        'boardSize': this.boardSize(level, {
 	          'maxGoal': this.maxGoal(level, {
-	            'numGoals': this.numGoals(level, {
-	              'useMultiplication': this.useMultiplication(level)
-	            })
+	            'useMultiplication': this.useMultiplication(level)
 	          })
 	        })
 	      })
@@ -9733,7 +9727,7 @@
 	        if (!_this.isMobile) {
 	          _this.unselectAll();
 	        }
-	        return _this.mousedown = false;
+	        return _this.mouseDown = false;
 	      };
 	    })(this));
 	  };
@@ -10138,10 +10132,10 @@
 	    } else if (length === 2) {
 	      return (this.genRandomDigit(1, 9)) + (this.genRandomDigit(0, 9));
 	    } else if (length === 3) {
-	      return (this.genRandomDigit(1, 9)) + this.genRandomOperator(leveler.settings.useMultiplication()) + (this.genRandomDigit(1, 9));
+	      return (this.genRandomDigit(1, 9)) + this.genRandomOperator(leveler.multiply()) + (this.genRandomDigit(1, 9));
 	    } else {
 	      opIndex = this.randInclusive(2, length - 1);
-	      return (this.generate(opIndex - 1, leveler)) + this.genRandomOperator(leveler.settings.useMultiplication()) + (this.generate(length - opIndex, leveler));
+	      return (this.generate(opIndex - 1, leveler)) + this.genRandomOperator(leveler.multiply()) + (this.generate(length - opIndex, leveler));
 	    }
 	  };
 	
@@ -10281,7 +10275,7 @@
 	
 	  LevelService.prototype.onCorrect = function() {
 	    this.numCorrect++;
-	    console.log('Correct!');
+	    console.log('Correct!', this.numCorrect);
 	    return this.isLevelComplete();
 	  };
 	
@@ -10294,8 +10288,15 @@
 	  LevelService.prototype.boardSize = function() {
 	    var size;
 	    size = this.settings.boardSize(this.currLevel);
-	    console.log(size);
 	    return Number(size);
+	  };
+	
+	  LevelService.prototype.multiply = function() {
+	    return this.settings.useMultiplication(this.currLevel);
+	  };
+	
+	  LevelService.prototype.maxGoal = function() {
+	    return this.settings.maxGoal(this.currLevel);
 	  };
 	
 	  return LevelService;
