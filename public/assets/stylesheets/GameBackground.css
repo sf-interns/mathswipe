@@ -62,6 +62,8 @@ body {
 .game-button-wrapper {
   text-align: center;
   margin: 10px 0px 20px 0px; }
+  .game-button-wrapper .reset-button {
+    margin: 6px 0 0 0; }
   .game-button-wrapper .game-btn {
     height: 40px;
     word-wrap: break-word;
