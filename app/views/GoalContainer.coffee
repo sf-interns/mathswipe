@@ -16,4 +16,9 @@ class GoalContainer
   clearGoals: ->
     @container.empty()
 
+  isEmpty: ->
+    for goal in $(@container.children())
+      return false if $(goal).css('color') isnt @Colors.deletedGoalGrey
+    true
+
 module.exports = GoalContainer

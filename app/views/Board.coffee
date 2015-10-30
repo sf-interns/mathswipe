@@ -1,3 +1,5 @@
+TrackingService = require '../services/TrackingService'
+
 class Board
 
   # @boardValues is a 2D array of characters
@@ -7,7 +9,7 @@ class Board
     @initializer()
 
   initializer: =>
-    solutionService = new @SolutionService this, @goals
+    solutionService = new @SolutionService this, @goals, @RunningSum
     @clickHandler = new @ClickHandler this, solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum
 
     @createBoard()
@@ -110,6 +112,7 @@ class Board
     dest
 
   resetBoard: ->
+    TrackingService.boardEvent 'reset'
     @boardValues = @copyValues @initialValues
     @goalContainer.resetGoals()
     @initializer()
