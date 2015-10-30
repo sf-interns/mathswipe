@@ -1,4 +1,5 @@
 $                       = require 'jquery'
+LevelSettings           = require '../models/LevelSettings'
 AdjacentCellsCalculator = require '../services/AdjacentCellsCalculator'
 BoardSolvedService      = require '../services/BoardSolvedService'
 ClickHandler            = require '../services/ClickHandler'
@@ -6,6 +7,7 @@ DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
 HowToPlay               = require '../services/HowToPlay'
 InputSolver             = require '../services/InputSolver'
+LevelService            = require '../services/LevelService'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
@@ -23,6 +25,7 @@ class MathSwipeController
   constructor: ->
     @gameScene = @createGameScene()
     @symbols = @getSymbols()
+    @leveler = new LevelService 0, 0, LevelSettings
     @initialize()
     @bindNewGameButton()
     HowToPlay.createHowToPlay @isMobile
@@ -37,11 +40,11 @@ class MathSwipeController
     # GeneralTests.tests @board
 
   initialize: ->
-    length = 3
+    length = @leveler.boardSize()
     inputs = []
     answers = []
 
-    inputLengths = RandomizedFitLength.generate length * length
+    inputLengths = RandomizedFitLength.generate (length * length)
 
     @generateInputs inputLengths, inputs, answers
 
@@ -54,9 +57,8 @@ class MathSwipeController
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
                         BoardSolvedService, RunningSum
-    ResetButton.bindClick @board, RunningSum
+    ResetButton.bindClick @board, RunningSum, @leveler
     RunningSum.empty()
-
   isMobile: () ->
     Android: () ->
       return navigator.userAgent.match(/Android/i)
@@ -116,14 +118,15 @@ class MathSwipeController
   generateInputs: (inputLengths, inputs, answers) ->
     for inputSize in inputLengths
       value = -1
-      while value < 1 or value > 300
-        expression = ExpressionGenerator.generate inputSize
+      while value < 1 or value > @leveler.maxGoal()
+        console.log @leveler
+        expression = ExpressionGenerator.generate inputSize, @leveler
         value = InputSolver.compute expression
       answers.push (InputSolver.compute expression)
       inputs.push expression.split('')
 
-  randExpression: (length) ->
-    ExpressionGenerator.generate length
+  # randExpression: (length) ->
+  #   ExpressionGenerator.generate length, @leveler
 
 
 module.exports = MathSwipeController

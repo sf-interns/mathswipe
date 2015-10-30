@@ -63,9 +63,9 @@
 	
 	MathSwipeController = __webpack_require__(/*! ./app/controllers/MathSwipeController */ 3);
 	
-	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 6);
 	
-	Two = __webpack_require__(/*! two.js */ 24);
+	Two = __webpack_require__(/*! two.js */ 26);
 	
 	game = new MathSwipeController;
 
@@ -9296,50 +9296,55 @@
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService, Title, TrackingService;
+	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, LevelService, LevelSettings, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService, Title, TrackingService;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 4);
+	LevelSettings = __webpack_require__(/*! ../models/LevelSettings */ 4);
 	
-	BoardSolvedService = __webpack_require__(/*! ../services/BoardSolvedService */ 6);
+	AdjacentCellsCalculator = __webpack_require__(/*! ../services/AdjacentCellsCalculator */ 5);
 	
-	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 7);
+	BoardSolvedService = __webpack_require__(/*! ../services/BoardSolvedService */ 7);
 	
-	DFS = __webpack_require__(/*! ../services/DFS */ 9);
+	ClickHandler = __webpack_require__(/*! ../services/ClickHandler */ 8);
 	
-	ExpressionGenerator = __webpack_require__(/*! ../services/ExpressionGenerator */ 11);
+	DFS = __webpack_require__(/*! ../services/DFS */ 10);
 	
-	HowToPlay = __webpack_require__(/*! ../services/HowToPlay */ 12);
+	ExpressionGenerator = __webpack_require__(/*! ../services/ExpressionGenerator */ 12);
 	
-	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 13);
+	HowToPlay = __webpack_require__(/*! ../services/HowToPlay */ 13);
 	
-	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 14);
+	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 14);
 	
-	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 15);
+	LevelService = __webpack_require__(/*! ../services/LevelService */ 15);
 	
-	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 16);
+	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 16);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 17);
+	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 17);
 	
-	Title = __webpack_require__(/*! ../services/Title */ 18);
+	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 18);
 	
-	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 19);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 19);
+	Title = __webpack_require__(/*! ../services/Title */ 20);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 20);
+	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 9);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 21);
+	Board = __webpack_require__(/*! ../views/Board */ 21);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 22);
+	Cell = __webpack_require__(/*! ../views/Cell */ 22);
 	
-	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 23);
+	Colors = __webpack_require__(/*! ../views/Colors */ 23);
+	
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 24);
+	
+	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 25);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
 	    this.gameScene = this.createGameScene();
 	    this.symbols = this.getSymbols();
+	    this.leveler = new LevelService(0, 0, LevelSettings);
 	    this.initialize();
 	    this.bindNewGameButton();
 	    HowToPlay.createHowToPlay(this.isMobile);
@@ -9354,7 +9359,7 @@
 	
 	  MathSwipeController.prototype.initialize = function() {
 	    var answers, expression, gameModel, i, inputLengths, inputs, len, length;
-	    length = 3;
+	    length = this.leveler.boardSize();
 	    inputs = [];
 	    answers = [];
 	    inputLengths = RandomizedFitLength.generate(length * length);
@@ -9367,7 +9372,7 @@
 	    gameModel = this.generateBoard(inputs, length);
 	    this.goalContainer = new GoalContainer(answers, Colors);
 	    this.board = new Board(gameModel, this.gameScene, answers, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
-	    ResetButton.bindClick(this.board, RunningSum);
+	    ResetButton.bindClick(this.board, RunningSum, this.leveler);
 	    return RunningSum.empty();
 	  };
 	
@@ -9452,18 +9457,15 @@
 	    for (i = 0, len = inputLengths.length; i < len; i++) {
 	      inputSize = inputLengths[i];
 	      value = -1;
-	      while (value < 1 || value > 300) {
-	        expression = ExpressionGenerator.generate(inputSize);
+	      while (value < 1 || value > this.leveler.maxGoal()) {
+	        console.log(this.leveler);
+	        expression = ExpressionGenerator.generate(inputSize, this.leveler);
 	        value = InputSolver.compute(expression);
 	      }
 	      answers.push(InputSolver.compute(expression));
 	      results.push(inputs.push(expression.split('')));
 	    }
 	    return results;
-	  };
-	
-	  MathSwipeController.prototype.randExpression = function(length) {
-	    return ExpressionGenerator.generate(length);
 	  };
 	
 	  return MathSwipeController;
@@ -9475,6 +9477,53 @@
 
 /***/ },
 /* 4 */
+/*!*****************************************!*\
+  !*** ./app/models/LevelSettings.coffee ***!
+  \*****************************************/
+/***/ function(module, exports) {
+
+	var LevelSettings;
+	
+	LevelSettings = (function() {
+	  function LevelSettings() {}
+	
+	  LevelSettings.numCorrectNeeded = function(level) {
+	    return [2, 2, 2, 2, 2, 2, 2][level];
+	  };
+	
+	  LevelSettings.boardSize = function(level) {
+	    return [2, 2, 3, 3, 4, 4, 4][level];
+	  };
+	
+	  LevelSettings.maxGoal = function(level) {
+	    return (level + 1) * 75;
+	  };
+	
+	  LevelSettings.useMultiplication = function(level) {
+	    return level > 2;
+	  };
+	
+	  LevelSettings.getAllSettings = function(level) {
+	    return {
+	      'numCorrectNeeded': this.numCorrectNeeded(level, {
+	        'boardSize': this.boardSize(level, {
+	          'maxGoal': this.maxGoal(level, {
+	            'useMultiplication': this.useMultiplication(level)
+	          })
+	        })
+	      })
+	    };
+	  };
+	
+	  return LevelSettings;
+	
+	})();
+	
+	module.exports = LevelSettings;
+
+
+/***/ },
+/* 5 */
 /*!*****************************************************!*\
   !*** ./app/services/AdjacentCellsCalculator.coffee ***!
   \*****************************************************/
@@ -9482,7 +9531,7 @@
 
 	var AdjacentCellsCalculator, Tuple;
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
 	
 	AdjacentCellsCalculator = (function() {
 	  function AdjacentCellsCalculator() {}
@@ -9532,7 +9581,7 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /*!*********************************!*\
   !*** ./app/models/Tuple.coffee ***!
   \*********************************/
@@ -9563,7 +9612,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /*!************************************************!*\
   !*** ./app/services/BoardSolvedService.coffee ***!
   \************************************************/
@@ -9601,7 +9650,7 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /*!******************************************!*\
   !*** ./app/services/ClickHandler.coffee ***!
   \******************************************/
@@ -9611,18 +9660,19 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
 	
-	TrackingService = __webpack_require__(/*! ./TrackingService */ 8);
+	TrackingService = __webpack_require__(/*! ./TrackingService */ 9);
 	
 	ClickHandler = (function() {
-	  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum) {
+	  function ClickHandler(board, solutionService, goalContainer, isMobile, BoardSolvedService, RunningSum, leveler) {
 	    this.board = board;
 	    this.solutionService = solutionService;
 	    this.goalContainer = goalContainer;
 	    this.isMobile = isMobile;
 	    this.BoardSolvedService = BoardSolvedService;
 	    this.RunningSum = RunningSum;
+	    this.leveler = leveler;
 	    this.clicked = [];
 	    this.mouseDown = false;
 	  }
@@ -9631,13 +9681,20 @@
 	    return this.mouseDown = true;
 	  };
 	
+	  ClickHandler.cleared = false;
+	
 	  ClickHandler.prototype.setMouseAsUp = function() {
+	    var cleared;
 	    if (!this.isMobile) {
 	      this.checkForSolution();
 	      this.unselectAll();
 	      if (this.BoardSolvedService.isCleared(this.board)) {
 	        TrackingService.boardEvent('solved');
 	        this.board.successAnimation();
+	        if (!this.cleared) {
+	          this.leveler.onCorrect();
+	        }
+	        cleared = true;
 	      } else if (this.goalContainer.isEmpty()) {
 	        this.RunningSum.display(this.RunningSum.tilesEmptyString);
 	      }
@@ -9673,7 +9730,7 @@
 	        if (!_this.isMobile) {
 	          _this.unselectAll();
 	        }
-	        return _this.mousedown = false;
+	        return _this.mouseDown = false;
 	      };
 	    })(this));
 	  };
@@ -9773,7 +9830,7 @@
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /*!*********************************************!*\
   !*** ./app/services/TrackingService.coffee ***!
   \*********************************************/
@@ -9822,7 +9879,7 @@
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /*!*********************************!*\
   !*** ./app/services/DFS.coffee ***!
   \*********************************/
@@ -9830,9 +9887,9 @@
 
 	var DFS, GridCell, Tuple;
 	
-	GridCell = __webpack_require__(/*! ../models/GridCell */ 10);
+	GridCell = __webpack_require__(/*! ../models/GridCell */ 11);
 	
-	Tuple = __webpack_require__(/*! ../models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ../models/Tuple */ 6);
 	
 	DFS = (function() {
 	  function DFS() {}
@@ -10006,7 +10063,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /*!************************************!*\
   !*** ./app/models/GridCell.coffee ***!
   \************************************/
@@ -10036,7 +10093,7 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /*!*************************************************!*\
   !*** ./app/services/ExpressionGenerator.coffee ***!
   \*************************************************/
@@ -10055,8 +10112,10 @@
 	    return this.randInclusive(min, max).toString();
 	  };
 	
-	  ExpressionGenerator.genRandomOperator = function() {
-	    switch (this.randInclusive(0, 2)) {
+	  ExpressionGenerator.genRandomOperator = function(useMult) {
+	    var max;
+	    max = useMult ? 2 : 1;
+	    switch (this.randInclusive(0, max)) {
 	      case 0:
 	        return '+';
 	      case 1:
@@ -10068,7 +10127,7 @@
 	    }
 	  };
 	
-	  ExpressionGenerator.generate = function(length) {
+	  ExpressionGenerator.generate = function(length, leveler) {
 	    var opIndex;
 	    if (length < 1) {
 	      throw 'Length cannot be less than 1';
@@ -10077,10 +10136,10 @@
 	    } else if (length === 2) {
 	      return (this.genRandomDigit(1, 9)) + (this.genRandomDigit(0, 9));
 	    } else if (length === 3) {
-	      return (this.genRandomDigit(1, 9)) + this.genRandomOperator() + (this.genRandomDigit(1, 9));
+	      return (this.genRandomDigit(1, 9)) + this.genRandomOperator(leveler.multiply()) + (this.genRandomDigit(1, 9));
 	    } else {
 	      opIndex = this.randInclusive(2, length - 1);
-	      return (this.generate(opIndex - 1)) + this.genRandomOperator() + (this.generate(length - opIndex));
+	      return (this.generate(opIndex - 1, leveler)) + this.genRandomOperator(leveler.multiply()) + (this.generate(length - opIndex, leveler));
 	    }
 	  };
 	
@@ -10092,7 +10151,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /*!***************************************!*\
   !*** ./app/services/HowToPlay.coffee ***!
   \***************************************/
@@ -10128,7 +10187,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /*!*****************************************!*\
   !*** ./app/services/InputSolver.coffee ***!
   \*****************************************/
@@ -10192,7 +10251,67 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
+/*!******************************************!*\
+  !*** ./app/services/LevelService.coffee ***!
+  \******************************************/
+/***/ function(module, exports) {
+
+	var LevelService;
+	
+	LevelService = (function() {
+	  function LevelService(currLevel, numCorrect, settings) {
+	    this.currLevel = currLevel != null ? currLevel : 0;
+	    this.numCorrect = numCorrect != null ? numCorrect : 0;
+	    this.settings = settings;
+	  }
+	
+	  LevelService.prototype.levelUp = function() {
+	    this.currLevel++;
+	    console.log('Level Up!');
+	    return this.numCorrect = 0;
+	  };
+	
+	  LevelService.prototype.setLevel = function(level) {
+	    this.currLevel = level;
+	    return this.numCorrect = 0;
+	  };
+	
+	  LevelService.prototype.onCorrect = function() {
+	    this.numCorrect++;
+	    console.log('Correct!', this.numCorrect);
+	    return this.isLevelComplete();
+	  };
+	
+	  LevelService.prototype.isLevelComplete = function() {
+	    if (this.numCorrect === this.settings.numCorrectNeeded(this.currLevel)) {
+	      return this.levelUp();
+	    }
+	  };
+	
+	  LevelService.prototype.boardSize = function() {
+	    var size;
+	    size = this.settings.boardSize(this.currLevel);
+	    return Number(size);
+	  };
+	
+	  LevelService.prototype.multiply = function() {
+	    return this.settings.useMultiplication(this.currLevel);
+	  };
+	
+	  LevelService.prototype.maxGoal = function() {
+	    return this.settings.maxGoal(this.currLevel);
+	  };
+	
+	  return LevelService;
+	
+	})();
+	
+	module.exports = LevelService;
+
+
+/***/ },
+/* 16 */
 /*!*************************************************!*\
   !*** ./app/services/RandomizedFitLength.coffee ***!
   \*************************************************/
@@ -10212,7 +10331,7 @@
 	    if (list == null) {
 	      list = [];
 	    }
-	    if (size === 0) {
+	    if (size === 0 || isNaN(size)) {
 	      return list;
 	    }
 	    length = this.randInclusive(3, 5);
@@ -10232,7 +10351,7 @@
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /*!*****************************************!*\
   !*** ./app/services/ResetButton.coffee ***!
   \*****************************************/
@@ -10266,7 +10385,7 @@
 
 
 /***/ },
-/* 16 */
+/* 18 */
 /*!****************************************!*\
   !*** ./app/services/RunningSum.coffee ***!
   \****************************************/
@@ -10350,7 +10469,7 @@
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -10359,7 +10478,7 @@
 	var InputSolver, SolutionService,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
-	InputSolver = __webpack_require__(/*! ./InputSolver */ 13);
+	InputSolver = __webpack_require__(/*! ./InputSolver */ 14);
 	
 	SolutionService = (function() {
 	  function SolutionService(board, goals, RunningSum) {
@@ -10421,7 +10540,7 @@
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /*!***********************************!*\
   !*** ./app/services/Title.coffee ***!
   \***********************************/
@@ -10448,7 +10567,7 @@
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -10457,10 +10576,10 @@
 	var Board, TrackingService,
 	  bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 	
-	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
+	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 9);
 	
 	Board = (function() {
-	  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum) {
+	  function Board(boardValues, scene, goals, symbols, goalContainer, isMobile, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum, leveler) {
 	    this.boardValues = boardValues;
 	    this.scene = scene;
 	    this.goals = goals;
@@ -10473,6 +10592,7 @@
 	    this.SolutionService = SolutionService;
 	    this.BoardSolvedService = BoardSolvedService;
 	    this.RunningSum = RunningSum;
+	    this.leveler = leveler;
 	    this.successAnimationCallback = bind(this.successAnimationCallback, this);
 	    this.createCells = bind(this.createCells, this);
 	    this.createEmptyCells = bind(this.createEmptyCells, this);
@@ -10486,7 +10606,7 @@
 	  Board.prototype.initializer = function() {
 	    var solutionService;
 	    solutionService = new this.SolutionService(this, this.goals, this.RunningSum);
-	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum);
+	    this.clickHandler = new this.ClickHandler(this, solutionService, this.goalContainer, this.isMobile, this.BoardSolvedService, this.RunningSum, this.leveler);
 	    this.createBoard();
 	    this.createEmptyCells(this.cellWidth - 5);
 	    this.createCells(this.cellWidth);
@@ -10667,7 +10787,7 @@
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -10677,7 +10797,7 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 21);
+	Colors = __webpack_require__(/*! ./Colors */ 23);
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
@@ -10875,7 +10995,7 @@
 
 
 /***/ },
-/* 21 */
+/* 23 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
@@ -10898,7 +11018,7 @@
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
@@ -10953,7 +11073,7 @@
 
 
 /***/ },
-/* 23 */
+/* 25 */
 /*!***********************************************!*\
   !*** ./tests/controllers/GeneralTests.coffee ***!
   \***********************************************/
@@ -10961,17 +11081,17 @@
 
 	var AdjacentCellsCalculator, DFS, ExpressionGenerator, GeneralTests, InputSolver, RandomizedFitLength, Tuple;
 	
-	AdjacentCellsCalculator = __webpack_require__(/*! ../../app/services/AdjacentCellsCalculator */ 4);
+	AdjacentCellsCalculator = __webpack_require__(/*! ../../app/services/AdjacentCellsCalculator */ 5);
 	
-	DFS = __webpack_require__(/*! ../../app/services/DFS */ 9);
+	DFS = __webpack_require__(/*! ../../app/services/DFS */ 10);
 	
-	ExpressionGenerator = __webpack_require__(/*! ../../app/services/ExpressionGenerator */ 11);
+	ExpressionGenerator = __webpack_require__(/*! ../../app/services/ExpressionGenerator */ 12);
 	
-	InputSolver = __webpack_require__(/*! ../../app/services/InputSolver */ 13);
+	InputSolver = __webpack_require__(/*! ../../app/services/InputSolver */ 14);
 	
-	RandomizedFitLength = __webpack_require__(/*! ../../app/services/RandomizedFitLength */ 14);
+	RandomizedFitLength = __webpack_require__(/*! ../../app/services/RandomizedFitLength */ 16);
 	
-	Tuple = __webpack_require__(/*! ../../app/models/Tuple */ 5);
+	Tuple = __webpack_require__(/*! ../../app/models/Tuple */ 6);
 	
 	GeneralTests = (function() {
 	  function GeneralTests() {}
@@ -11052,7 +11172,7 @@
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /*!*******************************!*\
   !*** ./~/two.js/build/two.js ***!
   \*******************************/

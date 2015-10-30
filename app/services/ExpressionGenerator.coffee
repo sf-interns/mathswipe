@@ -6,14 +6,15 @@ class ExpressionGenerator
   @genRandomDigit: (min, max) ->
     @randInclusive(min, max).toString()
 
-  @genRandomOperator: ->
-    switch @randInclusive 0, 2
+  @genRandomOperator: (useMult)->
+    max = if useMult then 2 else 1
+    switch @randInclusive 0, max
       when 0 then '+'
       when 1 then '-'
       when 2 then '*'
       else '?'
 
-  @generate: (length) ->
+  @generate: (length, leveler) ->
     if length < 1
       throw 'Length cannot be less than 1'
     else if length is 1
@@ -22,7 +23,7 @@ class ExpressionGenerator
       (@genRandomDigit 1, 9) + (@genRandomDigit 0, 9)
     else if length is 3
       (@genRandomDigit 1, 9) +
-      @genRandomOperator() +
+      @genRandomOperator(leveler.multiply()) +
       (@genRandomDigit 1, 9)
     else
       # Pick a number between 2 and length - 1
@@ -34,8 +35,8 @@ class ExpressionGenerator
       # _ Generate an expression of length 1
       # _ _ _ Generate an expression of length 3
       # 1 (Expression) + 1 (Operator) + 3 (Expression) = 5
-      (@generate opIndex - 1) +
-      @genRandomOperator() +
-      (@generate length - opIndex)
+      (@generate opIndex - 1, leveler) +
+      @genRandomOperator(leveler.multiply()) +
+      (@generate length - opIndex, leveler)
 
 module.exports = ExpressionGenerator

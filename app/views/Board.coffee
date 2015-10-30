@@ -3,14 +3,14 @@ TrackingService = require '../services/TrackingService'
 class Board
 
   # @boardValues is a 2D array of characters
-  constructor: (@boardValues, @scene, @goals, @symbols, @goalContainer, @isMobile, @Cell, @Colors, @ClickHandler, @SolutionService, @BoardSolvedService, @RunningSum) ->
+  constructor: (@boardValues, @scene, @goals, @symbols, @goalContainer, @isMobile, @Cell, @Colors, @ClickHandler, @SolutionService, @BoardSolvedService, @RunningSum, @leveler) ->
     @dimension = @boardValues.length
     @initialValues = @copyValues @boardValues
     @initializer()
 
   initializer: =>
     solutionService = new @SolutionService this, @goals, @RunningSum
-    @clickHandler = new @ClickHandler this, solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum
+    @clickHandler = new @ClickHandler this, solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum, @leveler
 
     @createBoard()
     @createEmptyCells @cellWidth - 5

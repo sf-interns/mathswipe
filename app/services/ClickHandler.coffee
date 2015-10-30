@@ -5,12 +5,14 @@ TrackingService = require './TrackingService'
 class ClickHandler
 
   # @isMobile: False is DESKTOP, True is MOBILE
-  constructor: (@board, @solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum) ->
+  constructor: (@board, @solutionService, @goalContainer, @isMobile, @BoardSolvedService, @RunningSum, @leveler) ->
     @clicked = []
     @mouseDown = false
 
   setMouseAsDown: ->
     @mouseDown = true
+
+  @cleared = false
 
   setMouseAsUp: ->
     unless @isMobile
@@ -19,8 +21,11 @@ class ClickHandler
       if @BoardSolvedService.isCleared @board
         TrackingService.boardEvent 'solved'
         @board.successAnimation()
+        @leveler.onCorrect() unless @cleared
+        cleared = true
       else if @goalContainer.isEmpty()
         @RunningSum.display @RunningSum.tilesEmptyString
+
     @mouseDown = false
 
   isMouseDown: ->
@@ -39,7 +44,7 @@ class ClickHandler
     body.mouseup (e) =>
       e.preventDefault()
       @unselectAll() unless @isMobile
-      @mousedown = false
+      @mouseDown = false
 
   onSelect: (cell) ->
     unless @isSelected cell
