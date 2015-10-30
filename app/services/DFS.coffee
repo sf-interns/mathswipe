@@ -3,11 +3,17 @@ Tuple    = require '../models/Tuple'
 
 class DFS
 
-  @setEquationsOnGrid: (@size, inputList, @AdjacentCells) ->
+  @setEquationsOnGrid: (@size, inputList, @AdjacentCells, solutionPlacements) ->
     @clearSolutionGrid()
     grid = @createEmptyGrid()
     for i in [0...10000]
       if @hasFoundSolution inputList
+        index = 0
+        for input in inputList
+          placementList = []
+          for idx in [0...input.length]
+            placementList.push @solutionPlacements[index++]
+          solutionPlacements.push placementList
         for row in [0...@solutionGrid.length]
           for col in [0...@solutionGrid.length]
             grid[@solutionGrid[row][col].y][@solutionGrid[row][col].x] = @solutionGrid[row][col].value
@@ -23,6 +29,7 @@ class DFS
         @solutionGrid[row].push (new GridCell col, row)
 
   @hasFoundSolution: (inputList) ->
+    @solutionPlacements = []
     for i in [0...inputList.length]
       hasPlaced = false
       for index in [0...20]
@@ -30,7 +37,7 @@ class DFS
           cloneGrid = @cloneSolutionGrid()
           seedX = Math.floor(Math.random() * @size)
           seedY = Math.floor(Math.random() * @size)
-          if @search seedX, seedY, inputList[i]
+          if @search seedX, seedY, inputList[i], @solutionPlacements
             hasPlaced = true
           else
             @solutionGrid = cloneGrid
@@ -39,7 +46,7 @@ class DFS
       else return false
     true
 
-  @search: (seedX, seedY, input) ->
+  @search: (seedX, seedY, input, @solutionPlacements) ->
     return true if input.length is 0
 
     toVisit = @shuffle @AdjacentCells.getAdjacent @solutionGrid, seedX, seedY
@@ -48,8 +55,10 @@ class DFS
     curr = toVisit.pop()
     while curr != undefined
       @solutionGrid[curr.y][curr.x].value = input[0]
-      unless @search curr.x, curr.y, input.slice(1, input.length)
+      @solutionPlacements.push [curr.y, curr.x]
+      unless @search curr.x, curr.y, input.slice(1, input.length), @solutionPlacements
         @solutionGrid[curr.y][curr.x].value = ' '
+        @solutionPlacements.pop()
         curr = toVisit.pop()
       else return true
     false
