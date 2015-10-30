@@ -23,6 +23,9 @@ class ClickHandler
         @board.successAnimation()
         @leveler.onCorrect() unless @cleared
         cleared = true
+      else if @goalContainer.isEmpty()
+        @RunningSum.display @RunningSum.tilesEmptyString
+
     @mouseDown = false
 
   isMouseDown: ->
@@ -76,7 +79,8 @@ class ClickHandler
     false
 
   unselectAll: ->
-    @RunningSum.display ''
+    unless @RunningSum.runningSumElem.html() is @RunningSum.solutionOperatorString
+      @RunningSum.display @RunningSum.emptyString
     return if @clicked.length < 1
     for i in [@clicked.length - 1..0]
       @clicked[i].unselect()
@@ -84,7 +88,6 @@ class ClickHandler
 
   checkForSolution: () ->
     if @solutionService.isSolution()
-      @RunningSum.display ''
       @goalContainer.deleteGoal @solutionService.valueIndex
       @board.deleteCells @clickedToTuples()
       return true

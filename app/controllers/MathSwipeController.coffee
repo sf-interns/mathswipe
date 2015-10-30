@@ -56,9 +56,9 @@ class MathSwipeController
     @board = new Board  gameModel, @gameScene, answers, @symbols,
                         @goalContainer, @isMobile().any()?, Cell,
                         Colors, ClickHandler, SolutionService,
-                        BoardSolvedService, RunningSum, @leveler
-    ResetButton.bindClick @board
-
+                        BoardSolvedService, RunningSum
+    ResetButton.bindClick @board, RunningSum, @leveler
+    RunningSum.empty()
   isMobile: () ->
     Android: () ->
       return navigator.userAgent.match(/Android/i)
