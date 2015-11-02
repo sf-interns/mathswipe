@@ -9,6 +9,7 @@ InputSolver             = require '../services/InputSolver'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
+ShareGameService        = require '../services/ShareGameService'
 SolutionService         = require '../services/SolutionService'
 Title                   = require '../services/Title'
 TrackingService         = require '../services/TrackingService'
@@ -23,7 +24,6 @@ class MathSwipeController
   constructor: ->
     @gameScene = @createGameScene()
     @symbols = @getSymbols()
-    @initialize()
     @bindNewGameButton()
     HowToPlay.createHowToPlay @isMobile
     if @isMobile().any()?
@@ -32,6 +32,8 @@ class MathSwipeController
     else
       TrackingService.desktopView()
       @cursorToPointer()
+    ShareGameService.setMessage()
+    @initialize()
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board

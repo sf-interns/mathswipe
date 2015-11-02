@@ -65,7 +65,7 @@
 	
 	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
 	
-	Two = __webpack_require__(/*! two.js */ 24);
+	Two = __webpack_require__(/*! two.js */ 26);
 	
 	game = new MathSwipeController;
 
@@ -9296,7 +9296,7 @@
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, SolutionService, Title, TrackingService;
+	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, ShareGameService, SolutionService, Title, TrackingService;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
@@ -9320,27 +9320,28 @@
 	
 	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 16);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 17);
+	ShareGameService = __webpack_require__(/*! ../services/ShareGameService */ 17);
 	
-	Title = __webpack_require__(/*! ../services/Title */ 18);
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 19);
+	
+	Title = __webpack_require__(/*! ../services/Title */ 20);
 	
 	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 19);
+	Board = __webpack_require__(/*! ../views/Board */ 21);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 20);
+	Cell = __webpack_require__(/*! ../views/Cell */ 22);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 21);
+	Colors = __webpack_require__(/*! ../views/Colors */ 23);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 22);
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 24);
 	
-	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 23);
+	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 25);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
 	    this.gameScene = this.createGameScene();
 	    this.symbols = this.getSymbols();
-	    this.initialize();
 	    this.bindNewGameButton();
 	    HowToPlay.createHowToPlay(this.isMobile);
 	    if (this.isMobile().any() != null) {
@@ -9350,6 +9351,8 @@
 	      TrackingService.desktopView();
 	      this.cursorToPointer();
 	    }
+	    ShareGameService.setMessage();
+	    this.initialize();
 	  }
 	
 	  MathSwipeController.prototype.initialize = function() {
@@ -10351,6 +10354,59 @@
 
 /***/ },
 /* 17 */
+/*!**********************************************!*\
+  !*** ./app/services/ShareGameService.coffee ***!
+  \**********************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var ShareGameService, TwitterGameService;
+	
+	TwitterGameService = __webpack_require__(/*! ./TwitterGameService */ 18);
+	
+	ShareGameService = (function() {
+	  function ShareGameService() {}
+	
+	  ShareGameService.setMessage = function() {
+	    return TwitterGameService.setTweet();
+	  };
+	
+	  return ShareGameService;
+	
+	})();
+	
+	module.exports = ShareGameService;
+
+
+/***/ },
+/* 18 */
+/*!************************************************!*\
+  !*** ./app/services/TwitterGameService.coffee ***!
+  \************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var $, TwitterGameService;
+	
+	$ = __webpack_require__(/*! jquery */ 2);
+	
+	TwitterGameService = (function() {
+	  function TwitterGameService() {}
+	
+	  TwitterGameService.setTweet = function() {
+	    var possible, text;
+	    possible = ['Play MathSwipe with me! Try to beat my score at', 'Play MathSwipe with me! Try to solve my board at', 'Play MathSwipe with me! Solve my puzzle at'];
+	    text = possible[Math.floor(Math.random() * 3)];
+	    return $('#tweet').attr('data-text', text);
+	  };
+	
+	  return TwitterGameService;
+	
+	})();
+	
+	module.exports = TwitterGameService;
+
+
+/***/ },
+/* 19 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -10421,7 +10477,7 @@
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /*!***********************************!*\
   !*** ./app/services/Title.coffee ***!
   \***********************************/
@@ -10448,7 +10504,7 @@
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -10667,7 +10723,7 @@
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -10677,7 +10733,7 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 21);
+	Colors = __webpack_require__(/*! ./Colors */ 23);
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
@@ -10875,7 +10931,7 @@
 
 
 /***/ },
-/* 21 */
+/* 23 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
@@ -10898,7 +10954,7 @@
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
@@ -10953,7 +11009,7 @@
 
 
 /***/ },
-/* 23 */
+/* 25 */
 /*!***********************************************!*\
   !*** ./tests/controllers/GeneralTests.coffee ***!
   \***********************************************/
@@ -11052,7 +11108,7 @@
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /*!*******************************!*\
   !*** ./~/two.js/build/two.js ***!
   \*******************************/
