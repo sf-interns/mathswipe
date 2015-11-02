@@ -31,7 +31,7 @@ body {
     text-align: center;
     font-size: 30px; }
   .center-column .game-desc-hr {
-    margin: 40px 0px 20px 0px; }
+    margin: 10px 0px 20px 0px; }
   .center-column #how-to-play {
     margin: 10px auto 10px auto;
     width: 95%;
@@ -63,15 +63,16 @@ body {
   text-align: center;
   margin: 10px 0px 20px 0px; }
   .game-button-wrapper .game-btn {
-    height: auto;
+    height: 40px;
+    word-wrap: break-word;
     display: inline-block;
     width: 40%;
-    margin: 0px 10px;
+    margin: 0 0 10px;
     background-color: Transparent;
     border-style: solid;
     border-color: #a7acb0;
     border-radius: 10px; }
-    .game-button-wrapper .game-btn p {
+    .game-button-wrapper .game-btn .button-text {
       font-size: 30px;
       color: #D1857F;
       margin: 0px 0px 5px 0px; }
