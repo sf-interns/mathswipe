@@ -1,12 +1,8 @@
-$ = require 'jquery'
+TwitterGameService = require './TwitterGameService'
 
 class ShareGameService
 
   @setMessage: ->
-    possible = ['Play MathSwipe with me! Try to beat my score at',
-                'Play MathSwipe with me! Try to solve my board at',
-                'Play MathSwipe with me! Solve my puzzle at']
-    text = possible[Math.floor(Math.random() * 3)]
-    $( '#tweet' ).attr( 'data-text' , text )
+    TwitterGameService.setTweet()
 
 module.exports = ShareGameService
