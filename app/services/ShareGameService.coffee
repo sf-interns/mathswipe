@@ -4,7 +4,6 @@ class ShareGameService
 
   @reloadPageWithHash: (board, solutionPlacements, SolutionService) ->
     unless @checkSolutionPlacements board, solutionPlacements, SolutionService
-      console.log "bad solution placements, resetting hash"
       window.location.hash = ''
       return false
     hash = @encode board.initialValues, board.goals, solutionPlacements
@@ -31,7 +30,6 @@ class ShareGameService
 
   @parse: (decoded) ->
     return [[],[],[]] unless @successfulDecode decoded
-    console.log "Successful decode!"
     length = Math.sqrt decoded.b.length
     b = @decodeBoardValues decoded.b, length
     g = @decodeGoals decoded.g
@@ -63,9 +61,7 @@ class ShareGameService
       boardValues.push row
     boardValues
 
-  @decodeGoals: (toCopy) ->
-    console.log "goals", toCopy
-    toCopy[..]
+  @decodeGoals: (toCopy) -> toCopy[..]
 
   @decodeSolutionPlacements: (copy, length, solutionPlacements=[]) ->
     for list in [0...copy.length]

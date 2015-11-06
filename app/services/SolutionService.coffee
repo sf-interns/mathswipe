@@ -3,8 +3,7 @@ InputSolver = require './InputSolver'
 class SolutionService
 
   constructor: (@board, goals, @RunningSum) ->
-    @goals = []
-    @goals.push g for g in goals
+    @goals = goals[..]
 
   initialize: (clickedCells) ->
     @setSolutionString clickedCells
@@ -12,6 +11,7 @@ class SolutionService
 
   isSolution: ->
     return false unless @solution? and @finished and @value in @goals
+
     if @isCompleteExpression()
       @valueIndex = @goals.indexOf @value
       @goals[@valueIndex] = ' '
@@ -20,9 +20,7 @@ class SolutionService
       @RunningSum.display @RunningSum.solutionOperatorString
       false
 
-  finished: ->
-    @solution[@solution.length - 1] not in "+-*" and
-      @solution[0] not in "+-*"
+  finished: -> @solution[@solution.length - 1] not in "+-*"
 
   isCompleteExpression: -> @solution.search(/-?\d+[-+\*]\d+/g) is 0
 

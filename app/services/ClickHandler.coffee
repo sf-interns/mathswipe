@@ -9,8 +9,7 @@ class ClickHandler
     @clicked = []
     @mouseDown = false
 
-  setMouseAsDown: ->
-    @mouseDown = true
+  setMouseAsDown: -> @mouseDown = true
 
   setMouseAsUp: ->
     unless @isMobile
@@ -23,19 +22,16 @@ class ClickHandler
         @RunningSum.display @RunningSum.tilesEmptyString
     @mouseDown = false
 
-  isMouseDown: ->
-    @mouseDown
+  isMouseDown: -> @mouseDown
 
-  isOnMobile: ->
-    @isMobile
+  isOnMobile: -> @isMobile
 
   bindDefaultMouseEvents: ->
     body = $('body')
     body.click (e) =>
       e.preventDefault()
       @unselectAll()
-    body.mousedown (e) =>
-      e.preventDefault()
+    body.mousedown (e) => e.preventDefault()
     body.mouseup (e) =>
       e.preventDefault()
       @unselectAll() unless @isMobile
