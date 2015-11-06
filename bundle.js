@@ -9351,25 +9351,23 @@
 	      TrackingService.desktopView();
 	      this.cursorToPointer();
 	    }
-	    this.initialize(window.location.hash);
+	    ShareGameService.setMessage();
+	    this.initialize(window.location.hash, 3);
 	  }
 	
-	  MathSwipeController.prototype.initialize = function(hash) {
-	    var boardValues, goals, hasCompleteBoard, inputLengths, inputs, length, solutionPlacements;
-	    solutionPlacements = [];
-	    goals = [];
-	    boardValues = [];
-	    hasCompleteBoard = false;
-	    if ((hash != null) && hash !== '') {
-	      hasCompleteBoard = ShareGameService.decode(boardValues, goals, solutionPlacements);
-	    }
-	    if (!hasCompleteBoard) {
+	  MathSwipeController.prototype.initialize = function(hash, length) {
+	    var boardValues, decoded, goals, inputLengths, inputs, ref, ref1, solutionPlacements;
+	    if (length == null) {
 	      length = 3;
-	      goals = [];
-	      solutionPlacements = [];
-	      inputs = [];
+	    }
+	    solutionPlacements = goals = boardValues = inputs = inputLengths = [];
+	    decoded = ShareGameService.decodeMap();
+	    console.log(decoded);
+	    ref = ShareGameService.parse(decoded), boardValues = ref[0], goals = ref[1], solutionPlacements = ref[2];
+	    if (boardValues.length < 1) {
+	      console.log("Unsuccessful decode!");
 	      inputLengths = RandomizedFitLength.generate(length * length);
-	      this.generateInputs(inputLengths, inputs, goals);
+	      ref1 = this.generateInputs(inputLengths), inputs = ref1[0], goals = ref1[1];
 	      boardValues = this.generateBoard(inputs, length, solutionPlacements);
 	    }
 	    this.goalContainer = new GoalContainer(goals, Colors);
@@ -9460,9 +9458,14 @@
 	    return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator, solutionPlacements);
 	  };
 	
-	  MathSwipeController.prototype.generateInputs = function(inputLengths, inputs, goals) {
-	    var expression, i, inputSize, len, results, value;
-	    results = [];
+	  MathSwipeController.prototype.generateInputs = function(inputLengths, goals, inputs) {
+	    var expression, i, inputSize, len, value;
+	    if (goals == null) {
+	      goals = [];
+	    }
+	    if (inputs == null) {
+	      inputs = [];
+	    }
 	    for (i = 0, len = inputLengths.length; i < len; i++) {
 	      inputSize = inputLengths[i];
 	      value = -1;
@@ -9471,9 +9474,9 @@
 	        value = InputSolver.compute(expression);
 	      }
 	      goals.push(InputSolver.compute(expression));
-	      results.push(inputs.push(expression.split('')));
+	      inputs.push(expression.split(''));
 	    }
-	    return results;
+	    return [inputs, goals];
 	  };
 	
 	  MathSwipeController.prototype.randExpression = function(length) {
@@ -10393,6 +10396,7 @@
 	  ShareGameService.reloadPageWithHash = function(board, solutionPlacements, SolutionService) {
 	    var hash;
 	    if (!this.checkSolutionPlacements(board, solutionPlacements, SolutionService)) {
+	      console.log("bad solution placements, resetting hash");
 	      window.location.hash = '';
 	      return false;
 	    }
@@ -10416,26 +10420,36 @@
 	    }));
 	  };
 	
-	  ShareGameService.decode = function(boardValues, goals, solutionPlacements) {
-	    var decoded, e, length;
+	  ShareGameService.decodeMap = function() {
+	    var decoded, decoded_s, e;
 	    try {
-	      decoded = atob(window.location.hash.substr(1, window.location.hash.length));
-	      decoded = JSON.parse(decoded);
+	      decoded_s = atob(window.location.hash.substr(1, window.location.hash.length));
+	      decoded = JSON.parse(decoded_s);
 	    } catch (_error) {
 	      e = _error;
 	      decoded = null;
 	    }
-	    if (!((decoded != null) && (decoded.b != null) && (decoded.g != null) && (decoded.p != null) && this.isValidDecode(decoded))) {
-	      return false;
-	    }
-	    length = Math.sqrt(decoded.b.length);
-	    this.decodeBoardValues(decoded.b, boardValues, length);
-	    this.decodeGoals(decoded.g, goals);
-	    this.decodeSolutionPlacements(decoded.p, solutionPlacements, length);
-	    return true;
+	    return decoded;
 	  };
 	
-	  ShareGameService.isValidDecode = function(decoded) {
+	  ShareGameService.parse = function(decoded) {
+	    var b, g, length, p;
+	    if (!this.successfulDecode(decoded)) {
+	      return [[], [], []];
+	    }
+	    console.log("Successful decode!");
+	    length = Math.sqrt(decoded.b.length);
+	    b = this.decodeBoardValues(decoded.b, length);
+	    g = this.decodeGoals(decoded.g);
+	    p = this.decodeSolutionPlacements(decoded.p, length);
+	    return [b, g, p];
+	  };
+	
+	  ShareGameService.successfulDecode = function(decoded) {
+	    return (decoded != null) && (decoded.p != null) && (decoded.g != null) && (decoded.p != null) && this.regexPass(decoded);
+	  };
+	
+	  ShareGameService.regexPass = function(decoded) {
 	    var alphabet, char, k, len;
 	    alphabet = ['"', '{', '}', '[', ']', ',', ':', 'b', 'g', 'p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*'];
 	    for (k = 0, len = decoded.length; k < len; k++) {
@@ -10447,41 +10461,40 @@
 	    return true;
 	  };
 	
-	  ShareGameService.decodeBoardValues = function(copy, boardValues, length) {
-	    var i, index, j, k, l, ref, ref1, results, row;
+	  ShareGameService.decodeBoardValues = function(copy, length, boardValues) {
+	    var i, index, j, k, l, ref, ref1, row;
+	    if (boardValues == null) {
+	      boardValues = [];
+	    }
 	    index = 0;
-	    results = [];
 	    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
 	      row = [];
 	      for (j = l = 0, ref1 = length; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
 	        row.push(copy[index++]);
 	      }
-	      results.push(boardValues.push(row));
+	      boardValues.push(row);
 	    }
-	    return results;
+	    return boardValues;
 	  };
 	
-	  ShareGameService.decodeGoals = function(copy, goals) {
-	    var goal, k, len, results;
-	    results = [];
-	    for (k = 0, len = copy.length; k < len; k++) {
-	      goal = copy[k];
-	      results.push(goals.push(goal));
-	    }
-	    return results;
+	  ShareGameService.decodeGoals = function(toCopy) {
+	    console.log("goals", toCopy);
+	    return toCopy.slice(0);
 	  };
 	
-	  ShareGameService.decodeSolutionPlacements = function(copy, solutionPlacements, length) {
-	    var coord, expression, k, l, list, ref, ref1, results;
-	    results = [];
+	  ShareGameService.decodeSolutionPlacements = function(copy, length, solutionPlacements) {
+	    var coord, expression, k, l, list, ref, ref1;
+	    if (solutionPlacements == null) {
+	      solutionPlacements = [];
+	    }
 	    for (list = k = 0, ref = copy.length; 0 <= ref ? k < ref : k > ref; list = 0 <= ref ? ++k : --k) {
 	      expression = [];
 	      for (coord = l = 0, ref1 = copy[list].length; 0 <= ref1 ? l < ref1 : l > ref1; coord = 0 <= ref1 ? ++l : --l) {
 	        expression.push([Math.floor(copy[list][coord] / length), copy[list][coord] % length]);
 	      }
-	      results.push(solutionPlacements.push(expression));
+	      solutionPlacements.push(expression);
 	    }
-	    return results;
+	    return solutionPlacements;
 	  };
 	
 	  ShareGameService.checkSolutionPlacements = function(board, solutionPlacements, SolutionService) {
@@ -10579,6 +10592,15 @@
 	    temp = this.tempBoard.boardValues[r1][c1];
 	    this.tempBoard.boardValues[r1][c1] = this.tempBoard.boardValues[r2][c2];
 	    return this.tempBoard.boardValues[r2][c2] = temp;
+	  };
+	
+	  ShareGameService.setMessage = function() {
+	    var possible, text;
+	    possible = ['Play MathSwipe with me! Try to beat my score at', 'Play MathSwipe with me! Try to solve my board at', 'Play MathSwipe with me! Solve my puzzle at'];
+	    text = possible[Math.floor(Math.random() * 3)];
+	    $('#tweet').attr('data-text', text);
+	    console.log($('#fb-share'));
+	    return $('#fb-share').attr('data-href', window.location.hash);
 	  };
 	
 	  return ShareGameService;

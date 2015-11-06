@@ -33,26 +33,25 @@ class MathSwipeController
       TrackingService.desktopView()
       @cursorToPointer()
     ShareGameService.setMessage()
-    @initialize window.location.hash
+    @initialize window.location.hash, 3
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
 
-  initialize: (hash) ->
+  initialize: (hash, length = 3) ->
     solutionPlacements = []
-    goals = []
+    inputLengths = []
     boardValues = []
-    hasCompleteBoard = false
-    if hash? and hash isnt ''
-      hasCompleteBoard = ShareGameService.decode boardValues, goals, solutionPlacements
-    unless hasCompleteBoard
-      length = 3
-      goals = []
-      solutionPlacements = []
-      inputs = []
-      inputLengths = RandomizedFitLength.generate length * length
-      @generateInputs inputLengths, inputs, goals
-      boardValues = @generateBoard inputs, length, solutionPlacements
+    inputs = []
+    goals = []
+
+    decoded = ShareGameService.decodeMap()
+    [boardValues, goals, solutionPlacements] = ShareGameService.parse decoded
+
+    if @malformedDecode boardValues, goals, solutionPlacements
+      inputLengths    = RandomizedFitLength.generate length ** 2
+      [inputs, goals] = @generateInputs inputLengths
+      boardValues     = @generateBoard inputs, length, solutionPlacements
 
     @goalContainer = new GoalContainer goals, Colors
     @board = new Board  boardValues, @gameScene, goals, @symbols,
@@ -62,8 +61,9 @@ class MathSwipeController
 
     ResetButton.bindClick @board, RunningSum
     RunningSum.empty()
+
     @createNewGame() unless ShareGameService.reloadPageWithHash(@board,
-                                    solutionPlacements, SolutionService)
+                                            solutionPlacements, SolutionService)
 
   isMobile: () ->
     Android: () ->
@@ -124,14 +124,18 @@ class MathSwipeController
   generateBoard: (inputs, length, solutionPlacements) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator, solutionPlacements
 
-  generateInputs: (inputLengths, inputs, goals) ->
+  generateInputs: (inputLengths, goals = [], inputs = []) ->
     for inputSize in inputLengths
       value = -1
       while value < 1 or value > 300
         expression = ExpressionGenerator.generate inputSize
         value = InputSolver.compute expression
       goals.push (InputSolver.compute expression)
-      inputs.push expression.split('')
+      inputs.push (expression.split(''))
+    [inputs, goals]
+
+  malformedDecode: (boardValues, goals, solutionPlacements) ->
+    boardValues.length < 1 or goals.length < 1 or solutionPlacements.length < 1
 
   randExpression: (length) ->
     ExpressionGenerator.generate length

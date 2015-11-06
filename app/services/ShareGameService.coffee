@@ -4,6 +4,7 @@ class ShareGameService
 
   @reloadPageWithHash: (board, solutionPlacements, SolutionService) ->
     unless @checkSolutionPlacements board, solutionPlacements, SolutionService
+      console.log "bad solution placements, resetting hash"
       window.location.hash = ''
       return false
     hash = @encode board.initialValues, board.goals, solutionPlacements
@@ -20,22 +21,31 @@ class ShareGameService
 
     btoa(JSON.stringify {b: boardValues, g: goals, p: solutionPlacements})
 
-  @decode: (boardValues, goals, solutionPlacements) ->
+  @decodeMap: () ->
     try
-      decoded = atob window.location.hash.substr(1, window.location.hash.length)
-      decoded = JSON.parse decoded
+      decoded_s  = atob window.location.hash.substr(1, window.location.hash.length)
+      decoded = JSON.parse decoded_s
     catch e
       decoded = null
-    return false unless decoded? and decoded.b? and decoded.g? and
-                        decoded.p? and @isValidDecode decoded
+    return decoded
 
+  @parse: (decoded) ->
+    return [[],[],[]] unless @successfulDecode decoded
+    console.log "Successful decode!"
     length = Math.sqrt decoded.b.length
-    @decodeBoardValues decoded.b, boardValues, length
-    @decodeGoals decoded.g, goals
-    @decodeSolutionPlacements decoded.p, solutionPlacements, length
-    true
+    b = @decodeBoardValues decoded.b, length
+    g = @decodeGoals decoded.g
+    p = @decodeSolutionPlacements decoded.p, length
+    [b, g, p]
 
-  @isValidDecode: (decoded) ->
+  @successfulDecode: (decoded)->
+    return decoded? and
+           decoded.p? and
+           decoded.g? and
+           decoded.p? and
+           @regexPass decoded
+
+  @regexPass: (decoded) ->
     alphabet = ['"', '{', '}', '[', ']', ',', ':',
                 'b', 'g', 'p', '1', '2', '3', '4',
                 '5', '6', '7', '8', '9', '0',
@@ -44,24 +54,27 @@ class ShareGameService
       return false if alphabet.indexOf(char) is -1
     true
 
-  @decodeBoardValues: (copy, boardValues, length) ->
+  @decodeBoardValues: (copy, length, boardValues=[] ) ->
     index = 0
     for i in [0...length]
       row = []
       for j in [0...length]
         row.push copy[index++]
       boardValues.push row
+    boardValues
 
-  @decodeGoals: (copy, goals) ->
-    goals.push goal for goal in copy
+  @decodeGoals: (toCopy) ->
+    console.log "goals", toCopy
+    toCopy[..]
 
-  @decodeSolutionPlacements: (copy, solutionPlacements, length) ->
+  @decodeSolutionPlacements: (copy, length, solutionPlacements=[]) ->
     for list in [0...copy.length]
       expression = []
       for coord in [0...copy[list].length]
         expression.push [(Math.floor copy[list][coord] / length),
                          (copy[list][coord] % length)]
       solutionPlacements.push expression
+    solutionPlacements
 
   @checkSolutionPlacements: (board, solutionPlacements, SolutionService) ->
     @initializeTempBoard board
@@ -81,8 +94,7 @@ class ShareGameService
         @tempBoard.boardValues[cell.row][cell.col] = ' '
       @pushDownTempBoard()
 
-      unless @solutionService.isSolution()
-        return false
+      return false unless @solutionService.isSolution()
       inputs.push solution
 
     console.log expression for expression in inputs
@@ -119,6 +131,5 @@ class ShareGameService
     $( '#tweet' ).attr( 'data-text' , text )
     console.log $('#fb-share')
     $( '#fb-share' ).attr( 'data-href' , window.location.hash )
-
 
 module.exports = ShareGameService
