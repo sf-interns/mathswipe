@@ -65,7 +65,7 @@
 	
 	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
 	
-	Two = __webpack_require__(/*! two.js */ 25);
+	Two = __webpack_require__(/*! two.js */ 26);
 	
 	game = new MathSwipeController;
 
@@ -9296,7 +9296,7 @@
   \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, ShareGameService, SolutionService, Title, TrackingService;
+	var $, AdjacentCellsCalculator, Board, BoardSolvedService, Cell, ClickHandler, Colors, DFS, ExpressionGenerator, GeneralTests, GoalContainer, HashingService, HowToPlay, InputSolver, MathSwipeController, RandomizedFitLength, ResetButton, RunningSum, ShareGameService, SolutionService, Title, TrackingService;
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
@@ -9310,33 +9310,35 @@
 	
 	ExpressionGenerator = __webpack_require__(/*! ../services/ExpressionGenerator */ 11);
 	
-	HowToPlay = __webpack_require__(/*! ../services/HowToPlay */ 12);
+	HashingService = __webpack_require__(/*! ../services/HashingService */ 12);
 	
-	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 13);
+	HowToPlay = __webpack_require__(/*! ../services/HowToPlay */ 13);
 	
-	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 14);
+	InputSolver = __webpack_require__(/*! ../services/InputSolver */ 14);
 	
-	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 15);
+	RandomizedFitLength = __webpack_require__(/*! ../services/RandomizedFitLength */ 15);
 	
-	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 16);
+	ResetButton = __webpack_require__(/*! ../services/ResetButton */ 16);
 	
-	ShareGameService = __webpack_require__(/*! ../services/ShareGameService */ 17);
+	RunningSum = __webpack_require__(/*! ../services/RunningSum */ 17);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 18);
+	ShareGameService = __webpack_require__(/*! ../services/ShareGameService */ 18);
 	
-	Title = __webpack_require__(/*! ../services/Title */ 19);
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 19);
+	
+	Title = __webpack_require__(/*! ../services/Title */ 20);
 	
 	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 20);
+	Board = __webpack_require__(/*! ../views/Board */ 21);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 21);
+	Cell = __webpack_require__(/*! ../views/Cell */ 22);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 22);
+	Colors = __webpack_require__(/*! ../views/Colors */ 23);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 23);
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 24);
 	
-	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 24);
+	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 25);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
@@ -9360,13 +9362,15 @@
 	    if (length == null) {
 	      length = 3;
 	    }
-	    solutionPlacements = goals = boardValues = inputs = inputLengths = [];
-	    decoded = ShareGameService.decodeMap();
-	    console.log(decoded);
-	    ref = ShareGameService.parse(decoded), boardValues = ref[0], goals = ref[1], solutionPlacements = ref[2];
-	    if (boardValues.length < 1) {
-	      console.log("Unsuccessful decode!");
-	      inputLengths = RandomizedFitLength.generate(length * length);
+	    solutionPlacements = [];
+	    inputLengths = [];
+	    boardValues = [];
+	    inputs = [];
+	    goals = [];
+	    decoded = HashingService.decodeMap();
+	    ref = HashingService.parse(decoded), boardValues = ref[0], goals = ref[1], solutionPlacements = ref[2];
+	    if (this.malformedDecode(boardValues, goals, solutionPlacements)) {
+	      inputLengths = RandomizedFitLength.generate(Math.pow(length, 2));
 	      ref1 = this.generateInputs(inputLengths), inputs = ref1[0], goals = ref1[1];
 	      boardValues = this.generateBoard(inputs, length, solutionPlacements);
 	    }
@@ -9374,7 +9378,7 @@
 	    this.board = new Board(boardValues, this.gameScene, goals, this.symbols, this.goalContainer, this.isMobile().any() != null, Cell, Colors, ClickHandler, SolutionService, BoardSolvedService, RunningSum);
 	    ResetButton.bindClick(this.board, RunningSum);
 	    RunningSum.empty();
-	    if (!ShareGameService.reloadPageWithHash(this.board, solutionPlacements, SolutionService)) {
+	    if (!HashingService.reloadPageWithHash(this.board, solutionPlacements, SolutionService)) {
 	      return this.createNewGame();
 	    }
 	  };
@@ -9477,6 +9481,10 @@
 	      inputs.push(expression.split(''));
 	    }
 	    return [inputs, goals];
+	  };
+	
+	  MathSwipeController.prototype.malformedDecode = function(boardValues, goals, solutionPlacements) {
+	    return boardValues.length < 1 || goals.length < 1 || solutionPlacements.length < 1;
 	  };
 	
 	  MathSwipeController.prototype.randExpression = function(length) {
@@ -10123,6 +10131,230 @@
 
 /***/ },
 /* 12 */
+/*!********************************************!*\
+  !*** ./app/services/HashingService.coffee ***!
+  \********************************************/
+/***/ function(module, exports) {
+
+	var HashingService,
+	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+	
+	HashingService = (function() {
+	  function HashingService() {}
+	
+	  HashingService.reloadPageWithHash = function(board, solutionPlacements, SolutionService) {
+	    if (!this.checkSolutionPlacements(board, solutionPlacements, SolutionService)) {
+	      this.emptyHash();
+	      return false;
+	    }
+	    return HashingService.setHash(board.initialValues, board.goals, solutionPlacements);
+	  };
+	
+	  HashingService.emptyHash = function() {
+	    return window.location.hash = '';
+	  };
+	
+	  HashingService.setHash = function(boardValues, goals, solutionPlacements) {
+	    return window.location.hash = this.encode(boardValues, goals, solutionPlacements);
+	  };
+	
+	  HashingService.encode = function(boardValues, goals, solutionPlacements) {
+	    var k, l, length, list, pos, ref, ref1;
+	    boardValues = (JSON.stringify(boardValues)).replace(/(\[|\]|"|,|{|})*/g, '');
+	    length = Math.sqrt(boardValues.length);
+	    for (list = k = 0, ref = solutionPlacements.length; 0 <= ref ? k < ref : k > ref; list = 0 <= ref ? ++k : --k) {
+	      for (pos = l = 0, ref1 = solutionPlacements[list].length; 0 <= ref1 ? l < ref1 : l > ref1; pos = 0 <= ref1 ? ++l : --l) {
+	        solutionPlacements[list][pos] = solutionPlacements[list][pos][0] * length + solutionPlacements[list][pos][1];
+	      }
+	    }
+	    return btoa(JSON.stringify({
+	      b: boardValues,
+	      g: goals,
+	      p: solutionPlacements
+	    }));
+	  };
+	
+	  HashingService.decodeMap = function() {
+	    var decoded, decoded_s, e;
+	    try {
+	      decoded_s = atob(window.location.hash.substr(1, window.location.hash.length));
+	      decoded = JSON.parse(decoded_s);
+	    } catch (_error) {
+	      e = _error;
+	      decoded = null;
+	    }
+	    return decoded;
+	  };
+	
+	  HashingService.parse = function(decoded) {
+	    var b, g, length, p;
+	    if (!this.successfulDecode(decoded)) {
+	      return [[], [], []];
+	    }
+	    length = Math.sqrt(decoded.b.length);
+	    b = this.decodeBoardValues(decoded.b, length);
+	    g = this.decodeGoals(decoded.g);
+	    p = this.decodeSolutionPlacements(decoded.p, length);
+	    return [b, g, p];
+	  };
+	
+	  HashingService.successfulDecode = function(decoded) {
+	    return (decoded != null) && (decoded.p != null) && (decoded.g != null) && (decoded.p != null) && this.regexPass(decoded);
+	  };
+	
+	  HashingService.regexPass = function(decoded) {
+	    var alphabet, char, k, len;
+	    alphabet = ['"', '{', '}', '[', ']', ',', ':', 'b', 'g', 'p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*'];
+	    for (k = 0, len = decoded.length; k < len; k++) {
+	      char = decoded[k];
+	      if (indexOf.call(alphabet, char) < 0) {
+	        return false;
+	      }
+	    }
+	    return true;
+	  };
+	
+	  HashingService.decodeBoardValues = function(copy, length, boardValues) {
+	    var i, index, j, k, l, ref, ref1, row;
+	    if (boardValues == null) {
+	      boardValues = [];
+	    }
+	    index = 0;
+	    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
+	      row = [];
+	      for (j = l = 0, ref1 = length; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
+	        row.push(copy[index++]);
+	      }
+	      boardValues.push(row);
+	    }
+	    return boardValues;
+	  };
+	
+	  HashingService.decodeGoals = function(toCopy) {
+	    return toCopy.slice(0);
+	  };
+	
+	  HashingService.decodeSolutionPlacements = function(copy, length, solutionPlacements) {
+	    var coord, expression, k, l, list, ref, ref1;
+	    if (solutionPlacements == null) {
+	      solutionPlacements = [];
+	    }
+	    for (list = k = 0, ref = copy.length; 0 <= ref ? k < ref : k > ref; list = 0 <= ref ? ++k : --k) {
+	      expression = [];
+	      for (coord = l = 0, ref1 = copy[list].length; 0 <= ref1 ? l < ref1 : l > ref1; coord = 0 <= ref1 ? ++l : --l) {
+	        expression.push([Math.floor(copy[list][coord] / length), copy[list][coord] % length]);
+	      }
+	      solutionPlacements.push(expression);
+	    }
+	    return solutionPlacements;
+	  };
+	
+	  HashingService.checkSolutionPlacements = function(board, solutionPlacements, SolutionService) {
+	    var cell, clickedCells, expression, index, inputs, k, l, len, len1, len2, m, n, ref, solution;
+	    this.initializeTempBoard(board);
+	    this.solutionService = new SolutionService(this.tempBoard, board.goals);
+	    inputs = [];
+	    for (k = 0, len = solutionPlacements.length; k < len; k++) {
+	      expression = solutionPlacements[k];
+	      clickedCells = [];
+	      for (index = l = 0, ref = expression.length; 0 <= ref ? l < ref : l > ref; index = 0 <= ref ? ++l : --l) {
+	        cell = expression[index];
+	        clickedCells.push({
+	          row: cell[0],
+	          col: cell[1]
+	        });
+	      }
+	      this.solutionService.initialize(clickedCells);
+	      solution = [];
+	      for (m = 0, len1 = clickedCells.length; m < len1; m++) {
+	        cell = clickedCells[m];
+	        solution.push(this.tempBoard.boardValues[cell.row][cell.col]);
+	        this.tempBoard.boardValues[cell.row][cell.col] = ' ';
+	      }
+	      this.pushDownTempBoard();
+	      if (!this.solutionService.isSolution()) {
+	        return false;
+	      }
+	      inputs.push(solution);
+	    }
+	    for (n = 0, len2 = inputs.length; n < len2; n++) {
+	      expression = inputs[n];
+	      console.log(expression);
+	    }
+	    console.log('\n');
+	    return true;
+	  };
+	
+	  HashingService.initializeTempBoard = function(board) {
+	    var col, i, k, len, ref, results, row;
+	    this.tempBoard = {};
+	    this.tempBoard.boardValues = [];
+	    ref = board.initialValues;
+	    results = [];
+	    for (i = k = 0, len = ref.length; k < len; i = ++k) {
+	      row = ref[i];
+	      this.tempBoard.boardValues.push([]);
+	      results.push((function() {
+	        var l, len1, results1;
+	        results1 = [];
+	        for (l = 0, len1 = row.length; l < len1; l++) {
+	          col = row[l];
+	          results1.push(this.tempBoard.boardValues[i].push(col));
+	        }
+	        return results1;
+	      }).call(this));
+	    }
+	    return results;
+	  };
+	
+	  HashingService.pushDownTempBoard = function() {
+	    var col, k, ref, results, row, up;
+	    results = [];
+	    for (row = k = ref = this.tempBoard.boardValues.length - 1; ref <= 1 ? k <= 1 : k >= 1; row = ref <= 1 ? ++k : --k) {
+	      results.push((function() {
+	        var l, ref1, results1;
+	        results1 = [];
+	        for (col = l = ref1 = this.tempBoard.boardValues.length - 1; ref1 <= 0 ? l <= 0 : l >= 0; col = ref1 <= 0 ? ++l : --l) {
+	          if (this.tempBoard.boardValues[row][col] === ' ') {
+	            results1.push((function() {
+	              var m, ref2, results2;
+	              results2 = [];
+	              for (up = m = ref2 = row - 1; ref2 <= 0 ? m <= 0 : m >= 0; up = ref2 <= 0 ? ++m : --m) {
+	                if (this.tempBoard.boardValues[up][col] !== ' ') {
+	                  this.swapCells(row, col, up, col);
+	                  break;
+	                } else {
+	                  results2.push(void 0);
+	                }
+	              }
+	              return results2;
+	            }).call(this));
+	          } else {
+	            results1.push(void 0);
+	          }
+	        }
+	        return results1;
+	      }).call(this));
+	    }
+	    return results;
+	  };
+	
+	  HashingService.swapCells = function(r1, c1, r2, c2) {
+	    var temp;
+	    temp = this.tempBoard.boardValues[r1][c1];
+	    this.tempBoard.boardValues[r1][c1] = this.tempBoard.boardValues[r2][c2];
+	    return this.tempBoard.boardValues[r2][c2] = temp;
+	  };
+	
+	  return HashingService;
+	
+	})();
+	
+	module.exports = HashingService;
+
+
+/***/ },
+/* 13 */
 /*!***************************************!*\
   !*** ./app/services/HowToPlay.coffee ***!
   \***************************************/
@@ -10158,7 +10390,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /*!*****************************************!*\
   !*** ./app/services/InputSolver.coffee ***!
   \*****************************************/
@@ -10222,7 +10454,7 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /*!*************************************************!*\
   !*** ./app/services/RandomizedFitLength.coffee ***!
   \*************************************************/
@@ -10262,7 +10494,7 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /*!*****************************************!*\
   !*** ./app/services/ResetButton.coffee ***!
   \*****************************************/
@@ -10296,7 +10528,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /*!****************************************!*\
   !*** ./app/services/RunningSum.coffee ***!
   \****************************************/
@@ -10380,7 +10612,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /*!**********************************************!*\
   !*** ./app/services/ShareGameService.coffee ***!
   \**********************************************/
@@ -10392,207 +10624,6 @@
 	
 	ShareGameService = (function() {
 	  function ShareGameService() {}
-	
-	  ShareGameService.reloadPageWithHash = function(board, solutionPlacements, SolutionService) {
-	    var hash;
-	    if (!this.checkSolutionPlacements(board, solutionPlacements, SolutionService)) {
-	      console.log("bad solution placements, resetting hash");
-	      window.location.hash = '';
-	      return false;
-	    }
-	    hash = this.encode(board.initialValues, board.goals, solutionPlacements);
-	    return window.location.hash = hash;
-	  };
-	
-	  ShareGameService.encode = function(boardValues, goals, solutionPlacements) {
-	    var k, l, length, list, pos, ref, ref1;
-	    boardValues = (JSON.stringify(boardValues)).replace(/(\[|\]|"|,|{|})*/g, '');
-	    length = Math.sqrt(boardValues.length);
-	    for (list = k = 0, ref = solutionPlacements.length; 0 <= ref ? k < ref : k > ref; list = 0 <= ref ? ++k : --k) {
-	      for (pos = l = 0, ref1 = solutionPlacements[list].length; 0 <= ref1 ? l < ref1 : l > ref1; pos = 0 <= ref1 ? ++l : --l) {
-	        solutionPlacements[list][pos] = solutionPlacements[list][pos][0] * length + solutionPlacements[list][pos][1];
-	      }
-	    }
-	    return btoa(JSON.stringify({
-	      b: boardValues,
-	      g: goals,
-	      p: solutionPlacements
-	    }));
-	  };
-	
-	  ShareGameService.decodeMap = function() {
-	    var decoded, decoded_s, e;
-	    try {
-	      decoded_s = atob(window.location.hash.substr(1, window.location.hash.length));
-	      decoded = JSON.parse(decoded_s);
-	    } catch (_error) {
-	      e = _error;
-	      decoded = null;
-	    }
-	    return decoded;
-	  };
-	
-	  ShareGameService.parse = function(decoded) {
-	    var b, g, length, p;
-	    if (!this.successfulDecode(decoded)) {
-	      return [[], [], []];
-	    }
-	    console.log("Successful decode!");
-	    length = Math.sqrt(decoded.b.length);
-	    b = this.decodeBoardValues(decoded.b, length);
-	    g = this.decodeGoals(decoded.g);
-	    p = this.decodeSolutionPlacements(decoded.p, length);
-	    return [b, g, p];
-	  };
-	
-	  ShareGameService.successfulDecode = function(decoded) {
-	    return (decoded != null) && (decoded.p != null) && (decoded.g != null) && (decoded.p != null) && this.regexPass(decoded);
-	  };
-	
-	  ShareGameService.regexPass = function(decoded) {
-	    var alphabet, char, k, len;
-	    alphabet = ['"', '{', '}', '[', ']', ',', ':', 'b', 'g', 'p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*'];
-	    for (k = 0, len = decoded.length; k < len; k++) {
-	      char = decoded[k];
-	      if (alphabet.indexOf(char) === -1) {
-	        return false;
-	      }
-	    }
-	    return true;
-	  };
-	
-	  ShareGameService.decodeBoardValues = function(copy, length, boardValues) {
-	    var i, index, j, k, l, ref, ref1, row;
-	    if (boardValues == null) {
-	      boardValues = [];
-	    }
-	    index = 0;
-	    for (i = k = 0, ref = length; 0 <= ref ? k < ref : k > ref; i = 0 <= ref ? ++k : --k) {
-	      row = [];
-	      for (j = l = 0, ref1 = length; 0 <= ref1 ? l < ref1 : l > ref1; j = 0 <= ref1 ? ++l : --l) {
-	        row.push(copy[index++]);
-	      }
-	      boardValues.push(row);
-	    }
-	    return boardValues;
-	  };
-	
-	  ShareGameService.decodeGoals = function(toCopy) {
-	    console.log("goals", toCopy);
-	    return toCopy.slice(0);
-	  };
-	
-	  ShareGameService.decodeSolutionPlacements = function(copy, length, solutionPlacements) {
-	    var coord, expression, k, l, list, ref, ref1;
-	    if (solutionPlacements == null) {
-	      solutionPlacements = [];
-	    }
-	    for (list = k = 0, ref = copy.length; 0 <= ref ? k < ref : k > ref; list = 0 <= ref ? ++k : --k) {
-	      expression = [];
-	      for (coord = l = 0, ref1 = copy[list].length; 0 <= ref1 ? l < ref1 : l > ref1; coord = 0 <= ref1 ? ++l : --l) {
-	        expression.push([Math.floor(copy[list][coord] / length), copy[list][coord] % length]);
-	      }
-	      solutionPlacements.push(expression);
-	    }
-	    return solutionPlacements;
-	  };
-	
-	  ShareGameService.checkSolutionPlacements = function(board, solutionPlacements, SolutionService) {
-	    var cell, clickedCells, expression, index, inputs, k, l, len, len1, len2, m, n, ref, solution;
-	    this.initializeTempBoard(board);
-	    this.solutionService = new SolutionService(this.tempBoard, board.goals);
-	    inputs = [];
-	    for (k = 0, len = solutionPlacements.length; k < len; k++) {
-	      expression = solutionPlacements[k];
-	      clickedCells = [];
-	      for (index = l = 0, ref = expression.length; 0 <= ref ? l < ref : l > ref; index = 0 <= ref ? ++l : --l) {
-	        cell = expression[index];
-	        clickedCells.push({
-	          row: cell[0],
-	          col: cell[1]
-	        });
-	      }
-	      this.solutionService.initialize(clickedCells);
-	      solution = [];
-	      for (m = 0, len1 = clickedCells.length; m < len1; m++) {
-	        cell = clickedCells[m];
-	        solution.push(this.tempBoard.boardValues[cell.row][cell.col]);
-	        this.tempBoard.boardValues[cell.row][cell.col] = ' ';
-	      }
-	      this.pushDownTempBoard();
-	      if (!this.solutionService.isSolution()) {
-	        return false;
-	      }
-	      inputs.push(solution);
-	    }
-	    for (n = 0, len2 = inputs.length; n < len2; n++) {
-	      expression = inputs[n];
-	      console.log(expression);
-	    }
-	    console.log('\n');
-	    return true;
-	  };
-	
-	  ShareGameService.initializeTempBoard = function(board) {
-	    var col, i, k, len, ref, results, row;
-	    this.tempBoard = {};
-	    this.tempBoard.boardValues = [];
-	    ref = board.initialValues;
-	    results = [];
-	    for (i = k = 0, len = ref.length; k < len; i = ++k) {
-	      row = ref[i];
-	      this.tempBoard.boardValues.push([]);
-	      results.push((function() {
-	        var l, len1, results1;
-	        results1 = [];
-	        for (l = 0, len1 = row.length; l < len1; l++) {
-	          col = row[l];
-	          results1.push(this.tempBoard.boardValues[i].push(col));
-	        }
-	        return results1;
-	      }).call(this));
-	    }
-	    return results;
-	  };
-	
-	  ShareGameService.pushDownTempBoard = function() {
-	    var col, k, ref, results, row, up;
-	    results = [];
-	    for (row = k = ref = this.tempBoard.boardValues.length - 1; ref <= 1 ? k <= 1 : k >= 1; row = ref <= 1 ? ++k : --k) {
-	      results.push((function() {
-	        var l, ref1, results1;
-	        results1 = [];
-	        for (col = l = ref1 = this.tempBoard.boardValues.length - 1; ref1 <= 0 ? l <= 0 : l >= 0; col = ref1 <= 0 ? ++l : --l) {
-	          if (this.tempBoard.boardValues[row][col] === ' ') {
-	            results1.push((function() {
-	              var m, ref2, results2;
-	              results2 = [];
-	              for (up = m = ref2 = row - 1; ref2 <= 0 ? m <= 0 : m >= 0; up = ref2 <= 0 ? ++m : --m) {
-	                if (this.tempBoard.boardValues[up][col] !== ' ') {
-	                  this.swapCells(row, col, up, col);
-	                  break;
-	                } else {
-	                  results2.push(void 0);
-	                }
-	              }
-	              return results2;
-	            }).call(this));
-	          } else {
-	            results1.push(void 0);
-	          }
-	        }
-	        return results1;
-	      }).call(this));
-	    }
-	    return results;
-	  };
-	
-	  ShareGameService.swapCells = function(r1, c1, r2, c2) {
-	    var temp;
-	    temp = this.tempBoard.boardValues[r1][c1];
-	    this.tempBoard.boardValues[r1][c1] = this.tempBoard.boardValues[r2][c2];
-	    return this.tempBoard.boardValues[r2][c2] = temp;
-	  };
 	
 	  ShareGameService.setMessage = function() {
 	    var possible, text;
@@ -10611,7 +10642,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -10620,18 +10651,13 @@
 	var InputSolver, SolutionService,
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
-	InputSolver = __webpack_require__(/*! ./InputSolver */ 13);
+	InputSolver = __webpack_require__(/*! ./InputSolver */ 14);
 	
 	SolutionService = (function() {
 	  function SolutionService(board, goals, RunningSum) {
-	    var g, i, len;
 	    this.board = board;
 	    this.RunningSum = RunningSum;
-	    this.goals = [];
-	    for (i = 0, len = goals.length; i < len; i++) {
-	      g = goals[i];
-	      this.goals.push(g);
-	    }
+	    this.goals = goals.slice(0);
 	  }
 	
 	  SolutionService.prototype.initialize = function(clickedCells) {
@@ -10641,22 +10667,22 @@
 	
 	  SolutionService.prototype.isSolution = function() {
 	    var ref;
-	    if (this.solution == null) {
+	    if (!((this.solution != null) && this.finished && (ref = this.value, indexOf.call(this.goals, ref) >= 0))) {
 	      return false;
 	    }
-	    if (this.solution[this.solution.length - 1] === '+' || this.solution[this.solution.length - 1] === '-' || this.solution[this.solution.length - 1] === '*') {
-	      return false;
-	    }
-	    if (ref = this.value, indexOf.call(this.goals, ref) < 0) {
-	      return false;
-	    }
-	    if (!this.isCompleteExpression()) {
+	    if (this.isCompleteExpression()) {
+	      this.valueIndex = this.goals.indexOf(this.value);
+	      this.goals[this.valueIndex] = ' ';
+	      return true;
+	    } else {
 	      this.RunningSum.display(this.RunningSum.solutionOperatorString);
 	      return false;
 	    }
-	    this.valueIndex = this.goals.indexOf(this.value);
-	    this.goals[this.valueIndex] = ' ';
-	    return true;
+	  };
+	
+	  SolutionService.prototype.finished = function() {
+	    var ref;
+	    return ref = this.solution[this.solution.length - 1], indexOf.call("+-*", ref) < 0;
 	  };
 	
 	  SolutionService.prototype.isCompleteExpression = function() {
@@ -10682,7 +10708,7 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /*!***********************************!*\
   !*** ./app/services/Title.coffee ***!
   \***********************************/
@@ -10709,7 +10735,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -10928,7 +10954,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -10938,7 +10964,7 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 22);
+	Colors = __webpack_require__(/*! ./Colors */ 23);
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
@@ -11136,7 +11162,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
@@ -11159,7 +11185,7 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
@@ -11214,7 +11240,7 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /*!***********************************************!*\
   !*** ./tests/controllers/GeneralTests.coffee ***!
   \***********************************************/
@@ -11228,9 +11254,9 @@
 	
 	ExpressionGenerator = __webpack_require__(/*! ../../app/services/ExpressionGenerator */ 11);
 	
-	InputSolver = __webpack_require__(/*! ../../app/services/InputSolver */ 13);
+	InputSolver = __webpack_require__(/*! ../../app/services/InputSolver */ 14);
 	
-	RandomizedFitLength = __webpack_require__(/*! ../../app/services/RandomizedFitLength */ 14);
+	RandomizedFitLength = __webpack_require__(/*! ../../app/services/RandomizedFitLength */ 15);
 	
 	Tuple = __webpack_require__(/*! ../../app/models/Tuple */ 5);
 	
@@ -11313,7 +11339,7 @@
 
 
 /***/ },
-/* 25 */
+/* 26 */
 /*!*******************************!*\
   !*** ./~/two.js/build/two.js ***!
   \*******************************/
