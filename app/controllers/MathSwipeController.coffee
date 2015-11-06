@@ -4,6 +4,7 @@ BoardSolvedService      = require '../services/BoardSolvedService'
 ClickHandler            = require '../services/ClickHandler'
 DFS                     = require '../services/DFS'
 ExpressionGenerator     = require '../services/ExpressionGenerator'
+HashingService          = require '../services/HashingService'
 HowToPlay               = require '../services/HowToPlay'
 InputSolver             = require '../services/InputSolver'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
@@ -45,8 +46,8 @@ class MathSwipeController
     inputs = []
     goals = []
 
-    decoded = ShareGameService.decodeMap()
-    [boardValues, goals, solutionPlacements] = ShareGameService.parse decoded
+    decoded = HashingService.decodeMap()
+    [boardValues, goals, solutionPlacements] = HashingService.parse decoded
 
     if @malformedDecode boardValues, goals, solutionPlacements
       inputLengths    = RandomizedFitLength.generate length ** 2
@@ -62,7 +63,7 @@ class MathSwipeController
     ResetButton.bindClick @board, RunningSum
     RunningSum.empty()
 
-    @createNewGame() unless ShareGameService.reloadPageWithHash(@board,
+    @createNewGame() unless HashingService.reloadPageWithHash(@board,
                                             solutionPlacements, SolutionService)
 
   isMobile: () ->
