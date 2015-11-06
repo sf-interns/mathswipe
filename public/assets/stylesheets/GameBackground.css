@@ -46,17 +46,17 @@ body {
   src: url(../fonts/ClearSans-Bold.ttf);
   font-weight: bold; }
 #goals {
-  width: 80%;
+  width: 85%;
   margin: 0 auto;
   display: table;
   width: 100%;
-  table-layout: fixed;
+  table-layout: auto;
   margin-bottom: 20px; }
   #goals .goal-span {
     display: table-cell;
     text-align: center;
     color: #EFE8BE;
-    font-size: 80px;
+    font-size: 70px;
     margin: 0 10px 10px 10px; }
 
 .game-button-wrapper {
@@ -77,5 +77,3 @@ body {
       margin: 0px 0px 5px 0px; }
     .game-button-wrapper .game-btn:active {
       background-color: #EFE8BE; }
-
-/*# sourceMappingURL=GameBackground.css.map */
