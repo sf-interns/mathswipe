@@ -2,12 +2,16 @@ $ = require 'jquery'
 
 class LevelService
 
+  levelDisplay: $("#level")
+  levelContainer: $(".status")
+
   constructor: (@currLevel = 0, @numCorrect = 0, @settings) ->
-    @setLevel()
+    @setLevelText()
 
   levelUp: () ->
     @currLevel++
-    @setLevel()
+    # @setLevelText()
+    @animate()
     @numCorrect = 0
 
   setLevel: (level) ->
@@ -33,8 +37,15 @@ class LevelService
   maxGoal: () ->
     @settings.maxGoal @currLevel
 
-  setLevel: ()->
-    $("#level").text @settings.getLevelName @currLevel
+  setLevelText: ()->
+    @levelDisplay.text @settings.getLevelName @currLevel
+
+  animate:()->
+    @levelDisplay.fadeOut 'linear', () =>
+      @setLevelText()
+    @levelDisplay.fadeIn 300, 'linear', () =>
+      @levelContainer.fadeOut 'fast'
+      @levelContainer.fadeIn 'fast'
 
 
 module.exports = LevelService

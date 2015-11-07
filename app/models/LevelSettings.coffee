@@ -12,16 +12,17 @@ class LevelSettings
   @useMultiplication: (level) ->
     level > 2
 
+  @getLevelName: (level)->
+    ["kumkwat", "tangerine","lime","lemon", "orange", "grapefruit", "blood orange"][level]
+
   @getAllSettings: (level) ->
     {
       'numCorrectNeeded': @numCorrectNeeded level,
       'boardSize': @boardSize level,
       'maxGoal': @maxGoal level,
       'useMultiplication': @useMultiplication level
+      'levelName': @getLevelName level
     }
-
-  @getLevelName: (level)->
-    ["kumkwat", "tangerine","lime","lemon","orange", "grapefruit", "blood orange"][level]
 
 
 module.exports = LevelSettings
