@@ -1,10 +1,13 @@
+$ = require 'jquery'
+
 class LevelService
 
   constructor: (@currLevel = 0, @numCorrect = 0, @settings) ->
+    @setLevel()
 
   levelUp: () ->
     @currLevel++
-    console.log 'Level Up!'
+    @setLevel()
     @numCorrect = 0
 
   setLevel: (level) ->
@@ -29,5 +32,9 @@ class LevelService
 
   maxGoal: () ->
     @settings.maxGoal @currLevel
+
+  setLevel: ()->
+    $("#level").text @settings.getLevelName @currLevel
+
 
 module.exports = LevelService

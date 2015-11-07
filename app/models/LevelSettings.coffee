@@ -20,5 +20,8 @@ class LevelSettings
       'useMultiplication': @useMultiplication level
     }
 
+  @getLevelName: (level)->
+    ["kumkwat", "tangerine","lime","lemon","orange", "grapefruit", "blood orange"][level]
+
 
 module.exports = LevelSettings
