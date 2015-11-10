@@ -1,6 +1,6 @@
-# MathSwipe
+# Math Swipe
 
-[MathSwipe](http://sf-interns.github.io/mathswipe/) is a `CoffeeScript` game developed in the context of the [Originate](http://www.originate.com/) 'Intern Hack 2015' Event, presented August 2015.  It is a web-game in which the user is given a grid of numbers (0-9) and operators (+, -, &times;). The user's goal is to swipe a path through the cells to create an expression that evaluates to one of the goal-values listed below the board. A level is completed when the user finds expressions evaluating to each goal-value and has cleared the board of all cells.
+[Math Swipe](http://sf-interns.github.io/mathswipe/) is a `CoffeeScript` game developed in the context of the [Originate](http://www.originate.com/) 'Intern Hack 2015' Event, presented August 2015.  It is a web-game in which the user is given a grid of numbers (0-9) and operators (+, -, &times;). The user's goal is to swipe a path through the cells to create an expression that evaluates to one of the goal-values listed below the board. A level is completed when the user finds expressions evaluating to each goal-value and has cleared the board of all cells.
 
 ## Development Information
 
@@ -8,7 +8,7 @@ Note that the other services, when run locally, expect the frontend to be served
 
 The codebase is primarily written in CoffeeScript using the Node package manager to install most of the dependencies. The entire project (including its dependencies) is bundled by `Webpack` into a single bundle.js file which can be served locally or staticlly with GitHub pages.
 
-Animation and functionality of the game is implemented using `jQuery`, `Two.js` and Scalable Vector Graphics (SVGs). 
+Animation and functionality of the game is implemented using `jQuery`, `Two.js` and Scalable Vector Graphics (SVGs).
 
 The styling is written in `SASS` and compiled down to CSS before use. If you plan to clone this repository and try building the game locally, we recommend using the Sublime plugin `SASS Build` to compile down to CSS.
 
