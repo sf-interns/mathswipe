@@ -1,4 +1,5 @@
-InputSolver = require './InputSolver'
+InputSolver  = require './InputSolver'
+ScoreService = require './ScoreService'
 
 class SolutionService
 
@@ -21,6 +22,8 @@ class SolutionService
       return false
     @valueIndex = @goals.indexOf @value
     @goals[@valueIndex] = ' '
+    console.log @value
+    ScoreService.addToScore @solution.length, @value
     true
 
   isCompleteExpression: -> @solution.search(/-?\d+[-+\*]\d+/g) is 0
