@@ -1,5 +1,10 @@
 class HashingService
 
+  alphabet = ['"', '{', '}', '[', ']', ',', ':',
+              'b', 'g', 'p', '1', '2', '3', '4',
+              '5', '6', '7', '8', '9', '0',
+              '+', '-', '*']
+
   @reloadPageWithHash: (board, solutionPlacements, SolutionService) ->
     unless @checkSolutionPlacements board, solutionPlacements, SolutionService
       @emptyHash()
@@ -23,9 +28,9 @@ class HashingService
 
     btoa(JSON.stringify {b: boardValues, g: goals, p: solutionPlacements})
 
-  @decodeMap: () ->
+  @decodeMap: ->
     try
-      decoded_s  = atob window.location.hash.substr(1, window.location.hash.length)
+      decoded_s = atob window.location.hash.substr(1, window.location.hash.length)
       decoded = JSON.parse decoded_s
     catch e
       decoded = null
@@ -47,10 +52,6 @@ class HashingService
            @regexPass decoded
 
   @regexPass: (decoded) ->
-    alphabet = ['"', '{', '}', '[', ']', ',', ':',
-                'b', 'g', 'p', '1', '2', '3', '4',
-                '5', '6', '7', '8', '9', '0',
-                '+', '-', '*']
     for char in decoded
       return false if char not in alphabet
     true

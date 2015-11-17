@@ -65,7 +65,7 @@
 	
 	Tuple = __webpack_require__(/*! ./app/models/Tuple */ 5);
 	
-	Two = __webpack_require__(/*! two.js */ 26);
+	Two = __webpack_require__(/*! two.js */ 27);
 	
 	game = new MathSwipeController;
 
@@ -9324,21 +9324,21 @@
 	
 	ShareGameService = __webpack_require__(/*! ../services/ShareGameService */ 18);
 	
-	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 19);
+	SolutionService = __webpack_require__(/*! ../services/SolutionService */ 20);
 	
-	Title = __webpack_require__(/*! ../services/Title */ 20);
+	Title = __webpack_require__(/*! ../services/Title */ 21);
 	
 	TrackingService = __webpack_require__(/*! ../services/TrackingService */ 8);
 	
-	Board = __webpack_require__(/*! ../views/Board */ 21);
+	Board = __webpack_require__(/*! ../views/Board */ 22);
 	
-	Cell = __webpack_require__(/*! ../views/Cell */ 22);
+	Cell = __webpack_require__(/*! ../views/Cell */ 23);
 	
-	Colors = __webpack_require__(/*! ../views/Colors */ 23);
+	Colors = __webpack_require__(/*! ../views/Colors */ 24);
 	
-	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 24);
+	GoalContainer = __webpack_require__(/*! ../views/GoalContainer */ 25);
 	
-	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 25);
+	GeneralTests = __webpack_require__(/*! ../../tests/controllers/GeneralTests */ 26);
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
@@ -9354,14 +9354,12 @@
 	      this.cursorToPointer();
 	    }
 	    ShareGameService.setMessage();
-	    this.initialize(window.location.hash, 3);
+	    this.initialize();
 	  }
 	
-	  MathSwipeController.prototype.initialize = function(hash, length) {
-	    var boardValues, decoded, goals, inputLengths, inputs, ref, ref1, solutionPlacements;
-	    if (length == null) {
-	      length = 3;
-	    }
+	  MathSwipeController.prototype.initialize = function() {
+	    var boardValues, decoded, goals, inputLengths, inputs, length, ref, ref1, solutionPlacements;
+	    length = 3;
 	    solutionPlacements = [];
 	    inputLengths = [];
 	    boardValues = [];
@@ -9419,7 +9417,8 @@
 	    this.gameScene.clear();
 	    this.goalContainer.clearGoals();
 	    ResetButton.unbindClick();
-	    return this.initialize((window.location.hash = ''));
+	    HashingService.emptyHash();
+	    return this.initialize();
 	  };
 	
 	  MathSwipeController.prototype.createGameScene = function() {
@@ -9462,14 +9461,10 @@
 	    return DFS.setEquationsOnGrid(length, inputs, AdjacentCellsCalculator, solutionPlacements);
 	  };
 	
-	  MathSwipeController.prototype.generateInputs = function(inputLengths, goals, inputs) {
-	    var expression, i, inputSize, len, value;
-	    if (goals == null) {
-	      goals = [];
-	    }
-	    if (inputs == null) {
-	      inputs = [];
-	    }
+	  MathSwipeController.prototype.generateInputs = function(inputLengths) {
+	    var expression, goals, i, inputSize, inputs, len, value;
+	    goals = [];
+	    inputs = [];
 	    for (i = 0, len = inputLengths.length; i < len; i++) {
 	      inputSize = inputLengths[i];
 	      value = -1;
@@ -10140,7 +10135,11 @@
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
 	HashingService = (function() {
+	  var alphabet;
+	
 	  function HashingService() {}
+	
+	  alphabet = ['"', '{', '}', '[', ']', ',', ':', 'b', 'g', 'p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*'];
 	
 	  HashingService.reloadPageWithHash = function(board, solutionPlacements, SolutionService) {
 	    if (!this.checkSolutionPlacements(board, solutionPlacements, SolutionService)) {
@@ -10203,8 +10202,7 @@
 	  };
 	
 	  HashingService.regexPass = function(decoded) {
-	    var alphabet, char, k, len;
-	    alphabet = ['"', '{', '}', '[', ']', ',', ':', 'b', 'g', 'p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*'];
+	    var char, k, len;
 	    for (k = 0, len = decoded.length; k < len; k++) {
 	      char = decoded[k];
 	      if (indexOf.call(alphabet, char) < 0) {
@@ -10618,20 +10616,15 @@
   \**********************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	var $, ShareGameService;
+	var ShareGameService, TwitterGameService;
 	
-	$ = __webpack_require__(/*! jquery */ 2);
+	TwitterGameService = __webpack_require__(/*! ./TwitterGameService */ 19);
 	
 	ShareGameService = (function() {
 	  function ShareGameService() {}
 	
 	  ShareGameService.setMessage = function() {
-	    var possible, text;
-	    possible = ['Play MathSwipe with me! Try to beat my score at', 'Play MathSwipe with me! Try to solve my board at', 'Play MathSwipe with me! Solve my puzzle at'];
-	    text = possible[Math.floor(Math.random() * 3)];
-	    $('#tweet').attr('data-text', text);
-	    console.log($('#fb-share'));
-	    return $('#fb-share').attr('data-href', window.location.hash);
+	    return TwitterGameService.setTweet();
 	  };
 	
 	  return ShareGameService;
@@ -10643,6 +10636,34 @@
 
 /***/ },
 /* 19 */
+/*!************************************************!*\
+  !*** ./app/services/TwitterGameService.coffee ***!
+  \************************************************/
+/***/ function(module, exports, __webpack_require__) {
+
+	var $, TwitterGameService;
+	
+	$ = __webpack_require__(/*! jquery */ 2);
+	
+	TwitterGameService = (function() {
+	  function TwitterGameService() {}
+	
+	  TwitterGameService.setTweet = function() {
+	    var possible, text;
+	    possible = ['Play MathSwipe with me! Try to beat my score at', 'Play MathSwipe with me! Try to solve my board at', 'Play MathSwipe with me! Solve my puzzle at'];
+	    text = possible[Math.floor(Math.random() * 3)];
+	    return $('#tweet').attr('data-text', text);
+	  };
+	
+	  return TwitterGameService;
+	
+	})();
+	
+	module.exports = TwitterGameService;
+
+
+/***/ },
+/* 20 */
 /*!*********************************************!*\
   !*** ./app/services/SolutionService.coffee ***!
   \*********************************************/
@@ -10682,7 +10703,7 @@
 	
 	  SolutionService.prototype.finished = function() {
 	    var ref;
-	    return ref = this.solution[this.solution.length - 1], indexOf.call("+-*", ref) < 0;
+	    return ref = this.solution[this.solution.length - 1], indexOf.call('+-*', ref) < 0;
 	  };
 	
 	  SolutionService.prototype.isCompleteExpression = function() {
@@ -10708,7 +10729,7 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /*!***********************************!*\
   !*** ./app/services/Title.coffee ***!
   \***********************************/
@@ -10735,7 +10756,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /*!********************************!*\
   !*** ./app/views/Board.coffee ***!
   \********************************/
@@ -10954,7 +10975,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /*!*******************************!*\
   !*** ./app/views/Cell.coffee ***!
   \*******************************/
@@ -10964,7 +10985,7 @@
 	
 	$ = __webpack_require__(/*! jquery */ 2);
 	
-	Colors = __webpack_require__(/*! ./Colors */ 23);
+	Colors = __webpack_require__(/*! ./Colors */ 24);
 	
 	Cell = (function() {
 	  function Cell(col1, row1, size, scene, board, clickHandler, symbolBlueprint) {
@@ -11162,7 +11183,7 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /*!*********************************!*\
   !*** ./app/views/Colors.coffee ***!
   \*********************************/
@@ -11185,7 +11206,7 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /*!****************************************!*\
   !*** ./app/views/GoalContainer.coffee ***!
   \****************************************/
@@ -11240,7 +11261,7 @@
 
 
 /***/ },
-/* 25 */
+/* 26 */
 /*!***********************************************!*\
   !*** ./tests/controllers/GeneralTests.coffee ***!
   \***********************************************/
@@ -11339,7 +11360,7 @@
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /*!*******************************!*\
   !*** ./~/two.js/build/two.js ***!
   \*******************************/

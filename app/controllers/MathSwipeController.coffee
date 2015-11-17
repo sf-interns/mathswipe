@@ -34,12 +34,13 @@ class MathSwipeController
       TrackingService.desktopView()
       @cursorToPointer()
     ShareGameService.setMessage()
-    @initialize window.location.hash, 3
+    @initialize()
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
 
-  initialize: (hash, length = 3) ->
+  initialize: ->
+    length = 3
     solutionPlacements = []
     inputLengths = []
     boardValues = []
@@ -91,7 +92,8 @@ class MathSwipeController
     @gameScene.clear()
     @goalContainer.clearGoals()
     ResetButton.unbindClick()
-    @initialize (window.location.hash = '')
+    HashingService.emptyHash()
+    @initialize()
 
   createGameScene: ->
     gameDom = document.getElementById('game')
@@ -125,7 +127,9 @@ class MathSwipeController
   generateBoard: (inputs, length, solutionPlacements) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator, solutionPlacements
 
-  generateInputs: (inputLengths, goals = [], inputs = []) ->
+  generateInputs: (inputLengths) ->
+    goals  = []
+    inputs = []
     for inputSize in inputLengths
       value = -1
       while value < 1 or value > 300
