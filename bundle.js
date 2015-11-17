@@ -9342,8 +9342,6 @@
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
-	    var length;
-	    length = 3;
 	    this.gameScene = this.createGameScene();
 	    this.symbols = this.getSymbols();
 	    this.bindNewGameButton();

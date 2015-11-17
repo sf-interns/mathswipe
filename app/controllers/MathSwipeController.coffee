@@ -23,7 +23,6 @@ GeneralTests            = require '../../tests/controllers/GeneralTests'
 class MathSwipeController
 
   constructor: ->
-    length = 3
     @gameScene = @createGameScene()
     @symbols = @getSymbols()
     @bindNewGameButton()
