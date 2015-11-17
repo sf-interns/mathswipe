@@ -9342,6 +9342,8 @@
 	
 	MathSwipeController = (function() {
 	  function MathSwipeController() {
+	    var length;
+	    length = 3;
 	    this.gameScene = this.createGameScene();
 	    this.symbols = this.getSymbols();
 	    this.bindNewGameButton();
@@ -9354,14 +9356,12 @@
 	      this.cursorToPointer();
 	    }
 	    ShareGameService.setMessage();
-	    this.initialize(window.location.hash, 3);
+	    this.initialize();
 	  }
 	
-	  MathSwipeController.prototype.initialize = function(hash, length) {
-	    var boardValues, decoded, goals, inputLengths, inputs, ref, ref1, solutionPlacements;
-	    if (length == null) {
-	      length = 3;
-	    }
+	  MathSwipeController.prototype.initialize = function() {
+	    var boardValues, decoded, goals, inputLengths, inputs, length, ref, ref1, solutionPlacements;
+	    length = 3;
 	    solutionPlacements = [];
 	    inputLengths = [];
 	    boardValues = [];
@@ -9419,7 +9419,8 @@
 	    this.gameScene.clear();
 	    this.goalContainer.clearGoals();
 	    ResetButton.unbindClick();
-	    return this.initialize((window.location.hash = ''));
+	    HashingService.emptyHash();
+	    return this.initialize();
 	  };
 	
 	  MathSwipeController.prototype.createGameScene = function() {
@@ -10140,7 +10141,11 @@
 	  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 	
 	HashingService = (function() {
+	  var alphabet;
+	
 	  function HashingService() {}
+	
+	  alphabet = ['"', '{', '}', '[', ']', ',', ':', 'b', 'g', 'p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*'];
 	
 	  HashingService.reloadPageWithHash = function(board, solutionPlacements, SolutionService) {
 	    if (!this.checkSolutionPlacements(board, solutionPlacements, SolutionService)) {
@@ -10203,8 +10208,7 @@
 	  };
 	
 	  HashingService.regexPass = function(decoded) {
-	    var alphabet, char, k, len;
-	    alphabet = ['"', '{', '}', '[', ']', ',', ':', 'b', 'g', 'p', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '+', '-', '*'];
+	    var char, k, len;
 	    for (k = 0, len = decoded.length; k < len; k++) {
 	      char = decoded[k];
 	      if (indexOf.call(alphabet, char) < 0) {
@@ -10682,7 +10686,7 @@
 	
 	  SolutionService.prototype.finished = function() {
 	    var ref;
-	    return ref = this.solution[this.solution.length - 1], indexOf.call("+-*", ref) < 0;
+	    return ref = this.solution[this.solution.length - 1], indexOf.call('+-*', ref) < 0;
 	  };
 	
 	  SolutionService.prototype.isCompleteExpression = function() {

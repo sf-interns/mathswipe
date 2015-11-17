@@ -23,6 +23,7 @@ GeneralTests            = require '../../tests/controllers/GeneralTests'
 class MathSwipeController
 
   constructor: ->
+    length = 3
     @gameScene = @createGameScene()
     @symbols = @getSymbols()
     @bindNewGameButton()
@@ -34,12 +35,13 @@ class MathSwipeController
       TrackingService.desktopView()
       @cursorToPointer()
     ShareGameService.setMessage()
-    @initialize window.location.hash, 3
+    @initialize()
 
     # # Uncomment the following line to perform general tests
     # GeneralTests.tests @board
 
-  initialize: (hash, length = 3) ->
+  initialize: () ->
+    length = 3
     solutionPlacements = []
     inputLengths = []
     boardValues = []
@@ -91,7 +93,8 @@ class MathSwipeController
     @gameScene.clear()
     @goalContainer.clearGoals()
     ResetButton.unbindClick()
-    @initialize (window.location.hash = '')
+    HashingService.emptyHash()
+    @initialize()
 
   createGameScene: ->
     gameDom = document.getElementById('game')

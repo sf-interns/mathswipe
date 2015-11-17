@@ -20,7 +20,7 @@ class SolutionService
       @RunningSum.display @RunningSum.solutionOperatorString
       false
 
-  finished: -> @solution[@solution.length - 1] not in "+-*"
+  finished: -> @solution[@solution.length - 1] not in '+-*'
 
   isCompleteExpression: -> @solution.search(/-?\d+[-+\*]\d+/g) is 0
 
