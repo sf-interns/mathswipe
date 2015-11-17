@@ -31,7 +31,7 @@ body {
     text-align: center;
     font-size: 30px; }
   .center-column .game-desc-hr {
-    margin: 40px 0px 20px 0px; }
+    margin: 10px 0px 20px 0px; }
   .center-column #how-to-play {
     margin: 10px auto 10px auto;
     width: 95%;
@@ -67,7 +67,7 @@ body {
     word-wrap: break-word;
     display: inline-block;
     width: 40%;
-    margin: 0px 10px;
+    margin: 0 0 10px;
     background-color: Transparent;
     border-style: solid;
     border-color: #a7acb0;
