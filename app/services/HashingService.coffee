@@ -30,7 +30,7 @@ class HashingService
 
   @decodeMap: ->
     try
-      decoded_s  = atob window.location.hash.substr(1, window.location.hash.length)
+      decoded_s = atob window.location.hash.substr(1, window.location.hash.length)
       decoded = JSON.parse decoded_s
     catch e
       decoded = null

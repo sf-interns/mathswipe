@@ -10,7 +10,6 @@ InputSolver             = require '../services/InputSolver'
 RandomizedFitLength     = require '../services/RandomizedFitLength'
 ResetButton             = require '../services/ResetButton'
 RunningSum              = require '../services/RunningSum'
-ShareGameService        = require '../services/ShareGameService'
 SolutionService         = require '../services/SolutionService'
 Title                   = require '../services/Title'
 TrackingService         = require '../services/TrackingService'
@@ -34,7 +33,6 @@ class MathSwipeController
     else
       TrackingService.desktopView()
       @cursorToPointer()
-    ShareGameService.setMessage()
     @initialize()
 
     # # Uncomment the following line to perform general tests
@@ -128,7 +126,9 @@ class MathSwipeController
   generateBoard: (inputs, length, solutionPlacements) ->
     DFS.setEquationsOnGrid length, inputs, AdjacentCellsCalculator, solutionPlacements
 
-  generateInputs: (inputLengths, goals = [], inputs = []) ->
+  generateInputs: (inputLengths) ->
+    goals  = []
+    inputs = []
     for inputSize in inputLengths
       value = -1
       while value < 1 or value > 300
