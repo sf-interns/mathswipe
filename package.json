@@ -1,7 +1,7 @@
 {
   "name": "mathswipe",
   "version": "0.0.0",
-  "description": "MathSwipe is a CoffeeScript game developed in the context of the Originate 'Intern Hack 2015' Event, presented August 2015. It is a web-game in which the user is given a grid of numbers (0-9) and operators (×, +, -), as well as a set of goal-values. The user's goal is to swipe a path through the cells to create an expression that evaluates to one of the goal-values. A level is completed when the user finds expressions evaluating to each goal-value.",
+  "description": "Math Swipe is a CoffeeScript game developed in the context of the Originate 'Intern Hack 2015' Event, presented August 2015. It is a web-game in which the user is given a grid of numbers (0-9) and operators (×, +, -), as well as a set of goal-values. The user's goal is to swipe a path through the cells to create an expression that evaluates to one of the goal-values. A level is completed when the user finds expressions evaluating to each goal-value.",
   "main": "index.js",
   "scripts": {
     "devserve": "webpack-dev-server -d --config webpack.config.js --content-base ./ --progress --colors",
